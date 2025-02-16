@@ -1,0 +1,11 @@
+label {
+    &.form-label {
+        color: #1a1a1a !important;
+
+        span.required::after {
+            content: '*';
+            color: red;
+            margin-left: 2px;
+        }
+    }
+}
