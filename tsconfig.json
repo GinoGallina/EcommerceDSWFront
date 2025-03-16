@@ -1,7 +1,16 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    "files": [],
+    "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "forceConsistentCasingInFileNames": true,
+        "jsx": "react",
+        "moduleResolution": "node",
+        "strict": true,
+        "paths": {
+            "@components": ["src/app/components/index"],
+            "@app/*": ["src/app/*"],
+            "@constants/*": ["src/app/constants/*"]
+        }
+    }
 }

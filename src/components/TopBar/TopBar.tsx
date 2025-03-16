@@ -1,16 +1,16 @@
 import { Image } from 'react-bootstrap';
-import { useRef, useState, MouseEvent } from 'react';
+import { useRef, useState, MouseEvent, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faClose, faUser } from '@fortawesome/free-solid-svg-icons';
 import { LocalStorage } from '../../app/LocalStorage';
 import classNames from 'classnames';
-// import API from '../../app/API';
-// import Toast from '../Toast/Toast';
-// import Button from '../Button/Button';
+import API from '../../app/API';
+import Button from '../Button/Button';
 import { useNavigate } from 'react-router';
-// import Loader from '../Loader/Loader';
-import Logo from '../../assets/logo.png';
 import LogoMini from '../../assets/logo-mini.png';
+import Logo from '../../assets/ecommerce-logo-topbar.webp';
+import Loader from '../Loader/Loader';
+import Toast from '../Toast/Toast';
 // import SidePanel from '../SidePanel/SidePanel';
 
 import './topbar.scss';
@@ -19,16 +19,17 @@ const TopBar = () => {
     const navigate = useNavigate();
     const [showUser, setShowUser] = useState(false);
     const [showSidePanel, setShowSidePanel] = useState(false);
-    // const [showNotifications, setShowNotifications] = useState(false);
-    // const [loading, setLoading] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const userInfoRef = useRef(null);
+    const userInfoRef = useRef<HTMLDivElement | null>(null);
     // const notificationsRef = useRef(null);
+    const userIconRef = useRef<SVGSVGElement | null>(null);
 
     const handleShowUserInfo = () => {
-        // setShowNotifications(false);
-        setShowUser(!showUser);
-        // if (userInfoRef.current) userInfoRef.current.focus();
+        setShowNotifications(false);
+        setShowUser((prevShowUser) => !prevShowUser);
+        if (userInfoRef.current) userInfoRef.current.focus();
     };
 
     const handleHideUserInfo = () => {
@@ -41,32 +42,32 @@ const TopBar = () => {
     };
 
     const toggleSidePanel = () => {
-        setShowSidePanel(!showSidePanel);
+        setShowSidePanel((prevShowSidePanel) => !prevShowSidePanel);
     };
 
     // const handleHideSidePanel = () => {
     //     setShowSidePanel(false);
     // };
 
-    // const handleLogout = () => {
-    //     setLoading(true);
-    //     API.post('auth/logout', null)
-    //         .then(() => {
-    //             LocalStorage.clearSessionData();
-    //             window.location.href = '/login';
-    //         })
-    //         .catch((r) => {
-    //             Toast.error(r.error?.message);
-    //         })
-    //         .finally(() => {
-    //             setLoading(false);
-    //         });
-    // };
+    const handleLogout = () => {
+        setLoading(true);
+        API.post('auth/logout', null)
+            .then(() => {
+                LocalStorage.clearSessionData();
+                window.location.href = '/login';
+            })
+            .catch((r) => {
+                Toast.error(r.error?.message);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
 
-    // const handlePerfilDetails = () => {
-    //     setShowUser(false);
-    //     navigate(`/usuario/detallesPerfil/${LocalStorage.getUserId()}`);
-    // };
+    const handlePerfilDetails = () => {
+        setShowUser(false);
+        navigate(`/usuario/detallesPerfil/${LocalStorage.getUserId()}`);
+    };
 
     // Handle click outside of notifications container
     // useEffect(() => {
@@ -87,24 +88,25 @@ const TopBar = () => {
     //     };
     // }, [showNotifications]);
 
-    // // Handle click outside of user info container
-    // useEffect(() => {
-    //     const handleClickOutside = (event) => {
-    //         if (userInfoRef.current && !userInfoRef.current.contains(event.target)) {
-    //             setShowUser(false);
-    //         }
-    //     };
+    // Handle click outside of user info container
+    useEffect(() => {
+        const handleClickOutside = (event: Event) => {
+            if (
+                userInfoRef.current &&
+                !userInfoRef.current.contains(event.target as Node) &&
+                userIconRef.current &&
+                !userIconRef.current.contains(event.target as Node)
+            ) {
+                setShowUser(false);
+            }
+        };
 
-    //     if (showUser) {
-    //         document.addEventListener('mousedown', handleClickOutside);
-    //     } else {
-    //         document.removeEventListener('mousedown', handleClickOutside);
-    //     }
+        document.addEventListener('mousedown', handleClickOutside);
 
-    //     return () => {
-    //         document.removeEventListener('mousedown', handleClickOutside);
-    //     };
-    // }, [showUser]);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showUser]);
 
     return (
         <>
@@ -129,13 +131,13 @@ const TopBar = () => {
                         className={classNames('icon-container', showUser && 'show-card')}
                         onClick={handleShowUserInfo}
                     >
-                        <FontAwesomeIcon icon={faUser} size="xl" />
+                        <FontAwesomeIcon icon={faUser} size="xl" ref={userIconRef} />
                     </span>
                 </div>
                 <div
                     className={classNames('user-container', showUser && 'show-card')}
-                    ref={userInfoRef}
                     onBlur={handleHideUserInfo}
+                    ref={userInfoRef}
                 >
                     <FontAwesomeIcon
                         icon={faClose}
@@ -153,7 +155,7 @@ const TopBar = () => {
                             <small>Rol: {LocalStorage.getUserRole()}</small>
                         </div>
                     </div>
-                    {/* <div>
+                    <div>
                         <Button
                             className="perfil-details-badge"
                             type="button"
@@ -170,7 +172,7 @@ const TopBar = () => {
                         >
                             {loading ? <Loader /> : 'Cerrar sesión'}
                         </Button>
-                    </div> */}
+                    </div>
                 </div>
             </nav>
         </>

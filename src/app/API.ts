@@ -1,6 +1,6 @@
 const URL = import.meta.env.VITE_API_URL;
 import Toast from '../components/Toast/Toast';
-import { ApiInterfaces } from '../interfaces';
+import { ApiInterfaces, GenericGetAllResquestInterface } from '../interfaces';
 import { DownloadInterface } from '../interfaces/shared/DownloadInterface';
 import { LocalStorage } from './LocalStorage';
 import { Messages } from './constants/Messages';
@@ -20,7 +20,10 @@ interface RequestParams {
     [key: string]: string | number | boolean | null;
 }
 
-const get = async <T = ApiInterfaces>(path: string, rq: Record<string, string>) => {
+const get = async <T = ApiInterfaces>(
+    path: string,
+    rq: Record<string, string>
+): Promise<APIResponse<T>> => {
     const params = new URLSearchParams(rq);
     const response = await fetch(`${URL}/${path}?${params}`, {
         method: 'GET',
@@ -32,15 +35,18 @@ const get = async <T = ApiInterfaces>(path: string, rq: Record<string, string>) 
     });
 
     if (!response.ok) {
-        if (response.status === 403) return Toast.error(Messages.Error[403]);
-        else if (response.status === 404) return Toast.error(Messages.Error[404]);
-        else if (response.status >= 500) return Toast.error(Messages.Error[500]);
-        else return Toast.error(Messages.Error.generic);
+        if (response.status === 403) Toast.error(Messages.Error[403]);
+        else if (response.status === 404) Toast.error(Messages.Error[404]);
+        else if (response.status >= 500) Toast.error(Messages.Error[500]);
+        else Toast.error(Messages.Error.generic);
     }
 
     const json: APIResponse<T> = await response.json();
 
-    if (!json.success) throw json;
+    if (!json.success) {
+        Toast.error(json.error?.message || Messages.Error.generic);
+        throw json;
+    }
 
     return json;
 };
@@ -69,9 +75,9 @@ const getDifferentUrl = async <T = ApiInterfaces>(url: string, rq: Record<string
 
 const post = async <T = ApiInterfaces>(
     path: string,
-    rq: FormData | RequestParams,
+    rq: FormData | RequestParams | GenericGetAllResquestInterface | null,
     isFormData = false
-) => {
+): Promise<APIResponse<T>> => {
     const headers: HeadersInit = isFormData
         ? {}
         : {
@@ -89,15 +95,18 @@ const post = async <T = ApiInterfaces>(
     });
 
     if (!response.ok) {
-        if (response.status === 403) return Toast.error(Messages.Error[403]);
-        else if (response.status === 404) return Toast.error(Messages.Error[404]);
-        else if (response.status >= 500) return Toast.error(Messages.Error[500]);
-        else return Toast.error(Messages.Error.generic);
+        if (response.status === 403) Toast.error(Messages.Error[403]);
+        else if (response.status === 404) Toast.error(Messages.Error[404]);
+        else if (response.status >= 500) Toast.error(Messages.Error[500]);
+        else Toast.error(Messages.Error.generic);
     }
 
     const json: APIResponse<T> = await response.json();
 
-    if (!json.success) throw json;
+    if (!json.success) {
+        Toast.error(json.error?.message || Messages.Error.generic);
+        throw json;
+    }
 
     return json;
 };

@@ -1,7 +1,7 @@
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import Footer from './main/Footer';
-// import { NavBar, TopBar } from '../components';
+import Footer from './main/Footer';
+import { NavBar, TopBar } from '../components';
 import { ReactNode } from 'react';
 
 interface DefaultLayoutProps {
@@ -12,7 +12,10 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
     return (
         <>
             <ToastContainer />
-            <div className="container-fluid px-0 mx-0" style={{ minHeight: '100vh' }}>
+            <div
+                className="container-fluid px-0 mx-0"
+                style={{ minHeight: '100vh', overflow: 'hidden' }}
+            >
                 <div
                     className="container px-0 mx-0"
                     style={{
@@ -22,15 +25,14 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
                         position: 'relative',
                     }}
                 >
-                    {children}
-                    {/* <TopBar />
+                    <TopBar />
                     <div className="navbar-container">
                         <NavBar />
                         <div className="main-container">
                             {children}
                             <Footer />
                         </div>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </>

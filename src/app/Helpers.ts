@@ -1,3 +1,8 @@
+import {
+    DateRangeInterface,
+    GenericGetAllResquestInterface,
+    SortRequestInterface,
+} from '../interfaces';
 import { Roles } from './constants/Roles';
 
 export const formatOptions = (options) => {
@@ -25,11 +30,9 @@ export const formatSoldProducts = (items) => {
     return items.map((item) => `${item.name} (${item.amount})`);
 };
 
-export const formatCurrency = (value) => {
-    if (value === null || value === undefined) return '';
-
-    if (value < 0)
-        return `-$${Math.abs(value).toLocaleString('es-AR', {
+export const formatCurrency = (value: string | number) => {
+    if (Number(value) < 0)
+        return `-$${Math.abs(Number(value)).toLocaleString('es-AR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         })}`;
@@ -40,25 +43,25 @@ export const formatCurrency = (value) => {
     })}`;
 };
 
-export const formatRole = (role) => {
+export const formatRole = (role: string) => {
     switch (role) {
         case Roles.Admin:
             return 'Admin';
-        case Roles.Rol4:
-            return 'Nivel 4';
-        case Roles.Rol3:
-            return 'Nivel 3';
-        case Roles.Rol2:
-            return 'Nivel 2';
-        case Roles.Rol1:
-            return 'Nivel 1';
+        case Roles.Seller:
+            return 'Vendedor';
+        case Roles.User:
+            return 'Usuario';
         default:
-            return 'Desconocido';
+            return 'Sin rol';
     }
 };
 
-export const buildGenericGetAllRq = (sort, currentPage, dateRange) => {
-    const rq = {
+export const buildGenericGetAllRq = (
+    currentPage: number | null,
+    sort?: SortRequestInterface | null,
+    dateRange?: DateRangeInterface
+) => {
+    const rq: GenericGetAllResquestInterface = {
         page: currentPage,
     };
 
@@ -74,17 +77,17 @@ export const buildGenericGetAllRq = (sort, currentPage, dateRange) => {
     return rq;
 };
 
-export const validateInt = (value) => {
+export const validateInt = (value: string) => {
     const parsedValue = parseInt(value);
     return value === null || (!isNaN(parsedValue) && parsedValue);
 };
 
-export const validateFloat = (value) => {
+export const validateFloat = (value: string) => {
     const parsedValue = parseFloat(value);
     return value === null || (!isNaN(parsedValue) && parsedValue);
 };
 
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');

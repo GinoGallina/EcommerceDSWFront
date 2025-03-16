@@ -1,7 +1,6 @@
 import { CSSProperties } from 'react';
 import { FormLabel } from 'react-bootstrap';
 import InfoButton from '../InfoButton/InfoButton';
-
 import './label.scss';
 
 interface LabelProps {
