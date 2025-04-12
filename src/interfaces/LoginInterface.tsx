@@ -3,8 +3,8 @@ export interface TokenData {
     sessionExpiration: string;
     user: {
         id: string;
-        role: string;
-        fullName: string;
+        roles: string;
+        username: string;
         email: string;
     };
 }

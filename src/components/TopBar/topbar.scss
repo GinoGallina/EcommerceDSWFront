@@ -72,33 +72,68 @@
         }
     }
 
+    .cart-container {
+        max-height: 750px;
+        min-width: 600px;
+        max-width: 650px;
+        overflow-y: scroll;
+        right: 95px;
+        top: 65px;
+
+        @media (max-width: 710px) {
+            right: 0px;
+            left: 0px;
+            max-width: none;
+            min-width: none;
+        }
+
+        .input-container {
+            display: flex;
+            margin-top: auto;
+            margin-bottom: auto;
+
+            // Remove input arrows
+            input::-webkit-inner-spin-button,
+            input::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input {
+                -moz-appearance: textfield;
+            }
+        }
+
+        .img-container {
+            max-width: 110px;
+            max-height: 110px;
+        }
+
+        .cart-details {
+            flex: 1;
+        }
+
+        svg {
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        .remove-item {
+            svg {
+                &:hover {
+                    & path {
+                        fill: rgb(175, 3, 3) !important;
+                    }
+                }
+            }
+        }
+    }
+
     .user-container {
-        visibility: hidden;
-        opacity: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        background-color: white;
-        pointer-events: none;
-        position: absolute;
         min-height: 190px;
         min-width: 300px;
         max-width: 500px;
         right: 30px;
-        top: 80px;
-        z-index: 1000;
-        border: 1px solid rgba(0, 0, 0, 0.15);
-        border-radius: 5px;
-        padding: 20px;
-        transition:
-            visibility 0.15s ease-out,
-            opacity 0.3s ease-out;
-
-        &.show-card {
-            visibility: visible;
-            opacity: 1;
-            pointer-events: all;
-        }
+        top: 65px;
 
         .user-info {
             display: flex;
@@ -123,6 +158,30 @@
             svg path {
                 fill: #455a64 !important;
             }
+        }
+    }
+
+    .user-container,
+    .cart-container {
+        visibility: hidden;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        pointer-events: none;
+        position: absolute;
+        z-index: 1000;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 5px;
+        padding: 20px;
+        transition:
+            visibility 0.15s ease-out,
+            opacity 0.3s ease-out;
+
+        &.show-card {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: all;
         }
 
         .logout-badge {
@@ -155,8 +214,8 @@
 
         .close-dialog {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 10px;
+            right: 10px;
             padding: 3px;
             cursor: pointer;
 

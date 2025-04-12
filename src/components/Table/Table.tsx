@@ -1,42 +1,13 @@
 import * as BS from 'react-bootstrap';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { Pagination } from '@components';
+import { ICategoryList, ColumnInterface, RowsType } from '../../interfaces';
+import Pagination from '../Pagination/Pagination';
 import './table.scss';
-import { ReactNode } from 'react';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { CategoryListInterface } from '../../interfaces';
-
-// interface RowInterface
-//     extends Omit<Record<string, string | string[]>, 'disabled' | 'href' | 'isSelected' | 'style'> {
-//     disabled?: boolean;
-//     href?: string;
-//     isSelected?: boolean;
-//     style?: CSSProperties;
-// }
-
-interface ColumnInterface {
-    name: string;
-    text: string;
-    textCenter?: boolean;
-    className?: string;
-    bold?: boolean;
-    boldRow?: boolean;
-    clickableColumn?: boolean;
-    list?: boolean;
-    icon?: IconProp;
-    formatter?: (name: string, row: CategoryListInterface) => string;
-    component?: (props: {
-        row: CategoryListInterface;
-        disabled?: boolean;
-        onClick: (e: React.MouseEvent) => void;
-        onUpdate: () => void;
-    }) => ReactNode;
-}
 
 interface TableProps {
     columns: ColumnInterface[];
-    rows: CategoryListInterface[];
+    rows: RowsType;
     className?: string;
     emptyTableMessage: string;
     clickable?: boolean;
@@ -101,13 +72,7 @@ const Table: React.FC<TableProps> = ({
         }
     };
 
-    const tableClassNames = classNames(
-        'table',
-        bordered && 'table-bordered',
-        striped && 'table-striped',
-        hover && 'table-hover',
-        className
-    );
+    const tableClassNames = classNames('table', bordered && 'table-bordered', striped && 'table-striped', hover && 'table-hover', className);
 
     return (
         <div className={`table-responsive px-1`}>
@@ -116,13 +81,7 @@ const Table: React.FC<TableProps> = ({
                     <tr>
                         {columns &&
                             columns.map((col, i) => (
-                                <th
-                                    key={i}
-                                    className={classNames(
-                                        col.textCenter && 'text-center',
-                                        col.className
-                                    )}
-                                >
+                                <th key={i} className={classNames(col.textCenter && 'text-center', col.className)}>
                                     {col.bold ? <strong>{col.text}</strong> : col.text}
                                 </th>
                             ))}
@@ -140,9 +99,9 @@ const Table: React.FC<TableProps> = ({
                               >
                                   {columns &&
                                       columns.map((col, j) => {
-                                          const isClickable = col.clickableColumn
-                                              ? 'clickable-row'
-                                              : '';
+                                          const key = col.name as keyof ICategoryList;
+
+                                          const isClickable = col.clickableColumn ? 'clickable-row' : '';
 
                                           if (col.name === 'icon' && col.icon)
                                               return (
@@ -164,12 +123,10 @@ const Table: React.FC<TableProps> = ({
                                                   className={classNames(col.className, {
                                                       [isClickable]: isClickable,
                                                   })}
-                                                  onClick={(e) =>
-                                                      handleColClick(e, col.clickableColumn)
-                                                  }
+                                                  onClick={(e) => handleColClick(e, col.clickableColumn)}
                                               >
                                                   {!col.component ? (
-                                                      col.list && Array.isArray(row[col.name]) ? (
+                                                      col.list && Array.isArray(row[key]) ? (
                                                           <ul
                                                               className="mb-0"
                                                               style={{
@@ -177,28 +134,18 @@ const Table: React.FC<TableProps> = ({
                                                                   overflowY: 'auto',
                                                               }}
                                                           >
-                                                              {(row[col.name] as string[]).map(
-                                                                  (item: string, k: number) => (
-                                                                      <li key={k}>{item}</li>
-                                                                  )
-                                                              )}
+                                                              {row[key].map((item: string, k: number) => (
+                                                                  <li key={k}>{item}</li>
+                                                              ))}
                                                           </ul>
                                                       ) : col.boldRow ? (
                                                           <h6 className="mb-0">
-                                                              {col.formatter
-                                                                  ? col.formatter(
-                                                                        row[col.name] as string,
-                                                                        row
-                                                                    )
-                                                                  : row[col.name]}
+                                                              {col.formatter ? col.formatter(row[key] as string, row) : (row[key] as string)}
                                                           </h6>
                                                       ) : col.formatter ? (
-                                                          col.formatter(
-                                                              row[col.name] as string,
-                                                              row
-                                                          )
+                                                          col.formatter(row[key] as string, row)
                                                       ) : (
-                                                          row[col.name]
+                                                          (row[key] as string)
                                                       )
                                                   ) : (
                                                       col.component({
@@ -232,11 +179,7 @@ const Table: React.FC<TableProps> = ({
             </BS.Table>
             {pagination && rows && (
                 <div className="d-flex justify-content-end">
-                    <Pagination
-                        currentPage={currentPage}
-                        totalCount={totalCount}
-                        setCurrentPage={handlePageChange}
-                    />
+                    <Pagination currentPage={currentPage} totalCount={totalCount} setCurrentPage={handlePageChange} />
                 </div>
             )}
         </div>

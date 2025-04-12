@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, Input, Label, Loader, Spinner } from '../../components';
+import { BreadCrumb, Button, Card, CategoryDropdown, Input, Label, Loader, Spinner, UserDropdown } from '../../components';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import Toast from '../../components/Toast/Toast';
 import API from '../../app/API';
 import { Messages } from '../../app/constants/Messages';
 import { getBreadcrumbItems } from '../products/Products.helpers';
-import { ProductFormInterface } from '../../interfaces';
+import { IProductForm } from '../../interfaces';
+import App from '../../app/App';
+import { LocalStorage } from '../../app/LocalStorage';
 
-const CreateProduct = ({ isWatching = false, isEditing = false }) => {
+const CreateProduct = ({ isWatching = false }) => {
     const navigate = useNavigate();
 
     const params = useParams();
@@ -23,7 +25,7 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
     // Effects
     useEffect(() => {
         if (id) {
-            API.get<ProductFormInterface>('product/getOneById', { id }).then((r) => {
+            API.get<IProductForm>('product/getOne', { id }).then((r) => {
                 setForm(r.data);
                 setLoading(false);
             });
@@ -35,14 +37,8 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
         if (submiting) return;
 
         //ver stock y price
-        if (
-            !form.name ||
-            !form.description ||
-            !form.price ||
-            !form.stock ||
-            !form.image ||
-            !form.categoryId
-        ) {
+        // TODO user
+        if (!form.name || !form.description || !form.price || !form.stock || !form.categoryId) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
@@ -60,30 +56,32 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
         setSubmiting(true);
 
         const rq: {
-            id?: string;
-            name: string;
-            description: string;
-            stock: string;
-            price: string;
-            image: string;
-            categoryId: string;
+            Id?: string;
+            Name: string;
+            Description: string;
+            Stock: string;
+            Price: string;
+            Image: string;
+            CategoryId: string;
+            UserId: string;
         } = {
-            name: form.name,
-            description: form.description,
-            stock: form.stock,
-            price: form.price,
-            image: form.image,
-            categoryId: form.categoryId,
+            Name: form.name,
+            Description: form.description,
+            Stock: form.stock,
+            Price: form.price,
+            Image: form.image,
+            CategoryId: form.categoryId,
+            UserId: App.isSeller() ? LocalStorage.getUserId() : form.userId,
         };
 
         if (id) {
-            rq.id = id;
+            rq.Id = id;
         }
 
         API.post(`product/${id ? 'update' : 'create'}`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
-                navigate('/productos/list');
+                navigate('/misProductos/list');
             })
             .catch((r) => {
                 Toast.error(r.error?.message);
@@ -91,16 +89,6 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
             .finally(() => {
                 setSubmiting(false);
             });
-        // saveProduct(
-        //     form,
-        //     id,
-        //     () => {
-        //         navigate('/productos/list');
-        //     },
-        //     () => {
-        //         setSubmiting(false);
-        //     }
-        // );
     };
 
     const handleInputChange = (value: string, field: string) => {
@@ -111,10 +99,6 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
             };
         });
     };
-
-    // if (!App.isSeller()) {
-    //     return navigate('/notAllowed');
-    // }
 
     return (
         <>
@@ -135,9 +119,7 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
                                                 disabled={isWatching}
                                                 placeholder="Nombre"
                                                 value={form.name}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'name')
-                                                }
+                                                onChange={(value) => handleInputChange(value, 'name')}
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className="pe-3 mb-3">
@@ -145,10 +127,8 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
                                             <Input
                                                 disabled={isWatching}
                                                 placeholder="Descripción"
-                                                value={form.name}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'description')
-                                                }
+                                                value={form.description}
+                                                onChange={(value) => handleInputChange(value, 'description')}
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className="pe-3 mb-3">
@@ -159,9 +139,7 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
                                                 placeholder="Precio"
                                                 type="number"
                                                 value={form.price}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'price')
-                                                }
+                                                onChange={(value) => handleInputChange(value, 'price')}
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className="pe-3 mb-3">
@@ -170,17 +148,36 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
                                                 disabled={isWatching}
                                                 placeholder="Stock"
                                                 type="number"
-                                                value={form.price}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'stock')
-                                                }
+                                                value={form.stock}
+                                                onChange={(value) => handleInputChange(value, 'stock')}
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className="pe-3 mb-3">
                                             <Label required>Categoria</Label>
+                                            <CategoryDropdown
+                                                value={form.categoryId}
+                                                disabled={isWatching}
+                                                isMulti={false}
+                                                onChange={(value) => {
+                                                    handleInputChange(value, 'categoryId');
+                                                }}
+                                            ></CategoryDropdown>
                                         </Col>
+                                        {App.isAdmin() && (
+                                            <Col xs={12} md={4} className="pe-3 mb-3">
+                                                <Label required>Usuario</Label>
+                                                <UserDropdown
+                                                    value={form.userId}
+                                                    disabled={isWatching}
+                                                    isMulti={false}
+                                                    onChange={(value) => {
+                                                        handleInputChange(value, 'userId');
+                                                    }}
+                                                ></UserDropdown>
+                                            </Col>
+                                        )}
                                         <Col xs={12} md={4} className="pe-3 mb-3">
-                                            <Label required>Imagen</Label>
+                                            <Label>Imagen</Label>
                                         </Col>
                                     </Row>
                                 </>
@@ -188,11 +185,7 @@ const CreateProduct = ({ isWatching = false, isEditing = false }) => {
                         }
                         footer={
                             <div className="d-flex justify-content-end">
-                                <Button
-                                    variant="secondary"
-                                    className="me-2"
-                                    onClick={() => navigate('/misProductos/list')}
-                                >
+                                <Button variant="secondary" className="me-2" onClick={() => navigate('/misProductos/list')}>
                                     Volver
                                 </Button>
                                 {!isWatching && (

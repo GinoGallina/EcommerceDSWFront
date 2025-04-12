@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Dropdown } from '../..';
-import { DropdownOption, DropdownValue, SortRequestInterface } from '../../../interfaces';
+import { DropdownOption, DropdownValue, ISortRequest } from '../../../interfaces';
 
 const defaultItems = [
     { value: 'date-asc', label: 'Fecha - Asc.' },
@@ -11,7 +11,7 @@ const defaultItems = [
 
 interface TableSortProps {
     items: DropdownOption[];
-    onChange: (value: SortRequestInterface) => void;
+    onChange: (value: ISortRequest) => void;
 }
 
 const TableSort: React.FC<TableSortProps> = ({ items = defaultItems, onChange = () => {} }) => {

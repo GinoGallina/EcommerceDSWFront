@@ -1,34 +1,27 @@
-import {
-    DateRangeInterface,
-    GenericGetAllResquestInterface,
-    SortRequestInterface,
-} from '../interfaces';
+import { IDateRange, IGenericGetAllResquest, ISortRequest } from '../interfaces';
+import { GetComboItemTypeRq } from '../interfaces/shared/IGetCombo';
 import { Roles } from './constants/Roles';
 
-export const formatOptions = (options) => {
-    return options.map((option) => ({
-        value: option,
-        label: option,
-    }));
-};
+// export const formatOptions = (options) => {
+//     return options.map((option) => ({
+//         value: option,
+//         label: option,
+//     }));
+// };
 
-export const formatComboItems = (items) => {
+export const formatComboItems = (items: GetComboItemTypeRq[]) => {
     return items.map((item) => ({
-        value: item.stringId ? item.stringId : item.id,
-        label: item.description,
+        value: item.id,
+        label: item.label,
     }));
 };
 
-export const formatOptionsBoolean = (options) => {
-    return options.map((option) => ({
-        value: option.value,
-        label: option.label,
-    }));
-};
-
-export const formatSoldProducts = (items) => {
-    return items.map((item) => `${item.name} (${item.amount})`);
-};
+// export const formatOptionsBoolean = (options) => {
+//     return options.map((option) => ({
+//         value: option.value,
+//         label: option.label,
+//     }));
+// };
 
 export const formatCurrency = (value: string | number) => {
     if (Number(value) < 0)
@@ -56,14 +49,13 @@ export const formatRole = (role: string) => {
     }
 };
 
-export const buildGenericGetAllRq = (
-    currentPage: number | null,
-    sort?: SortRequestInterface | null,
-    dateRange?: DateRangeInterface
-) => {
-    const rq: GenericGetAllResquestInterface = {
+export const buildGenericGetAllRq = (currentPage: number | null, sort?: ISortRequest | null, dateRange?: IDateRange, limit?: number) => {
+    const rq: IGenericGetAllResquest = {
         page: currentPage,
+        limit: 10,
     };
+
+    if (rq.limit) rq.limit = limit as number;
 
     if (sort && sort.column) {
         rq.columnSort = sort.column;
@@ -98,32 +90,32 @@ const formatDate = (dateString: string) => {
 export class Dates {
     static getToday(returnString = false) {
         const today = new Date();
-        return returnString ? formatDate(today) : today;
+        return returnString ? formatDate(today.toDateString()) : today;
     }
 
-    static getTomorrow(date, returnString = false) {
+    static getTomorrow(date: string, returnString = false) {
         const today = date ? new Date(date) : new Date();
         const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-        return returnString ? formatDate(tomorrow) : tomorrow;
+        return returnString ? formatDate(tomorrow.toDateString()) : tomorrow;
     }
 
     static getLastWeek() {
         const today = new Date();
         const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-        return formatDate(lastWeek);
+        return formatDate(lastWeek.toDateString());
     }
 
-    static getPreviousWeek(day) {
+    static getPreviousWeek(day: string) {
         const date = new Date(day);
         const lastWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 7);
-        return formatDate(lastWeek);
+        return formatDate(lastWeek.toDateString());
     }
 
-    static formatDate(date) {
+    static formatDate(date: string) {
         return formatDate(date);
     }
 
-    static adjustDate = (date) => {
+    static adjustDate = (date: string) => {
         const newDate = new Date(date);
         newDate.setHours(0, 0, 0, 0);
         return newDate.toISOString();

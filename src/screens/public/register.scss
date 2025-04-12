@@ -1,0 +1,19 @@
+.login-container {
+    min-height: 100vh;
+    background-image: url('/src/assets/background-login-image.svg');
+    // background: rgb(2, 0, 36);
+    // background: linear-gradient(
+    //     176deg,
+    //     rgba(2, 0, 36, 1) 0%,
+    //     rgba(24, 21, 88, 1) 0%,
+    //     rgba(0, 0, 0, 1) 100%,
+    //     rgba(0, 212, 255, 1) 100%
+    // );
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-size: cover;
+
+    .card-container {
+        width: 600px;
+    }
+}

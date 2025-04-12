@@ -35,13 +35,7 @@ const colorStyles: StylesConfig<DropdownOption, boolean> = {
     }),
     option: (styles, { isDisabled, isFocused, isSelected }) => ({
         ...styles,
-        backgroundColor: isDisabled
-            ? '#ededed'
-            : isSelected
-              ? '#5684bc78'
-              : isFocused
-                ? 'rgba(0, 100, 160, 0.07)'
-                : undefined,
+        backgroundColor: isDisabled ? '#ededed' : isSelected ? '#5684bc78' : isFocused ? 'rgba(0, 100, 160, 0.07)' : undefined,
         color: isSelected ? 'black' : '#646f75',
         cursor: isDisabled ? 'not-allowed' : 'default',
     }),
@@ -67,14 +61,12 @@ const Dropdown = forwardRef(
             helpPlacement = 'right',
             onChange = () => {},
             onDirt = () => {},
-            // disableOption = () => {},
+            disableOption = () => false,
             ...props
         }: DropdownProps,
         ref
     ) => {
-        const [selectedValue, setSelectedValue] = useState<
-            MultiValue<DropdownOption> | SingleValue<DropdownOption>
-        >(isMulti ? [] : null);
+        const [selectedValue, setSelectedValue] = useState<MultiValue<DropdownOption> | SingleValue<DropdownOption>>(isMulti ? [] : null);
 
         useImperativeHandle(ref, () => ({
             clear: () => setSelectedValue(isMulti ? [] : null),
@@ -93,9 +85,7 @@ const Dropdown = forwardRef(
         );
 
         useEffect(() => {
-            const selected = isMulti
-                ? items.filter((x) => (value as string[]).includes(x.value))
-                : items.find((x) => x.value === value) || null;
+            const selected = isMulti ? items.filter((x) => (value as string[]).includes(x.value)) : items.find((x) => x.value === value) || null;
             setSelectedValue(selected);
         }, [isMulti, items, value]);
 
@@ -115,15 +105,11 @@ const Dropdown = forwardRef(
                         isClearable={clearable}
                         isMulti={isMulti}
                         options={items}
-                        // isOptionDisabled={disableOption}
+                        isOptionDisabled={disableOption}
                         onChange={handleChange}
                         noOptionsMessage={() => 'Sin resultados'}
                     />
-                    {label && (
-                        <small className={classNames('dropdown-text', required && 'required')}>
-                            {label}
-                        </small>
-                    )}
+                    {label && <small className={classNames('dropdown-text', required && 'required')}>{label}</small>}
                 </span>
                 {helpText && (
                     <div className="help-text">
@@ -144,11 +130,7 @@ const Dropdown = forwardRef(
 );
 
 const MemoDropdown = memo(Dropdown, (prevProps, nextProps) => {
-    return (
-        nextProps.value === prevProps.value &&
-        nextProps.items === prevProps.items &&
-        nextProps.disabled === prevProps.disabled
-    );
+    return nextProps.value === prevProps.value && nextProps.items === prevProps.items && nextProps.disabled === prevProps.disabled;
 });
 
 export default MemoDropdown;

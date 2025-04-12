@@ -4,9 +4,7 @@ import { ReactNode } from 'react';
 
 import './breadcrumb.scss';
 
-export type BreadCrumbItem =
-    | { label: string; active: true; url?: string }
-    | { label: string; active: false; url: string };
+export type BreadCrumbItem = { label: string; active: true; url?: string } | { label: string; active: false; url: string };
 
 interface BreadCrumbProps {
     title: string;
@@ -29,15 +27,8 @@ const BreadCrumb: React.FC<BreadCrumbProps> = ({ title, items, children }) => {
                     )}
                     {items &&
                         items.map((item, i) => (
-                            <li
-                                key={i}
-                                className={`breadcrumb-item ${item.active ? 'active' : ''}`}
-                            >
-                                {item.active ? (
-                                    <span>{item.label}</span>
-                                ) : (
-                                    <Link to={item.url}>{item.label}</Link>
-                                )}
+                            <li key={i} className={`breadcrumb-item ${item.active ? 'active' : ''}`}>
+                                {item.active ? <span>{item.label}</span> : <Link to={item.url}>{item.label}</Link>}
                             </li>
                         ))}
                 </ol>

@@ -1,49 +1,51 @@
 import { memo, useEffect, useState } from 'react';
-import { API } from '@app';
 import { Dropdown } from '../..';
 import { formatComboItems } from '../../../app/Helpers';
+import API from '../../../app/API';
+import { GetComboItemType, IComboDropdown, IGetComboRq } from '../../../interfaces/shared/IGetCombo';
+import { DropdownValue } from '../../../interfaces';
 
-const DealerDropdown = ({
+const CategoryDropdown: React.FC<IComboDropdown> = ({
     value = null,
     label = null,
     required = false,
     disabled = false,
-    placeholder = 'Seleccione un repartidor',
+    placeholder = 'Seleccione una categoría',
     isMulti = false,
-    roles = [],
-    onChange = () => {},
+    disableOption,
+    onChange,
 }) => {
-    const [items, setItems] = useState(null);
+    const [items, setItems] = useState<GetComboItemType[] | null>(null);
 
     // Get users
     useEffect(() => {
         if (items) return;
 
-        API.get('dealer/getComboDealers').then((r) => {
+        API.get<IGetComboRq>('category/getCombo', {}).then((r) => {
             setItems(formatComboItems(r.data.items));
         });
-    }, [roles, items]);
+    }, [items]);
 
-    const handleChange = (options) => {
-        const value = isMulti ? options : options.value;
-        onChange(value);
+    const handleChange = (options: string) => {
+        onChange(options);
     };
 
     return (
         <Dropdown
             placeholder={placeholder}
-            label={label}
+            label={label || ''}
             required={required}
             isMulti={isMulti}
             disabled={disabled}
             items={items ?? []}
+            disableOption={disableOption}
             value={value}
-            onChange={(option) => handleChange(option)}
+            onChange={handleChange as (value: DropdownValue) => void}
         />
     );
 };
 
-const MemoDropdown = memo(DealerDropdown, (prevProps, nextProps) => {
+const MemoDropdown = memo(CategoryDropdown, (prevProps, nextProps) => {
     return (
         nextProps.value === prevProps.value &&
         nextProps.label === prevProps.label &&

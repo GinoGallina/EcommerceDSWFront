@@ -1,13 +1,5 @@
 import classNames from 'classnames';
-import {
-    CSSProperties,
-    forwardRef,
-    useImperativeHandle,
-    useRef,
-    MouseEvent,
-    FocusEvent,
-    useState,
-} from 'react';
+import { CSSProperties, forwardRef, useImperativeHandle, useRef, MouseEvent, FocusEvent, useState } from 'react';
 import InfoButton from '../InfoButton/InfoButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -40,14 +32,7 @@ interface InputProps {
     minValue?: number;
     maxValue?: number;
     autoTrim?: boolean;
-    autoComplete?:
-        | 'on'
-        | 'off'
-        | 'name'
-        | 'email'
-        | 'username'
-        | 'new-password'
-        | 'current-password';
+    autoComplete?: 'on' | 'off' | 'name' | 'email' | 'username' | 'new-password' | 'current-password';
     inputMode?: 'none' | 'text' | 'tel' | 'email' | 'url' | 'numeric' | 'decimal' | 'search';
     disabled?: boolean;
     className?: string;
@@ -136,8 +121,7 @@ const Input = forwardRef<InputHandle, InputProps>(
                         if (decimalPart.length > maxLengthFloat) {
                             value = parseFloat(value).toFixed(maxLengthFloat);
                         } else if (decimalPart != '') {
-                            value =
-                                decimalPart != '0' ? parseFloat(value).toString() : `${parts[0]}.0`;
+                            value = decimalPart != '0' ? parseFloat(value).toString() : `${parts[0]}.0`;
                         }
                     } else {
                         value = parseFloat(value).toString();
@@ -156,13 +140,7 @@ const Input = forwardRef<InputHandle, InputProps>(
                 value = value.substring(0, 10);
             }
 
-            if (
-                isNumeric &&
-                !isFloat &&
-                Number.isInteger(parseFloat(value)) &&
-                value !== '' &&
-                !Number.isNaN(Number(value))
-            ) {
+            if (isNumeric && !isFloat && Number.isInteger(parseFloat(value)) && value !== '' && !Number.isNaN(Number(value))) {
                 value = parseInt(value).toString();
             }
             _update(value);
@@ -182,22 +160,12 @@ const Input = forwardRef<InputHandle, InputProps>(
         const inputProps = {
             value,
             style,
-            type:
-                type === 'text' || type === 'password'
-                    ? showPassword
-                        ? 'text'
-                        : 'password'
-                    : type,
+            type: type === 'text' || type === 'password' ? (showPassword ? 'text' : 'password') : type,
             required,
             placeholder,
             step: isFloat ? 0.01 : 1,
             disabled: disabled || undefined,
-            className: classNames(
-                'form-control',
-                borderless && 'input-borderless',
-                showIcon && 'with-icon',
-                className
-            ),
+            className: classNames('form-control', borderless && 'input-borderless', showIcon && 'with-icon', className),
             onChange: handleChange,
             onFocus: handleFocus,
             onClick: onClick,
@@ -209,14 +177,8 @@ const Input = forwardRef<InputHandle, InputProps>(
             return (
                 <span className="input-container">
                     <span className="input-wrapper">
-                        <input
-                            {...inputProps}
-                            ref={inputRef as React.RefObject<HTMLInputElement>}
-                            onKeyDown={handleKeyDown}
-                        />
-                        {showIcon && (
-                            <FontAwesomeIcon style={{ left: '5px' }} icon={faSearch} color="#ccc" />
-                        )}
+                        <input {...inputProps} ref={inputRef as React.RefObject<HTMLInputElement>} onKeyDown={handleKeyDown} />
+                        {showIcon && <FontAwesomeIcon style={{ left: '5px' }} icon={faSearch} color="#ccc" />}
                         {type === 'password' && (
                             <FontAwesomeIcon
                                 style={{ right: '10px', cursor: 'pointer' }}
@@ -225,11 +187,7 @@ const Input = forwardRef<InputHandle, InputProps>(
                             />
                         )}
                     </span>
-                    {helpText && (
-                        <small className={classNames('input-text', required && 'required')}>
-                            {helpText}
-                        </small>
-                    )}
+                    {helpText && <small className={classNames('input-text', required && 'required')}>{helpText}</small>}
                     {extraHelpText && (
                         <InfoButton
                             textStyle={extraHelpStyle}
@@ -244,17 +202,8 @@ const Input = forwardRef<InputHandle, InputProps>(
         } else if (tag === 'textarea') {
             return (
                 <span className="input-container">
-                    <textarea
-                        {...inputProps}
-                        ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-                        cols={cols}
-                        rows={rows}
-                    />
-                    {helpText && (
-                        <small className={classNames('input-text', required && 'required')}>
-                            {helpText}
-                        </small>
-                    )}
+                    <textarea {...inputProps} ref={inputRef as React.RefObject<HTMLTextAreaElement>} cols={cols} rows={rows} />
+                    {helpText && <small className={classNames('input-text', required && 'required')}>{helpText}</small>}
                     {extraHelpText && (
                         <InfoButton
                             textStyle={extraHelpStyle}

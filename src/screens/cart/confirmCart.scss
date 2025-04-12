@@ -1,0 +1,12 @@
+.my-cart-confirm {
+    svg {
+        cursor: pointer;
+        transition: background-color 0.2s ease-out;
+
+        &:hover {
+            & path {
+                fill: rgb(175, 3, 3) !important;
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 const URL = import.meta.env.VITE_API_URL;
 import Toast from '../components/Toast/Toast';
-import { ApiInterfaces, GenericGetAllResquestInterface } from '../interfaces';
-import { DownloadInterface } from '../interfaces/shared/DownloadInterface';
+import { ApiInterfaces, IGenericGetAllResquest } from '../interfaces';
+import { DownloadInterface } from '../interfaces/shared/Download';
 import { LocalStorage } from './LocalStorage';
 import { Messages } from './constants/Messages';
 
@@ -20,11 +20,8 @@ interface RequestParams {
     [key: string]: string | number | boolean | null;
 }
 
-const get = async <T = ApiInterfaces>(
-    path: string,
-    rq: Record<string, string>
-): Promise<APIResponse<T>> => {
-    const params = new URLSearchParams(rq);
+const get = async <T = ApiInterfaces>(path: string, rq: Record<string, string> | IGenericGetAllResquest): Promise<APIResponse<T>> => {
+    const params = new URLSearchParams(rq as Record<string, string>);
     const response = await fetch(`${URL}/${path}?${params}`, {
         method: 'GET',
         headers: {
@@ -34,17 +31,27 @@ const get = async <T = ApiInterfaces>(
         },
     });
 
-    if (!response.ok) {
-        if (response.status === 403) Toast.error(Messages.Error[403]);
-        else if (response.status === 404) Toast.error(Messages.Error[404]);
-        else if (response.status >= 500) Toast.error(Messages.Error[500]);
-        else Toast.error(Messages.Error.generic);
+    let json: APIResponse<T> | null = null;
+
+    try {
+        json = await response.json();
+    } catch (err) {
+        if (!response.ok) {
+            if (response.status === 403) Toast.error(Messages.Error[403]);
+            else if (response.status === 404) Toast.error(Messages.Error[404]);
+            else if (response.status === 401) Toast.error(Messages.Error[401]);
+            else if (response.status >= 500) Toast.error(Messages.Error[500]);
+            else Toast.error(Messages.Error.generic);
+        } else {
+            Toast.error('Error inesperado al procesar la respuesta.');
+        }
+        throw err;
     }
 
-    const json: APIResponse<T> = await response.json();
+    if (!json) throw json;
 
-    if (!json.success) {
-        Toast.error(json.error?.message || Messages.Error.generic);
+    if (!json.success && json.error?.message) {
+        Toast.error(json.error.message);
         throw json;
     }
 
@@ -75,7 +82,7 @@ const getDifferentUrl = async <T = ApiInterfaces>(url: string, rq: Record<string
 
 const post = async <T = ApiInterfaces>(
     path: string,
-    rq: FormData | RequestParams | GenericGetAllResquestInterface | null,
+    rq: FormData | RequestParams | IGenericGetAllResquest | null,
     isFormData = false
 ): Promise<APIResponse<T>> => {
     const headers: HeadersInit = isFormData
@@ -94,17 +101,27 @@ const post = async <T = ApiInterfaces>(
         body: isFormData ? (rq as FormData) : JSON.stringify(rq),
     });
 
-    if (!response.ok) {
-        if (response.status === 403) Toast.error(Messages.Error[403]);
-        else if (response.status === 404) Toast.error(Messages.Error[404]);
-        else if (response.status >= 500) Toast.error(Messages.Error[500]);
-        else Toast.error(Messages.Error.generic);
+    let json: APIResponse<T> | null = null;
+
+    try {
+        json = await response.json();
+    } catch (err) {
+        if (!response.ok) {
+            if (response.status === 403) Toast.error(Messages.Error[403]);
+            else if (response.status === 404) Toast.error(Messages.Error[404]);
+            else if (response.status === 401) Toast.error(Messages.Error[401]);
+            else if (response.status >= 500) Toast.error(Messages.Error[500]);
+            else Toast.error(Messages.Error.generic);
+        } else {
+            Toast.error('Error inesperado al procesar la respuesta.');
+        }
+        throw err;
     }
 
-    const json: APIResponse<T> = await response.json();
+    if (!json) throw json;
 
-    if (!json.success) {
-        Toast.error(json.error?.message || Messages.Error.generic);
+    if (!json.success && json.error?.message) {
+        Toast.error(json.error.message);
         throw json;
     }
 

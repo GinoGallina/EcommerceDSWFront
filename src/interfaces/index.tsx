@@ -1,35 +1,25 @@
 import { TokenData } from './LoginInterface';
-import { ProductFormInterface } from './Product/ProductInterfaces';
-import {
-    CategoryFormInterface,
-    CategoryResponseInterface,
-    CategoryListInterface,
-} from './Category/CategoryInterfaces';
-import {
-    GenericGetAllResquestInterface,
-    SortRequestInterface,
-    DateRangeInterface,
-    GenericResponseInterface,
-    GenericListInterface,
-} from './shared/GenericRequest';
-import { DownloadInterface } from './shared/DownloadInterface';
-import { DropdownOption, DropdownValue } from './shared/Dropdown';
+import { IProductForm } from './IProduct/IProduct';
+import { ICategoryForm, ICategoryResponse, ICategoryList } from './ICategory/ICategory';
+import { IGenericGetAllResquest, ISortRequest, IDateRange, IGenericResponse, IGenericList } from './shared/IGenericRequest';
+import { DownloadInterface } from './shared/Download';
+import { DropdownOption, DropdownValue } from './shared/IDropdown';
+import { ColumnInterface, RowType, RowsType } from './shared/Table';
 
-export type ApiInterfaces =
-    | TokenData
-    | DownloadInterface
-    | ProductFormInterface
-    | CategoryResponseInterface;
+export type ApiInterfaces = TokenData | DownloadInterface | IProductForm | ICategoryResponse;
 
 export type {
-    ProductFormInterface,
-    CategoryFormInterface,
-    SortRequestInterface,
-    DateRangeInterface,
-    GenericGetAllResquestInterface,
-    CategoryListInterface,
-    GenericResponseInterface,
-    GenericListInterface,
+    IProductForm,
+    ICategoryForm,
+    ISortRequest,
+    IDateRange,
+    IGenericGetAllResquest,
+    ICategoryList,
+    IGenericResponse,
+    IGenericList,
     DropdownOption,
     DropdownValue,
+    ColumnInterface,
+    RowType,
+    RowsType,
 };

@@ -5,14 +5,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import API from '../../app/API';
 import { Messages } from '../../app/constants/Messages';
 import { LocalStorage } from '../../app/LocalStorage';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import Label from '../../components/Label/Label';
 import Input from '../../components/Input/Input';
 import Toast from '../../components/Toast/Toast';
 import Loader from '../../components/Loader/Loader';
 import { TokenData } from '../../interfaces/LoginInterface';
 import Button from '../../components/Button/Button';
-
 import './login.scss';
 
 const Login = () => {
@@ -36,15 +35,18 @@ const Login = () => {
         }
 
         setLoading(true);
-        API.post<TokenData>('auth/login', form)
+
+        const rq = {
+            email: form.email.trim(),
+            password: form.password.trim(),
+        };
+
+        API.post<TokenData>('auth/login', rq)
             .then((response) => {
                 if (response) {
                     handleLogin(response.data);
                     navigate('/');
                 }
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setLoading(false);
@@ -54,8 +56,8 @@ const Login = () => {
     const handleLogin = (data: TokenData) => {
         LocalStorage.setToken(data.token);
         LocalStorage.setUserId(data.user.id);
-        LocalStorage.setUserRole(data.user.role);
-        LocalStorage.setUserName(data.user.fullName);
+        LocalStorage.setUserRoles(data.user.roles);
+        LocalStorage.setUserName(data.user.username);
         LocalStorage.setUserEmail(data.user.email);
         LocalStorage.setSessionExpiration(data.sessionExpiration);
     };
@@ -86,6 +88,9 @@ const Login = () => {
                                 submitOnEnter
                                 onSubmit={handleSubmit}
                             />
+                        </Col>
+                        <Col xs={12} className="text-center">
+                            <Link to="/register">No tienes cuenta? Registrate</Link>
                         </Col>
                         <Col xs={12} className="d-flex mt-4">
                             <Button className="w-100" onClick={handleSubmit} disabled={loading}>

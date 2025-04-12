@@ -10,15 +10,20 @@ export const productCols = [
         textCenter: true,
     },
     {
-        name: 'type',
-        text: 'Tipo',
+        name: 'stock',
+        text: 'Stock',
+        textCenter: true,
+    },
+    {
+        name: 'categoryName',
+        text: 'Categoría',
         textCenter: true,
     },
     {
         name: 'createdAt',
         text: 'Fecha de creación',
         textCenter: true,
-    }
+    },
 ];
 
 export const clientCols = [
@@ -36,10 +41,23 @@ export const clientCols = [
         name: 'route',
         text: 'Reparto',
         textCenter: true,
-    }
+    },
 ];
 
 export const sortProductItems = [
+    { value: 'name-asc', label: 'Nombre - Asc.' },
+    { value: 'name-desc', label: 'Nombre - Desc.' },
+    { value: 'price-asc', label: 'Precio - Asc.' },
+    { value: 'price-desc', label: 'Precio - Desc.' },
+    { value: 'createdAt-asc', label: 'Creado - Asc.' },
+    { value: 'createdAt-desc', label: 'Creado - Desc.' },
+];
+
+export const sortProductListItems = [
+    { value: 'name-asc', label: 'Nombre - Asc.' },
+    { value: 'name-desc', label: 'Nombre - Desc.' },
+    { value: 'price-asc', label: 'Precio - Asc.' },
+    { value: 'price-desc', label: 'Precio - Desc.' },
     { value: 'createdAt-asc', label: 'Creado - Asc.' },
     { value: 'createdAt-desc', label: 'Creado - Desc.' },
 ];

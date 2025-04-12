@@ -1,0 +1,38 @@
+.quantity-input {
+    svg {
+        border-radius: 50%;
+        padding: 20px;
+        background-color: steelblue;
+    }
+
+    .input-container {
+        height: 100%;
+        display: flex;
+        margin-top: auto;
+        margin-bottom: auto;
+
+        // Remove input arrows
+        input::-webkit-inner-spin-button,
+        input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input {
+            text-align: center;
+            -moz-appearance: textfield;
+
+            @media (max-width: 460px) {
+                padding: 0;
+            }
+        }
+    }
+
+    .icon-plus,
+    .icon-minus {
+        &:hover {
+            & path {
+                fill: rgb(168, 168, 168) !important;
+            }
+        }
+    }
+}

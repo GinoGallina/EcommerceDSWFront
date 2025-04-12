@@ -4,8 +4,8 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SizeProp } from '@fortawesome/fontawesome-svg-core';
 import RawHtml from '../RawHtml/RawHtml';
-
 import './infoButton.scss';
+import { Placement } from 'react-bootstrap/esm/types';
 
 interface InfoButtonProps {
     style?: CSSProperties;
@@ -14,6 +14,7 @@ interface InfoButtonProps {
     color?: string;
     placement?: 'top' | 'bottom' | 'left' | 'right';
     helpText: string;
+    helpPlacement?: Placement;
 }
 
 const InfoButton: React.FC<InfoButtonProps> = ({
@@ -23,9 +24,10 @@ const InfoButton: React.FC<InfoButtonProps> = ({
     color = 'steelblue',
     placement = 'bottom',
     helpText = '',
+    helpPlacement = 'top',
 }) => {
     const tooltipContent = (
-        <Tooltip>
+        <Tooltip placement={helpPlacement}>
             <RawHtml style={{ ...textStyle, margin: '5px' }} html={helpText} />
         </Tooltip>
     );

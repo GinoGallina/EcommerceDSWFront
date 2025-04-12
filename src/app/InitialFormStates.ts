@@ -1,15 +1,20 @@
-import { CategoryFormInterface, ProductFormInterface } from '../interfaces';
+import { ICategoryForm, IProductForm } from '../interfaces';
+import { IPaymentTypeForm } from '../interfaces/IPaymentType/IPaymentType';
 
 export class InitialFormStates {
-    static Product: ProductFormInterface = {
+    static Product: IProductForm = {
         name: '',
         description: '',
         image: '',
         price: '',
         stock: '',
         categoryId: '',
+        userId: '',
     };
-    static Category: CategoryFormInterface = {
+    static Category: ICategoryForm = {
         name: '',
+    };
+    static PaymentType: IPaymentTypeForm = {
+        description: '',
     };
 }

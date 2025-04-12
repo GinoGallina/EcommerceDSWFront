@@ -1,39 +1,52 @@
 import { Image } from 'react-bootstrap';
 import { useRef, useState, MouseEvent, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faClose, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faClose, faShoppingBag, faUser } from '@fortawesome/free-solid-svg-icons';
 import { LocalStorage } from '../../app/LocalStorage';
 import classNames from 'classnames';
-import API from '../../app/API';
 import Button from '../Button/Button';
 import { useNavigate } from 'react-router';
 import LogoMini from '../../assets/logo-mini.png';
 import Logo from '../../assets/ecommerce-logo-topbar.webp';
-import Loader from '../Loader/Loader';
-import Toast from '../Toast/Toast';
+import CartMenu from './CartMenu';
 // import SidePanel from '../SidePanel/SidePanel';
-
 import './topbar.scss';
+import UserDetails from './UserDetails';
+import { formatCurrency } from '../../app/Helpers';
 
 const TopBar = () => {
     const navigate = useNavigate();
     const [showUser, setShowUser] = useState(false);
-    const [showSidePanel, setShowSidePanel] = useState(false);
-    const [showNotifications, setShowNotifications] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [showCart, setShowCart] = useState(false);
+    const [cart, setCart] = useState(LocalStorage.getCartItems());
+    // const [showSidePanel, setShowSidePanel] = useState(false);
+    // const [showNotifications, setShowNotifications] = useState(false);
 
     const userInfoRef = useRef<HTMLDivElement | null>(null);
     // const notificationsRef = useRef(null);
     const userIconRef = useRef<SVGSVGElement | null>(null);
+    const cartIconRef = useRef<SVGSVGElement | null>(null);
 
     const handleShowUserInfo = () => {
-        setShowNotifications(false);
+        // setShowNotifications(false);
+        setShowCart(false);
         setShowUser((prevShowUser) => !prevShowUser);
         if (userInfoRef.current) userInfoRef.current.focus();
     };
 
+    const handleShowCart = () => {
+        // setShowNotifications(false);
+        setShowUser(false);
+        setShowCart((prevShowCart) => !prevShowCart);
+        if (cartIconRef.current) cartIconRef.current.focus();
+    };
+
     const handleHideUserInfo = () => {
         setShowUser(false);
+    };
+
+    const handleCart = () => {
+        setShowCart(false);
     };
 
     const handleGoHome = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -41,33 +54,13 @@ const TopBar = () => {
         navigate('/');
     };
 
-    const toggleSidePanel = () => {
-        setShowSidePanel((prevShowSidePanel) => !prevShowSidePanel);
-    };
+    // const toggleSidePanel = () => {
+    //     setShowSidePanel((prevShowSidePanel) => !prevShowSidePanel);
+    // };
 
     // const handleHideSidePanel = () => {
     //     setShowSidePanel(false);
     // };
-
-    const handleLogout = () => {
-        setLoading(true);
-        API.post('auth/logout', null)
-            .then(() => {
-                LocalStorage.clearSessionData();
-                window.location.href = '/login';
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    };
-
-    const handlePerfilDetails = () => {
-        setShowUser(false);
-        navigate(`/usuario/detallesPerfil/${LocalStorage.getUserId()}`);
-    };
 
     // Handle click outside of notifications container
     // useEffect(() => {
@@ -99,6 +92,15 @@ const TopBar = () => {
             ) {
                 setShowUser(false);
             }
+            // TODO;
+            // if (
+            //     cartIconRef.current &&
+            //     !cartIconRef.current.contains(event.target as Node) &&
+            //     userIconRef.current &&
+            //     !userIconRef.current.contains(event.target as Node)
+            // ) {
+            //     setShowCart(false);
+            // }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
@@ -118,61 +120,44 @@ const TopBar = () => {
                         <Image src={LogoMini} className="logo-mini" alt="Inicio" />
                     </a>
                     <div className="bars-container">
-                        <FontAwesomeIcon
-                            icon={faBars}
-                            size="lg"
-                            className="menu-icon"
-                            onClick={toggleSidePanel}
-                        />
+                        {/* <FontAwesomeIcon icon={faBars} size="lg" className="menu-icon" onClick={toggleSidePanel} /> */}
                     </div>
                 </div>
                 <div className="d-flex flex-row">
-                    <span
-                        className={classNames('icon-container', showUser && 'show-card')}
-                        onClick={handleShowUserInfo}
-                    >
+                    <span className={classNames('icon-container')} onClick={handleShowCart}>
+                        <FontAwesomeIcon icon={faCartShopping} size="xl" ref={cartIconRef} />
+                    </span>
+                    <span className={classNames('icon-container', showUser && 'show-card')} onClick={handleShowUserInfo}>
                         <FontAwesomeIcon icon={faUser} size="xl" ref={userIconRef} />
                     </span>
                 </div>
-                <div
-                    className={classNames('user-container', showUser && 'show-card')}
-                    onBlur={handleHideUserInfo}
-                    ref={userInfoRef}
-                >
-                    <FontAwesomeIcon
-                        icon={faClose}
-                        size="sm"
-                        className="close-dialog"
-                        onClick={handleHideUserInfo}
-                    />
-                    <div className="user-info">
-                        <div className="user-icon">
-                            <FontAwesomeIcon icon={faUser} size="xl" />
-                        </div>
-                        <div className="user-data">
-                            <h5>{LocalStorage.getUserName()}</h5>
-                            <h6>{LocalStorage.getUserEmail()}</h6>
-                            <small>Rol: {LocalStorage.getUserRole()}</small>
-                        </div>
+                {/* Cart */}
+                <div className={classNames('cart-container', showCart && 'show-card')} onBlur={handleCart} ref={userInfoRef}>
+                    <FontAwesomeIcon icon={faClose} size="sm" className="close-dialog" onClick={handleCart} />
+                    {cart.map((x) => (
+                        <>
+                            <CartMenu cart={cart} product={x} setCart={setCart} />
+                            <hr className="mt-1" />
+                        </>
+                    ))}
+                    <div className={classNames('text-end fs-3 text-success d-flex justify-content-between', cart.length === 0 && 'mt-auto')}>
+                        {cart.length !== 0 && (
+                            <Button
+                                variant="success"
+                                onClick={() => {
+                                    navigate('/carrito/confirmar');
+                                }}
+                                icon={faShoppingBag}
+                            >
+                                Comprar
+                            </Button>
+                        )}
+                        Total del carrito: {formatCurrency(cart.reduce((sum, item) => sum + item.price * item.quantity, 0))}
                     </div>
-                    <div>
-                        <Button
-                            className="perfil-details-badge"
-                            type="button"
-                            onClick={handlePerfilDetails}
-                        >
-                            Ver perfil
-                        </Button>
-                        <hr />
-                        <Button
-                            className="logout-badge"
-                            type="button"
-                            onClick={handleLogout}
-                            disabled={loading}
-                        >
-                            {loading ? <Loader /> : 'Cerrar sesión'}
-                        </Button>
-                    </div>
+                </div>
+                {/* User details */}
+                <div className={classNames('user-container', showUser && 'show-card')} onBlur={handleHideUserInfo} ref={userInfoRef}>
+                    <UserDetails setShowUser={setShowUser} handleHideUserInfo={handleHideUserInfo} />
                 </div>
             </nav>
         </>

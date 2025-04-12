@@ -6,10 +6,10 @@ import { InitialFormStates } from '../../app/InitialFormStates';
 import Toast from '../../components/Toast/Toast';
 import API from '../../app/API';
 import { Messages } from '../../app/constants/Messages';
-import { getBreadcrumbItems } from '../products/Products.helpers';
-import { CategoryFormInterface } from '../../interfaces';
+import { getBreadcrumbItems } from './Categroy.helpers';
+import { ICategoryForm } from '../../interfaces';
 
-const CreateCategory = ({ isWatching = false, isEditing = false }) => {
+const CreateCategory = ({ isWatching = false }) => {
     const navigate = useNavigate();
 
     const params = useParams();
@@ -23,7 +23,7 @@ const CreateCategory = ({ isWatching = false, isEditing = false }) => {
     // Effects
     useEffect(() => {
         if (id) {
-            API.get<CategoryFormInterface>('category/getOneById', { id }).then((r) => {
+            API.get<ICategoryForm>('category/getOne', { id }).then((r) => {
                 setForm(r.data);
                 setLoading(false);
             });
@@ -43,14 +43,14 @@ const CreateCategory = ({ isWatching = false, isEditing = false }) => {
         setSubmiting(true);
 
         const rq: {
-            id?: string;
-            name: string;
+            Id?: string;
+            Name: string;
         } = {
-            name: form.name,
+            Name: form.name,
         };
 
         if (id) {
-            rq.id = id;
+            rq.Id = id;
         }
 
         API.post(`category/${id ? 'update' : 'create'}`, rq)
@@ -64,16 +64,6 @@ const CreateCategory = ({ isWatching = false, isEditing = false }) => {
             .finally(() => {
                 setSubmiting(false);
             });
-        // saveProduct(
-        //     form,
-        //     id,
-        //     () => {
-        //         navigate('/productos/list');
-        //     },
-        //     () => {
-        //         setSubmiting(false);
-        //     }
-        // );
     };
 
     const handleInputChange = (value: string, field: string) => {
@@ -85,13 +75,9 @@ const CreateCategory = ({ isWatching = false, isEditing = false }) => {
         });
     };
 
-    // if (!App.isSeller()) {
-    //     return navigate('/notAllowed');
-    // }
-
     return (
         <>
-            <BreadCrumb items={getBreadcrumbItems(id ? 'Editar' : 'Nuevo')} title="Categorias" />
+            <BreadCrumb items={getBreadcrumbItems(id ? (isWatching ? 'Ver' : 'Editar') : 'Nuevo')} title="Categorias" />
             <div>
                 <Col xs={11} className="container">
                     <Card
@@ -102,15 +88,13 @@ const CreateCategory = ({ isWatching = false, isEditing = false }) => {
                             ) : (
                                 <>
                                     <Row className="align-items-center">
-                                        <Col xs={12} md={4} className="pe-3 mb-3">
+                                        <Col xs={12} className="mb-3 pe-3">
                                             <Label required>Nombre</Label>
                                             <Input
                                                 disabled={isWatching}
                                                 placeholder="Nombre"
                                                 value={form.name}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'name')
-                                                }
+                                                onChange={(value) => handleInputChange(value, 'name')}
                                             />
                                         </Col>
                                     </Row>
@@ -119,11 +103,7 @@ const CreateCategory = ({ isWatching = false, isEditing = false }) => {
                         }
                         footer={
                             <div className="d-flex justify-content-end">
-                                <Button
-                                    variant="secondary"
-                                    className="me-2"
-                                    onClick={() => navigate('/categorias/list')}
-                                >
+                                <Button variant="secondary" className="me-2" onClick={() => navigate('/categorias/list')}>
                                     Volver
                                 </Button>
                                 {!isWatching && (

@@ -17,18 +17,22 @@ const isLoggedIn = () => {
 };
 
 const isAdmin = () => {
-    const role = LocalStorage.getUserRole();
-    return role && role === Roles.Admin;
+    const roles = LocalStorage.getUserRoles();
+    return roles && roles.includes(Roles.Admin);
 };
 
 const isSeller = () => {
-    const role = LocalStorage.getUserRole();
-    return role && role === Roles.Seller;
+    const roles = LocalStorage.getUserRoles();
+    return roles && roles.includes(Roles.Seller);
 };
 
 const isUser = () => {
-    const role = LocalStorage.getUserRole();
-    return role && role === Roles.User;
+    const roles = LocalStorage.getUserRoles();
+    return roles && roles.includes(Roles.User);
+};
+const isUserAndSeller = () => {
+    const roles = LocalStorage.getUserRoles();
+    return roles && roles.includes(Roles.User) && roles.includes(Roles.Seller);
 };
 
 const App = {
@@ -36,6 +40,7 @@ const App = {
     isAdmin,
     isSeller,
     isUser,
+    isUserAndSeller,
 };
 
 export default App;

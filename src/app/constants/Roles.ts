@@ -1,5 +1,5 @@
 export class Roles {
     static Admin = 'Admin';
-    static Seller = 'Vendedor';
-    static User = 'Usuario';
+    static Seller = 'Seller';
+    static User = 'User';
 }
