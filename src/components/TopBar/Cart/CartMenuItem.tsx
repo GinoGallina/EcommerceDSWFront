@@ -1,20 +1,20 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Image, Row } from 'react-bootstrap';
-import Input from '../Input/Input';
 import { faClose, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { ADD, MINUS } from './TopBar.const';
-import noImage from '../../assets/no_image.jpg';
-import { ICartItem } from '../../interfaces/ICart/ICart';
-import { LocalStorage } from '../../app/LocalStorage';
-import { formatCurrency } from '../../app/Helpers';
+import noImage from '../../..//assets/no_image.jpg';
+import { ICartItem } from '../../../interfaces/ICart/ICart';
+import { ADD, MINUS } from '../TopBar.const';
+import { LocalStorage } from '../../../app/LocalStorage';
+import Input from '../../Input/Input';
+import { formatCurrency } from '../../../app/Helpers';
 
-interface ICartMenuProps {
+interface ICartMenuItemProps {
     product: ICartItem;
     cart: ICartItem[];
     setCart: React.Dispatch<React.SetStateAction<ICartItem[]>>;
 }
 
-const CartMenu: React.FC<ICartMenuProps> = ({ product, cart, setCart }) => {
+const CartMenuItem: React.FC<ICartMenuItemProps> = ({ product, cart, setCart }) => {
     const handleClickQuantityButton = (id: string, action: string) => {
         let newCart;
         setCart((prevCart) => {
@@ -101,4 +101,4 @@ const CartMenu: React.FC<ICartMenuProps> = ({ product, cart, setCart }) => {
     );
 };
 
-export default CartMenu;
+export default CartMenuItem;

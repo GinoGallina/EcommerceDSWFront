@@ -1,12 +1,12 @@
 import * as BS from 'react-bootstrap';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ICategoryList, ColumnInterface, RowsType } from '../../interfaces';
+import { ICategoryList, IColumn, RowsType } from '../../interfaces';
 import Pagination from '../Pagination/Pagination';
 import './table.scss';
 
 interface TableProps {
-    columns: ColumnInterface[];
+    columns: IColumn[];
     rows: RowsType;
     className?: string;
     emptyTableMessage: string;

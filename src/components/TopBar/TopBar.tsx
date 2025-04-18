@@ -1,24 +1,23 @@
 import { Image } from 'react-bootstrap';
 import { useRef, useState, MouseEvent, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faClose, faShoppingBag, faUser } from '@fortawesome/free-solid-svg-icons';
-import { LocalStorage } from '../../app/LocalStorage';
+import { faCartShopping, faUser } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
-import Button from '../Button/Button';
 import { useNavigate } from 'react-router';
 import LogoMini from '../../assets/logo-mini.png';
 import Logo from '../../assets/ecommerce-logo-topbar.webp';
-import CartMenu from './CartMenu';
 // import SidePanel from '../SidePanel/SidePanel';
-import './topbar.scss';
 import UserDetails from './UserDetails';
-import { formatCurrency } from '../../app/Helpers';
+import CartMenu from './Cart/CartMenu';
+import './topbar.scss';
+import { LocalStorage } from '../../app/LocalStorage';
 
 const TopBar = () => {
     const navigate = useNavigate();
+    const [cart, setCart] = useState(LocalStorage.getCartItems());
     const [showUser, setShowUser] = useState(false);
     const [showCart, setShowCart] = useState(false);
-    const [cart, setCart] = useState(LocalStorage.getCartItems());
+
     // const [showSidePanel, setShowSidePanel] = useState(false);
     // const [showNotifications, setShowNotifications] = useState(false);
 
@@ -43,10 +42,6 @@ const TopBar = () => {
 
     const handleHideUserInfo = () => {
         setShowUser(false);
-    };
-
-    const handleCart = () => {
-        setShowCart(false);
     };
 
     const handleGoHome = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -124,37 +119,16 @@ const TopBar = () => {
                     </div>
                 </div>
                 <div className="d-flex flex-row">
-                    <span className={classNames('icon-container')} onClick={handleShowCart}>
+                    <span className={classNames('icon-container', 'position-relative')} onClick={handleShowCart}>
                         <FontAwesomeIcon icon={faCartShopping} size="xl" ref={cartIconRef} />
+                        {cart.length > 0 && <span className="cart-badge">{cart.length}</span>}
                     </span>
                     <span className={classNames('icon-container', showUser && 'show-card')} onClick={handleShowUserInfo}>
                         <FontAwesomeIcon icon={faUser} size="xl" ref={userIconRef} />
                     </span>
                 </div>
                 {/* Cart */}
-                <div className={classNames('cart-container', showCart && 'show-card')} onBlur={handleCart} ref={userInfoRef}>
-                    <FontAwesomeIcon icon={faClose} size="sm" className="close-dialog" onClick={handleCart} />
-                    {cart.map((x) => (
-                        <>
-                            <CartMenu cart={cart} product={x} setCart={setCart} />
-                            <hr className="mt-1" />
-                        </>
-                    ))}
-                    <div className={classNames('text-end fs-3 text-success d-flex justify-content-between', cart.length === 0 && 'mt-auto')}>
-                        {cart.length !== 0 && (
-                            <Button
-                                variant="success"
-                                onClick={() => {
-                                    navigate('/carrito/confirmar');
-                                }}
-                                icon={faShoppingBag}
-                            >
-                                Comprar
-                            </Button>
-                        )}
-                        Total del carrito: {formatCurrency(cart.reduce((sum, item) => sum + item.price * item.quantity, 0))}
-                    </div>
-                </div>
+                <CartMenu cart={cart} showCart={showCart} userInfoRef={userInfoRef} setShowCart={setShowCart} setCart={setCart} />
                 {/* User details */}
                 <div className={classNames('user-container', showUser && 'show-card')} onBlur={handleHideUserInfo} ref={userInfoRef}>
                     <UserDetails setShowUser={setShowUser} handleHideUserInfo={handleHideUserInfo} />

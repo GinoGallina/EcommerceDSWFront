@@ -24,7 +24,7 @@ import { Messages } from '../../app/constants/Messages';
 // import { BreadCrumbItem } from '../../interfaces/shared/BreadCrumInterface';
 // import ProductCard from '../../components/ProductCard/ProductCard';
 import { productCols, sortProductItems, sortProductListItems } from './Products.data';
-import { ColumnComponentType } from '../../interfaces/shared/Table';
+import { ColumnComponentType } from '../../interfaces/shared/ITable';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import API from '../../app/API';
 import { ISortRequest } from '../../interfaces';

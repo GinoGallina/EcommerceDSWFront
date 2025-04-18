@@ -10,7 +10,7 @@ import Label from '../../components/Label/Label';
 import Input from '../../components/Input/Input';
 import Toast from '../../components/Toast/Toast';
 import Loader from '../../components/Loader/Loader';
-import { TokenData } from '../../interfaces/LoginInterface';
+import { ILoginRequest, ITokenResponse } from '../../interfaces/IToken';
 import Button from '../../components/Button/Button';
 import './login.scss';
 
@@ -41,7 +41,7 @@ const Login = () => {
             password: form.password.trim(),
         };
 
-        API.post<TokenData>('auth/login', rq)
+        API.post<ITokenResponse, ILoginRequest>('auth/login', rq)
             .then((response) => {
                 if (response) {
                     handleLogin(response.data);
@@ -53,7 +53,7 @@ const Login = () => {
             });
     };
 
-    const handleLogin = (data: TokenData) => {
+    const handleLogin = (data: ITokenResponse) => {
         LocalStorage.setToken(data.token);
         LocalStorage.setUserId(data.user.id);
         LocalStorage.setUserRoles(data.user.roles);

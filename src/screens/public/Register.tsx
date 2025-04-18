@@ -10,7 +10,7 @@ import Label from '../../components/Label/Label';
 import Input from '../../components/Input/Input';
 import Toast from '../../components/Toast/Toast';
 import Loader from '../../components/Loader/Loader';
-import { TokenData } from '../../interfaces/LoginInterface';
+import { IRegisterRequest, ITokenResponse } from '../../interfaces/IToken';
 import Button from '../../components/Button/Button';
 
 import './register.scss';
@@ -50,7 +50,7 @@ const Register = () => {
             Roles: form.roles,
         };
 
-        API.post<TokenData>('auth/register', rq as Record<string, string | string[]>)
+        API.post<ITokenResponse, IRegisterRequest>('auth/register', rq)
             .then((response) => {
                 if (response) {
                     handleLogin(response.data);
@@ -62,7 +62,7 @@ const Register = () => {
             });
     };
 
-    const handleLogin = (data: TokenData) => {
+    const handleLogin = (data: ITokenResponse) => {
         LocalStorage.setToken(data.token);
         LocalStorage.setUserId(data.user.id);
         LocalStorage.setUserRoles(data.user.roles);

@@ -30,3 +30,24 @@ export interface IProductListGetAllRequest extends IGenericGetAllResquest {
 export interface IProductResponse extends IGenericResponse {
     products: IProductList[];
 }
+
+// Create
+export interface ICreateProductRequest {
+    Id?: string;
+    Name: string;
+    Description: string;
+    Stock: string;
+    Price: string;
+    Image: string;
+    CategoryId: string;
+    UserId: string;
+}
+export interface ICreateProductResponse {
+    id: string;
+    name: string;
+    description: string;
+    stock: number;
+    price: number;
+    image?: string;
+    createdAt: string;
+}

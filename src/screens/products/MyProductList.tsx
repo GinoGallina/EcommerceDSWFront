@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../app/constants/Messages';
 import { productCols, sortProductItems } from './Products.data';
-import { ColumnComponentType } from '../../interfaces/shared/Table';
+import { ColumnComponentType } from '../../interfaces/shared/ITable';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import API from '../../app/API';
 import { ISortRequest } from '../../interfaces';

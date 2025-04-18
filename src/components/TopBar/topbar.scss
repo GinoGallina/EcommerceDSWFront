@@ -324,6 +324,17 @@
     //     }
     // }
 
+    .cart-badge {
+        position: absolute;
+        top: 5px;
+        right: -10px;
+        background-color: #dc3545;
+        color: white;
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        border-radius: 50%;
+    }
+
     @media (max-width: 768px) {
         .logo {
             display: none;

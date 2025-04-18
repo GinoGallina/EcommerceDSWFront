@@ -1,8 +1,8 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { CategoryListInterface } from '../ICategory/ICategory';
 import { ReactNode } from 'react';
+import { ICategoryList } from '../ICategory/ICategory';
 
-export interface ColumnInterface {
+export interface IColumn {
     name: string;
     text: string;
     textCenter?: boolean;
@@ -12,11 +12,11 @@ export interface ColumnInterface {
     clickableColumn?: boolean;
     list?: boolean;
     icon?: IconProp;
-    formatter?: (name: string, row: CategoryListInterface) => string;
+    formatter?: (name: string, row: ICategoryList) => string;
     component?: (props: ColumnComponentType) => ReactNode;
 }
 
-export type RowType = CategoryListInterface;
+export type RowType = ICategoryList;
 
 export type ColumnComponentType = {
     row: RowType;
@@ -25,4 +25,4 @@ export type ColumnComponentType = {
     onUpdate: (id: string) => void;
 };
 
-export type RowsType = CategoryListInterface[];
+export type RowsType = ICategoryList[];

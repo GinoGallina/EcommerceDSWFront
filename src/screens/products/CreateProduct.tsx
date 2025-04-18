@@ -10,6 +10,7 @@ import { getBreadcrumbItems } from '../products/Products.helpers';
 import { IProductForm } from '../../interfaces';
 import App from '../../app/App';
 import { LocalStorage } from '../../app/LocalStorage';
+import { ICreateProductRequest, ICreateProductResponse } from '../../interfaces/IProduct/IProduct';
 
 const CreateProduct = ({ isWatching = false }) => {
     const navigate = useNavigate();
@@ -55,16 +56,7 @@ const CreateProduct = ({ isWatching = false }) => {
 
         setSubmiting(true);
 
-        const rq: {
-            Id?: string;
-            Name: string;
-            Description: string;
-            Stock: string;
-            Price: string;
-            Image: string;
-            CategoryId: string;
-            UserId: string;
-        } = {
+        const rq: ICreateProductRequest = {
             Name: form.name,
             Description: form.description,
             Stock: form.stock,
@@ -78,7 +70,7 @@ const CreateProduct = ({ isWatching = false }) => {
             rq.Id = id;
         }
 
-        API.post(`product/${id ? 'update' : 'create'}`, rq)
+        API.post<ICreateProductResponse, ICreateProductRequest>(`product/${id ? 'update' : 'create'}`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
                 navigate('/misProductos/list');

@@ -2,7 +2,7 @@ import { DropdownOption } from './IDropdown';
 
 export type GetComboItemType = { value: string; label: string };
 
-export interface IGetComboRq {
+export interface IGetComboRequest {
     items: GetComboItemTypeRq[];
 }
 

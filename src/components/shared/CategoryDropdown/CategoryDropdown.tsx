@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import { Dropdown } from '../..';
 import { formatComboItems } from '../../../app/Helpers';
 import API from '../../../app/API';
-import { GetComboItemType, IComboDropdown, IGetComboRq } from '../../../interfaces/shared/IGetCombo';
+import { GetComboItemType, IComboDropdown, IGetComboRequest } from '../../../interfaces/shared/IGetCombo';
 import { DropdownValue } from '../../../interfaces';
 
 const CategoryDropdown: React.FC<IComboDropdown> = ({
@@ -21,7 +21,7 @@ const CategoryDropdown: React.FC<IComboDropdown> = ({
     useEffect(() => {
         if (items) return;
 
-        API.get<IGetComboRq>('category/getCombo', {}).then((r) => {
+        API.get<IGetComboRequest>('category/getCombo', {}).then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [items]);

@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import { Dropdown } from '../..';
 import { formatComboItems } from '../../../app/Helpers';
 import API from '../../../app/API';
-import { GetComboItemType, IComboDropdown, IGetComboRq } from '../../../interfaces/shared/IGetCombo';
+import { GetComboItemType, IComboDropdown, IGetComboRequest } from '../../../interfaces/shared/IGetCombo';
 import { DropdownValue } from '../../../interfaces';
 import { Roles } from '../../../app/constants/Roles';
 
@@ -26,7 +26,7 @@ const UserDropdown: React.FC<IUserDropdown> = ({
     useEffect(() => {
         if (items) return;
 
-        API.post<IGetComboRq>('user/getCombo', { roles } as Record<string, string[]>).then((r) => {
+        API.post<IGetComboRequest, { roles: string[] }>('user/getCombo', { roles }).then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [items, roles]);

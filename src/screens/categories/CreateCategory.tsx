@@ -8,6 +8,7 @@ import API from '../../app/API';
 import { Messages } from '../../app/constants/Messages';
 import { getBreadcrumbItems } from './Categroy.helpers';
 import { ICategoryForm } from '../../interfaces';
+import { ICreateCategoryRequest, ICreateCategoryResponse } from '../../interfaces/ICategory/ICategory';
 
 const CreateCategory = ({ isWatching = false }) => {
     const navigate = useNavigate();
@@ -42,10 +43,7 @@ const CreateCategory = ({ isWatching = false }) => {
 
         setSubmiting(true);
 
-        const rq: {
-            Id?: string;
-            Name: string;
-        } = {
+        const rq: ICreateCategoryRequest = {
             Name: form.name,
         };
 
@@ -53,7 +51,7 @@ const CreateCategory = ({ isWatching = false }) => {
             rq.Id = id;
         }
 
-        API.post(`category/${id ? 'update' : 'create'}`, rq)
+        API.post<ICreateCategoryResponse, ICreateCategoryRequest>(`category/${id ? 'update' : 'create'}`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
                 navigate('/categorias/list');

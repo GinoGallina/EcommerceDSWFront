@@ -7,7 +7,7 @@ import API from '../../app/API';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 
 import { columns, sortCategoryItems } from './PaymentType.data';
-import { ColumnComponentType } from '../../interfaces/shared/Table';
+import { ColumnComponentType } from '../../interfaces/shared/ITable';
 import { ISortRequest } from '../../interfaces';
 import { IPaymentTypeList, IPaymentTypeResponse } from '../../interfaces/IPaymentType/IPaymentType';
 

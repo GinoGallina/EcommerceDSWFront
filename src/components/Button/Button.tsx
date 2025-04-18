@@ -1,13 +1,6 @@
 import * as BS from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    CSSProperties,
-    forwardRef,
-    useImperativeHandle,
-    useRef,
-    MouseEvent,
-    ReactNode,
-} from 'react';
+import { CSSProperties, forwardRef, useImperativeHandle, useRef, MouseEvent, ReactNode } from 'react';
 import classNames from 'classnames';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import './button.scss';
@@ -17,20 +10,13 @@ interface ButtonProps {
     className?: string;
     iconStyle?: CSSProperties;
     type?: 'button' | 'reset' | 'submit';
-    variant?:
-        | 'primary'
-        | 'secondary'
-        | 'success'
-        | 'danger'
-        | 'warning'
-        | 'info'
-        | 'light'
-        | 'dark';
+    variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
     onClick: (event: MouseEvent<HTMLButtonElement>) => void;
     icon?: IconProp;
     link?: boolean;
     disabled?: boolean;
     href?: string;
+    size?: 'sm' | 'lg';
     children: ReactNode;
 }
 
@@ -52,6 +38,7 @@ const Button = forwardRef<ButtonHandle, ButtonProps>(
             link = false,
             disabled = false,
             href,
+            size,
             ...props
         },
         ref
@@ -65,6 +52,7 @@ const Button = forwardRef<ButtonHandle, ButtonProps>(
         return (
             <BS.Button
                 {...props}
+                size={size}
                 className={classNames(className, link ? 'button-link' : '')}
                 href={link ? href : undefined}
                 ref={buttonRef}

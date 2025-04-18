@@ -1,12 +1,12 @@
 const URL = import.meta.env.VITE_API_URL;
 import Toast from '../components/Toast/Toast';
-import { ApiInterfaces, IGenericGetAllResquest } from '../interfaces';
+import { IGenericGetAllResquest } from '../interfaces';
 import { DownloadInterface } from '../interfaces/shared/Download';
 import { LocalStorage } from './LocalStorage';
 import { Messages } from './constants/Messages';
 
 // TODO: ver unknown, crear todos los tipos de datos y pasarlos depsues
-interface APIResponse<T = ApiInterfaces> {
+interface APIResponse<T> {
     data: T;
     success: boolean;
     message?: string;
@@ -16,11 +16,7 @@ interface APIResponse<T = ApiInterfaces> {
     };
 }
 
-interface RequestParams {
-    [key: string]: string | number | boolean | null;
-}
-
-const get = async <T = ApiInterfaces>(path: string, rq: Record<string, string> | IGenericGetAllResquest): Promise<APIResponse<T>> => {
+const get = async <T>(path: string, rq: Record<string, string> | IGenericGetAllResquest): Promise<APIResponse<T>> => {
     const params = new URLSearchParams(rq as Record<string, string>);
     const response = await fetch(`${URL}/${path}?${params}`, {
         method: 'GET',
@@ -50,15 +46,15 @@ const get = async <T = ApiInterfaces>(path: string, rq: Record<string, string> |
 
     if (!json) throw json;
 
-    if (!json.success && json.error?.message) {
-        Toast.error(json.error.message);
+    if (!json.success && (json.error?.message || json.message)) {
+        Toast.error(json.error?.message || json.message || '');
         throw json;
     }
 
     return json;
 };
 
-const getDifferentUrl = async <T = ApiInterfaces>(url: string, rq: Record<string, string>) => {
+const getDifferentUrl = async <T>(url: string, rq: Record<string, string>) => {
     const params = new URLSearchParams(rq);
     const response = await fetch(`${url}?${params}`, {
         method: 'GET',
@@ -80,11 +76,7 @@ const getDifferentUrl = async <T = ApiInterfaces>(url: string, rq: Record<string
     return json;
 };
 
-const post = async <T = ApiInterfaces>(
-    path: string,
-    rq: FormData | RequestParams | IGenericGetAllResquest | null,
-    isFormData = false
-): Promise<APIResponse<T>> => {
+const post = async <TResponse, TRequest>(path: string, rq: TRequest, isFormData = false): Promise<APIResponse<TResponse>> => {
     const headers: HeadersInit = isFormData
         ? {}
         : {
@@ -101,7 +93,7 @@ const post = async <T = ApiInterfaces>(
         body: isFormData ? (rq as FormData) : JSON.stringify(rq),
     });
 
-    let json: APIResponse<T> | null = null;
+    let json: APIResponse<TResponse> | null = null;
 
     try {
         json = await response.json();
@@ -120,8 +112,8 @@ const post = async <T = ApiInterfaces>(
 
     if (!json) throw json;
 
-    if (!json.success && json.error?.message) {
-        Toast.error(json.error.message);
+    if (!json.success && (json.error?.message || json.message)) {
+        Toast.error(json.error?.message || json.message || '');
         throw json;
     }
 

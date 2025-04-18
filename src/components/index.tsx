@@ -18,6 +18,7 @@ import ActionButtons from './shared/ActionButtons/ActionButtons';
 import CategoryDropdown from './shared/CategoryDropdown/CategoryDropdown';
 import RolesDropdown from './shared/RolesDropdown/RolesDropdown';
 import UserDropdown from './shared/UserDropdown/UserDropdown';
+import PaymentTypeDropdown from './shared/PaymentTypeDropdown/PaymentTypeDropdown';
 import QuantityInput from './shared/QuantityInput/QuantityInput';
 
 export {
@@ -41,5 +42,6 @@ export {
     CategoryDropdown,
     RolesDropdown,
     UserDropdown,
+    PaymentTypeDropdown,
     QuantityInput,
 };

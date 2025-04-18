@@ -7,7 +7,7 @@ import API from '../../app/API';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import { ICategoryList, ICategoryResponse } from '../../interfaces/ICategory/ICategory';
 import { columns, sortCategoryItems } from './Categroy.data';
-import { ColumnComponentType } from '../../interfaces/shared/Table';
+import { ColumnComponentType } from '../../interfaces/shared/ITable';
 import { ISortRequest } from '../../interfaces';
 
 const CategoryList = () => {

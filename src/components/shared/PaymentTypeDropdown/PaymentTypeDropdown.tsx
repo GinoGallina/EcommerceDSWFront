@@ -5,14 +5,13 @@ import API from '../../../app/API';
 import { GetComboItemType, IComboDropdown, IGetComboRequest } from '../../../interfaces/shared/IGetCombo';
 import { DropdownValue } from '../../../interfaces';
 
-const RolesDropdown: React.FC<IComboDropdown> = ({
+const PaymentTypeDropdown: React.FC<IComboDropdown> = ({
     value = null,
     label = null,
     required = false,
     disabled = false,
-    placeholder = 'Seleccione un rol',
+    placeholder = 'Seleccione un método de pago',
     isMulti = false,
-    exclude = [],
     disableOption,
     onChange,
 }) => {
@@ -22,7 +21,7 @@ const RolesDropdown: React.FC<IComboDropdown> = ({
     useEffect(() => {
         if (items) return;
 
-        API.get<IGetComboRequest>('role/getCombo', {}).then((r) => {
+        API.get<IGetComboRequest>('paymentType/getCombo', {}).then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [items]);
@@ -38,19 +37,15 @@ const RolesDropdown: React.FC<IComboDropdown> = ({
             required={required}
             isMulti={isMulti}
             disabled={disabled}
-            items={
-                exclude.length === 0
-                    ? (items ?? [])
-                    : (items?.filter((x) => !exclude.map((x) => x.toLocaleLowerCase()).includes(x.label.toLocaleLowerCase())) ?? [])
-            }
-            value={value}
+            items={items ?? []}
             disableOption={disableOption}
+            value={value}
             onChange={handleChange as (value: DropdownValue) => void}
         />
     );
 };
 
-const MemoDropdown = memo(RolesDropdown, (prevProps, nextProps) => {
+const MemoDropdown = memo(PaymentTypeDropdown, (prevProps, nextProps) => {
     return (
         nextProps.value === prevProps.value &&
         nextProps.label === prevProps.label &&
