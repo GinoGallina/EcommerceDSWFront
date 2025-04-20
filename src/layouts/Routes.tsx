@@ -17,7 +17,8 @@ const CreateCategory = lazy(() => import('../screens/categories/CreateCategory.t
 const CategoryList = lazy(() => import('../screens/categories/CategoryList.tsx'));
 const CreatePaymentType = lazy(() => import('../screens/paymentTypes/CreatePaymentType.tsx'));
 const PaymentTypeList = lazy(() => import('../screens/paymentTypes/PaymentTypeList.tsx'));
-const ConfirmCart = lazy(() => import('../screens/cart/ConfirmCart.tsx'));
+const ConfirmOrder = lazy(() => import('../screens/order/ConfirmOrder.tsx'));
+const OrderList = lazy(() => import('../screens/order/OrderList.tsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to="/login" />);
 const AdminRoute = () => (App.isAdmin() ? <Outlet /> : <Navigate to="/notAllowed" />);
@@ -190,13 +191,21 @@ export const AppRoutes = () => (
                 </Route>
             </Route>
 
-            {/* Cart */}
+            {/* Order */}
             <Route path="/carrito" element={<PrivateRoute />}>
                 <Route
                     path="/carrito/confirmar"
                     element={
                         <DefaultLayout>
-                            <ConfirmCart />
+                            <ConfirmOrder />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/carrito/misCompras"
+                    element={
+                        <DefaultLayout>
+                            <OrderList />
                         </DefaultLayout>
                     }
                 />

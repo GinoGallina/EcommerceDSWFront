@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faClipboardList, faCreditCard, faHouse, faList } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faClipboard, faClipboardList, faCreditCard, faHouse, faList } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../Tooltip/Tooltip';
 import { Link } from 'react-router-dom';
 import './navbar.scss';
@@ -42,11 +42,12 @@ const NavBar = () => {
                     </Tooltip>
                 </li>
                 {/* )} */}
-                {/* {App.isUser() && ( */}
+                {/* {App.isSeller() && ( */}
+                <hr className="mx-3 my-3" style={{ color: 'white' }} />
                 <li className="mt-3">
                     <Tooltip text="Mis Compras" placement="right">
-                        <Link to="/misCompras">
-                            <FontAwesomeIcon icon={faClipboardList} />
+                        <Link to="/carrito/misCompras">
+                            <FontAwesomeIcon icon={faClipboard} />
                         </Link>
                     </Tooltip>
                 </li>

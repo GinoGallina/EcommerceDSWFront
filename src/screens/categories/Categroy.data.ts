@@ -1,4 +1,7 @@
-export const columns = [
+import { ICategoryList } from '../../interfaces';
+import { IColumn } from '../../interfaces/shared/ITable';
+
+export const columns: IColumn<ICategoryList>[] = [
     {
         name: 'name',
         text: 'Nombre',

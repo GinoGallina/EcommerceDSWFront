@@ -4,8 +4,8 @@ export const getBreadcrumbItems = (label: string) => {
     const items: BreadCrumbItem[] = [
         {
             active: label ? false : true,
-            url: '/categorias/list',
-            label: 'Categorias',
+            url: '/metodosPago/list',
+            label: 'Métodos de pago',
         },
     ];
 

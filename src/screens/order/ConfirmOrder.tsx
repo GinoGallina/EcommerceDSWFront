@@ -1,23 +1,23 @@
 import { Col, Image, Row } from 'react-bootstrap';
 import { BreadCrumb, Button, Card, PaymentTypeDropdown, QuantityInput, Toast } from '../../components';
 import { useState } from 'react';
-import { ICartItem, IConfirmCartRequest } from '../../interfaces/ICart/ICart';
+import { IOrderItem, IConfirmOrderRequest } from '../../interfaces/IOrder/IOrder';
 import { LocalStorage } from '../../app/LocalStorage';
-import { confirmCartCols } from './Cart.data';
+import { confirmOrderCols } from './Order.data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faClose } from '@fortawesome/free-solid-svg-icons';
 import { formatCurrency } from '../../app/Helpers';
 import noImage from '../../assets/no_image.jpg';
-import './confirmCart.scss';
+import './confirmOrder.scss';
 import { Messages } from '../../app/constants/Messages';
 import API from '../../app/API';
 import { useNavigate } from 'react-router-dom';
 
-const ConfirmCart = () => {
+const ConfirmOrder = () => {
     const navigate = useNavigate();
 
     // States
-    const [cart, setCart] = useState<ICartItem[]>(LocalStorage.getCartItems());
+    const [order, setOrder] = useState<IOrderItem[]>(LocalStorage.getOrderItems());
     const [paymentType, setPaymentType] = useState('');
     const [submiting, setSubmiting] = useState(false);
 
@@ -28,31 +28,31 @@ const ConfirmCart = () => {
         },
     ];
 
-    const handleRemoveItemFromCart = (id: string) => {
-        const newCart = cart.filter((x) => x.productId !== id);
-        setCart(newCart);
-        LocalStorage.setCartItems(newCart);
+    const handleRemoveItemFromOrder = (id: string) => {
+        const newOrder = order.filter((x) => x.productId !== id);
+        setOrder(newOrder);
+        LocalStorage.setOrderItems(newOrder);
     };
     // Handlers
     const handleSubmit = async () => {
         if (submiting) return;
 
-        if (cart.some((x) => x.quantity < 0)) {
+        if (order.some((x) => x.quantity < 0)) {
             Toast.warning(Messages.Validation.graterThanZero('cantidad', true));
             return;
         }
 
         setSubmiting(true);
 
-        const rq: IConfirmCartRequest = {
+        const rq: IConfirmOrderRequest = {
             PaymentTypeId: paymentType,
-            Items: cart.map((x) => ({
+            Items: order.map((x) => ({
                 ProductId: x.productId,
                 Quantity: x.quantity,
             })),
         };
 
-        API.post<unknown, IConfirmCartRequest>(`order/create`, rq)
+        API.post<unknown, IConfirmOrderRequest>(`order/create`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
                 navigate('/misCompras');
@@ -64,14 +64,14 @@ const ConfirmCart = () => {
     return (
         <>
             <BreadCrumb items={categoriesBreadCrums} title="Mi compra" />
-            <Col xs={11} className="container my-cart-confirm">
+            <Col xs={11} className="container my-order-confirm">
                 <Card
                     title="Mi compra"
                     body={
                         <>
                             <Col xs={12} className="d-none d-md-block" style={{ fontWeight: '500' }}>
                                 <Row className="fs-4">
-                                    {confirmCartCols.map((x, idx) => (
+                                    {confirmOrderCols.map((x, idx) => (
                                         <Col xs={idx === 3 ? 2 : 3} className={x.className} key={idx}>
                                             <span>{x.text}</span>
                                         </Col>
@@ -80,33 +80,33 @@ const ConfirmCart = () => {
                                 </Row>
                             </Col>
                             <hr className="d-none d-md-block" />
-                            {cart.map((cartItem, idx) => {
+                            {order.map((orderItem, idx) => {
                                 return (
                                     <>
-                                        <Col xs={12} className={`cart-row ${idx % 2 === 0 ? 'bg-alternate' : ''}`} key={idx}>
+                                        <Col xs={12} className={`order-row ${idx % 2 === 0 ? 'bg-alternate' : ''}`} key={idx}>
                                             <Row>
                                                 <Col xs={12} md={3} className="d-flex mb-3 mb-md-0">
                                                     <div className="me-2" style={{ maxWidth: '75px', maxHeight: '75px' }}>
-                                                        <Image src={cartItem.image || noImage} className="w-100 h-100" />
+                                                        <Image src={orderItem.image || noImage} className="w-100 h-100" />
                                                     </div>
-                                                    <span className="fs-5">{cartItem.name}</span>
+                                                    <span className="fs-5">{orderItem.name}</span>
                                                 </Col>
                                                 <Col md={3} className="d-none d-md-flex justify-content-center my-auto mb-md-auto">
-                                                    <span className="text-success fs-5">{formatCurrency(cartItem.price)}</span>
+                                                    <span className="text-success fs-5">{formatCurrency(orderItem.price)}</span>
                                                 </Col>
                                                 <QuantityInput
                                                     xs={5}
                                                     md={3}
-                                                    quantity={cartItem.quantity}
-                                                    productId={cartItem.productId}
-                                                    setCart={setCart}
+                                                    quantity={orderItem.quantity}
+                                                    productId={orderItem.productId}
+                                                    setOrder={setOrder}
                                                 />
                                                 <Col xs={5} md={2} className="justify-content-center d-flex my-auto">
-                                                    <span className="text-success fs-5">{formatCurrency(cartItem.price * cartItem.quantity)}</span>
+                                                    <span className="text-success fs-5">{formatCurrency(orderItem.price * orderItem.quantity)}</span>
                                                 </Col>
                                                 <Col xs={1} md={1} className="p-0 d-flex my-auto justify-content-center">
                                                     <FontAwesomeIcon
-                                                        onClick={() => handleRemoveItemFromCart(cartItem.productId)}
+                                                        onClick={() => handleRemoveItemFromOrder(orderItem.productId)}
                                                         icon={faClose}
                                                         color="red"
                                                         size="lg"
@@ -122,7 +122,7 @@ const ConfirmCart = () => {
                             </Col>
                             <Col className="text-end" xs={12}>
                                 <span className="text-success fs-3">
-                                    Total: {formatCurrency(cart.reduce((sum, item) => sum + item.price * item.quantity, 0))}
+                                    Total: {formatCurrency(order.reduce((sum, item) => sum + item.price * item.quantity, 0))}
                                 </span>
                             </Col>
                         </>
@@ -141,4 +141,4 @@ const ConfirmCart = () => {
     );
 };
 
-export default ConfirmCart;
+export default ConfirmOrder;

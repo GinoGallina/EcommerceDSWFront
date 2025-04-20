@@ -48,7 +48,7 @@ const ProductList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState<ISortRequest | null>(null);
-    const [currentCart, setCurrentCart] = useState(LocalStorage.getCartItems());
+    const [currentOrder, setCurrentOrder] = useState(LocalStorage.getOrderItems());
     const [filters, setFilters] = useState<{
         category: string[];
         text: string;
@@ -133,12 +133,12 @@ const ProductList = () => {
         });
     };
 
-    const handleAddToCart = (productId: string) => {
+    const handleAddToOrder = (productId: string) => {
         const product = products.find((x) => x.id === productId);
         if (product) {
-            if (!currentCart.some((x) => x.productId === productId)) {
-                const newCart = [
-                    ...currentCart,
+            if (!currentOrder.some((x) => x.productId === productId)) {
+                const newOrder = [
+                    ...currentOrder,
                     {
                         productId,
                         name: product?.name,
@@ -147,19 +147,19 @@ const ProductList = () => {
                         image: product?.image,
                     },
                 ];
-                LocalStorage.setCartItems(newCart);
-                setCurrentCart(newCart);
+                LocalStorage.setOrderItems(newOrder);
+                setCurrentOrder(newOrder);
             }
         }
     };
 
-    const handleRemoveFromCart = (productId: string) => {
-        const newCart = currentCart.filter((x) => x.productId !== productId);
-        LocalStorage.setCartItems(newCart);
-        setCurrentCart(newCart);
+    const handleRemoveFromOrder = (productId: string) => {
+        const newOrder = currentOrder.filter((x) => x.productId !== productId);
+        LocalStorage.setOrderItems(newOrder);
+        setCurrentOrder(newOrder);
     };
 
-    // console.log(currentCart);
+    // console.log(currentOrder);
 
     return (
         <>
@@ -214,9 +214,9 @@ const ProductList = () => {
                                     <Col xs={12} sm={6} md={4} lg={3} className="mb-3" key={idx}>
                                         <ProductCard
                                             {...x}
-                                            isInCart={currentCart.some((item) => item.productId === x.id)}
-                                            onAddToCart={handleAddToCart}
-                                            onRemoveFromCart={handleRemoveFromCart}
+                                            isInOrder={currentOrder.some((item) => item.productId === x.id)}
+                                            onAddToOrder={handleAddToOrder}
+                                            onRemoveFromOrder={handleRemoveFromOrder}
                                         />
                                     </Col>
                                 ))}

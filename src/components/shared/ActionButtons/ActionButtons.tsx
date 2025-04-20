@@ -10,7 +10,7 @@ import { RowType } from '../../../interfaces';
 import DeleteConfirmationModal, { DeleteConfirmationModalRef } from '../DeleteConfirmationModal/DeleteConfirmationModal';
 
 export interface ActionButtonsProps {
-    row: RowType;
+    row: RowType<{ id: string; endpoint: string }>;
     canDelete?: boolean;
     showEdit?: boolean;
     showWatch?: boolean;

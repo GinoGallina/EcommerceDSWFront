@@ -5,21 +5,21 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import Input from '../../Input/Input';
 import { ADD, MINUS } from '../../TopBar/TopBar.const';
 import { LocalStorage } from '../../../app/LocalStorage';
-import { ICartItem } from '../../../interfaces/ICart/ICart';
+import { IOrderItem } from '../../../interfaces/IOrder/IOrder';
 
 interface QuantityInputProps {
     quantity: number;
     productId: string;
     xs: number;
     md: number;
-    setCart: React.Dispatch<React.SetStateAction<ICartItem[]>>;
+    setOrder: React.Dispatch<React.SetStateAction<IOrderItem[]>>;
 }
 
-const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, setCart, xs = 6, md = 3 }) => {
+const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, setOrder, xs = 6, md = 3 }) => {
     const handleClickQuantityButton = (id: string, action: string) => {
-        let newCart;
-        setCart((prevCart) => {
-            newCart = prevCart.map((x) => {
+        let newOrder;
+        setOrder((prevOrder) => {
+            newOrder = prevOrder.map((x) => {
                 if (x.productId === id) {
                     if (action === MINUS && x.quantity === 0) return x;
                     return {
@@ -29,9 +29,9 @@ const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, setC
                 }
                 return x;
             });
-            return newCart;
+            return newOrder;
         });
-        if (newCart) LocalStorage.setCartItems(newCart);
+        if (newOrder) LocalStorage.setOrderItems(newOrder);
     };
     return (
         <Col xs={xs} md={md} className="d-flex quantity-input justify-content-center">

@@ -8,15 +8,15 @@ import LogoMini from '../../assets/logo-mini.png';
 import Logo from '../../assets/ecommerce-logo-topbar.webp';
 // import SidePanel from '../SidePanel/SidePanel';
 import UserDetails from './UserDetails';
-import CartMenu from './Cart/CartMenu';
-import './topbar.scss';
 import { LocalStorage } from '../../app/LocalStorage';
+import OrderMenu from './Order/OrderMenu';
+import './topbar.scss';
 
 const TopBar = () => {
     const navigate = useNavigate();
-    const [cart, setCart] = useState(LocalStorage.getCartItems());
+    const [order, setOrder] = useState(LocalStorage.getOrderItems());
     const [showUser, setShowUser] = useState(false);
-    const [showCart, setShowCart] = useState(false);
+    const [showOrder, setShowOrder] = useState(false);
 
     // const [showSidePanel, setShowSidePanel] = useState(false);
     // const [showNotifications, setShowNotifications] = useState(false);
@@ -24,20 +24,20 @@ const TopBar = () => {
     const userInfoRef = useRef<HTMLDivElement | null>(null);
     // const notificationsRef = useRef(null);
     const userIconRef = useRef<SVGSVGElement | null>(null);
-    const cartIconRef = useRef<SVGSVGElement | null>(null);
+    const orderIconRef = useRef<SVGSVGElement | null>(null);
 
     const handleShowUserInfo = () => {
         // setShowNotifications(false);
-        setShowCart(false);
+        setShowOrder(false);
         setShowUser((prevShowUser) => !prevShowUser);
         if (userInfoRef.current) userInfoRef.current.focus();
     };
 
-    const handleShowCart = () => {
+    const handleShowOrder = () => {
         // setShowNotifications(false);
         setShowUser(false);
-        setShowCart((prevShowCart) => !prevShowCart);
-        if (cartIconRef.current) cartIconRef.current.focus();
+        setShowOrder((prevShowOrder) => !prevShowOrder);
+        if (orderIconRef.current) orderIconRef.current.focus();
     };
 
     const handleHideUserInfo = () => {
@@ -89,12 +89,12 @@ const TopBar = () => {
             }
             // TODO;
             // if (
-            //     cartIconRef.current &&
-            //     !cartIconRef.current.contains(event.target as Node) &&
+            //     orderIconRef.current &&
+            //     !orderIconRef.current.contains(event.target as Node) &&
             //     userIconRef.current &&
             //     !userIconRef.current.contains(event.target as Node)
             // ) {
-            //     setShowCart(false);
+            //     setShowOrder(false);
             // }
         };
 
@@ -119,16 +119,16 @@ const TopBar = () => {
                     </div>
                 </div>
                 <div className="d-flex flex-row">
-                    <span className={classNames('icon-container', 'position-relative')} onClick={handleShowCart}>
-                        <FontAwesomeIcon icon={faCartShopping} size="xl" ref={cartIconRef} />
-                        {cart.length > 0 && <span className="cart-badge">{cart.length}</span>}
+                    <span className={classNames('icon-container', 'position-relative')} onClick={handleShowOrder}>
+                        <FontAwesomeIcon icon={faCartShopping} size="xl" ref={orderIconRef} />
+                        {order.length > 0 && <span className="order-badge">{order.length}</span>}
                     </span>
                     <span className={classNames('icon-container', showUser && 'show-card')} onClick={handleShowUserInfo}>
                         <FontAwesomeIcon icon={faUser} size="xl" ref={userIconRef} />
                     </span>
                 </div>
-                {/* Cart */}
-                <CartMenu cart={cart} showCart={showCart} userInfoRef={userInfoRef} setShowCart={setShowCart} setCart={setCart} />
+                {/* Order */}
+                <OrderMenu order={order} showOrder={showOrder} userInfoRef={userInfoRef} setShowOrder={setShowOrder} setOrder={setOrder} />
                 {/* User details */}
                 <div className={classNames('user-container', showUser && 'show-card')} onBlur={handleHideUserInfo} ref={userInfoRef}>
                     <UserDetails setShowUser={setShowUser} handleHideUserInfo={handleHideUserInfo} />

@@ -2,23 +2,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Image, Row } from 'react-bootstrap';
 import { faClose, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import noImage from '../../..//assets/no_image.jpg';
-import { ICartItem } from '../../../interfaces/ICart/ICart';
+import { IOrderItem } from '../../../interfaces/IOrder/IOrder';
 import { ADD, MINUS } from '../TopBar.const';
 import { LocalStorage } from '../../../app/LocalStorage';
 import Input from '../../Input/Input';
 import { formatCurrency } from '../../../app/Helpers';
 
-interface ICartMenuItemProps {
-    product: ICartItem;
-    cart: ICartItem[];
-    setCart: React.Dispatch<React.SetStateAction<ICartItem[]>>;
+interface IOrderMenuItemProps {
+    product: IOrderItem;
+    order: IOrderItem[];
+    setOrder: React.Dispatch<React.SetStateAction<IOrderItem[]>>;
 }
 
-const CartMenuItem: React.FC<ICartMenuItemProps> = ({ product, cart, setCart }) => {
+const OrderMenuItem: React.FC<IOrderMenuItemProps> = ({ product, order, setOrder }) => {
     const handleClickQuantityButton = (id: string, action: string) => {
-        let newCart;
-        setCart((prevCart) => {
-            newCart = prevCart.map((x) => {
+        let newOrder;
+        setOrder((prevOrder) => {
+            newOrder = prevOrder.map((x) => {
                 if (x.productId === id) {
                     if (action === MINUS && x.quantity === 0) return x;
                     return {
@@ -28,15 +28,15 @@ const CartMenuItem: React.FC<ICartMenuItemProps> = ({ product, cart, setCart }) 
                 }
                 return x;
             });
-            return newCart;
+            return newOrder;
         });
-        if (newCart) LocalStorage.setCartItems(newCart);
+        if (newOrder) LocalStorage.setOrderItems(newOrder);
     };
 
     const handleChangeItemQuantity = (value: string, id: string) => {
-        let newCart;
-        setCart((prevCart) => {
-            newCart = prevCart.map((x) => {
+        let newOrder;
+        setOrder((prevOrder) => {
+            newOrder = prevOrder.map((x) => {
                 if (x.productId === id) {
                     return {
                         ...x,
@@ -45,15 +45,15 @@ const CartMenuItem: React.FC<ICartMenuItemProps> = ({ product, cart, setCart }) 
                 }
                 return x;
             });
-            return newCart;
+            return newOrder;
         });
-        if (newCart) LocalStorage.setCartItems(newCart);
+        if (newOrder) LocalStorage.setOrderItems(newOrder);
     };
 
-    const handleRemoveItemFromCart = (id: string) => {
-        const newCart = cart.filter((x) => x.productId !== id);
-        setCart(newCart);
-        LocalStorage.setCartItems(newCart);
+    const handleRemoveItemFromOrder = (id: string) => {
+        const newOrder = order.filter((x) => x.productId !== id);
+        setOrder(newOrder);
+        LocalStorage.setOrderItems(newOrder);
     };
 
     return (
@@ -61,7 +61,7 @@ const CartMenuItem: React.FC<ICartMenuItemProps> = ({ product, cart, setCart }) 
             <Col xs={3} className="img-container d-flex my-auto">
                 <Image src={product.image || noImage} className="w-100 h-100" />
             </Col>
-            <Col xs={8} className="cart-details d-flex flex-column p-2">
+            <Col xs={8} className="order-details d-flex flex-column p-2">
                 <div className="fs-4">{product.name}</div>
                 <div>
                     Precio unitario: <span className="text-success">${product.price}</span>
@@ -95,10 +95,10 @@ const CartMenuItem: React.FC<ICartMenuItemProps> = ({ product, cart, setCart }) 
                 </div>
             </Col>
             <Col xs={1} className="d-flex my-auto ms-1 remove-item">
-                <FontAwesomeIcon onClick={() => handleRemoveItemFromCart(product.productId)} icon={faClose} color="red" size="xl" />
+                <FontAwesomeIcon onClick={() => handleRemoveItemFromOrder(product.productId)} icon={faClose} color="red" size="xl" />
             </Col>
         </Row>
     );
 };
 
-export default CartMenuItem;
+export default OrderMenuItem;

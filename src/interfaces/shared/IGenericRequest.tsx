@@ -16,6 +16,12 @@ export interface IGenericGetAllResquest {
     dateFrom?: string;
     dateTo?: string;
 }
+
+// Get All / List
+export interface IGenericGetAllResponse {
+    totalCount: number;
+}
+
 export interface IGenericList {
     id: string;
     endpoint: string;
@@ -25,8 +31,4 @@ export interface IGenericList {
     isSelected?: boolean;
     disabled?: boolean;
     isActive?: boolean;
-}
-
-export interface IGenericResponse {
-    totalCount: number;
 }

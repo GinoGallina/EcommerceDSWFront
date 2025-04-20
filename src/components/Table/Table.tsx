@@ -1,13 +1,13 @@
 import * as BS from 'react-bootstrap';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ICategoryList, IColumn, RowsType } from '../../interfaces';
+import { IColumn, RowsType } from '../../interfaces';
 import Pagination from '../Pagination/Pagination';
 import './table.scss';
 
-interface TableProps {
-    columns: IColumn[];
-    rows: RowsType;
+interface TableProps<T> {
+    columns: IColumn<T>[];
+    rows: RowsType<T>;
     className?: string;
     emptyTableMessage: string;
     clickable?: boolean;
@@ -25,7 +25,7 @@ interface TableProps {
     onUpdate?: (id: string) => void;
 }
 
-const Table: React.FC<TableProps> = ({
+const Table = <T extends { id: string }>({
     columns,
     rows = [],
     className = '',
@@ -42,7 +42,7 @@ const Table: React.FC<TableProps> = ({
     onCellClick = () => {},
     onPageChange = () => {},
     onUpdate = () => {},
-}) => {
+}: TableProps<T>) => {
     const handlePageChange = (page: number) => {
         onPageChange(page);
     };
@@ -99,7 +99,9 @@ const Table: React.FC<TableProps> = ({
                               >
                                   {columns &&
                                       columns.map((col, j) => {
-                                          const key = col.name as keyof ICategoryList;
+                                          let value;
+
+                                          if (col.name) value = row[col.name];
 
                                           const isClickable = col.clickableColumn ? 'clickable-row' : '';
 
@@ -126,7 +128,7 @@ const Table: React.FC<TableProps> = ({
                                                   onClick={(e) => handleColClick(e, col.clickableColumn)}
                                               >
                                                   {!col.component ? (
-                                                      col.list && Array.isArray(row[key]) ? (
+                                                      col.list && Array.isArray(value) ? (
                                                           <ul
                                                               className="mb-0"
                                                               style={{
@@ -134,18 +136,18 @@ const Table: React.FC<TableProps> = ({
                                                                   overflowY: 'auto',
                                                               }}
                                                           >
-                                                              {row[key].map((item: string, k: number) => (
+                                                              {value.map((item: string, k: number) => (
                                                                   <li key={k}>{item}</li>
                                                               ))}
                                                           </ul>
                                                       ) : col.boldRow ? (
                                                           <h6 className="mb-0">
-                                                              {col.formatter ? col.formatter(row[key] as string, row) : (row[key] as string)}
+                                                              {col.formatter ? col.formatter(value as string, row) : (value as string)}
                                                           </h6>
                                                       ) : col.formatter ? (
-                                                          col.formatter(row[key] as string, row)
+                                                          col.formatter(value as string, row)
                                                       ) : (
-                                                          (row[key] as string)
+                                                          (value as string)
                                                       )
                                                   ) : (
                                                       col.component({

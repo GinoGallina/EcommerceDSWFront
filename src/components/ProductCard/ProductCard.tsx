@@ -14,11 +14,11 @@ interface IProductCardProps {
     price: number;
     stock?: number;
     image: string;
-    isInCart: boolean;
+    isInOrder: boolean;
     style?: CSSProperties;
     onViewDetails?: () => void;
-    onAddToCart: (productId: string) => void;
-    onRemoveFromCart: (productId: string) => void;
+    onAddToOrder: (productId: string) => void;
+    onRemoveFromOrder: (productId: string) => void;
 }
 const ProductCard: React.FC<IProductCardProps> = ({
     className,
@@ -27,10 +27,10 @@ const ProductCard: React.FC<IProductCardProps> = ({
     image,
     price,
     style,
-    isInCart,
+    isInOrder,
     onViewDetails = () => {},
-    onAddToCart = () => {},
-    onRemoveFromCart = () => {},
+    onAddToOrder = () => {},
+    onRemoveFromOrder = () => {},
     ...props
 }) => {
     return (
@@ -54,17 +54,17 @@ const ProductCard: React.FC<IProductCardProps> = ({
                                 </Button>
                             </BS.Col>
                             <BS.Col xs={12}>
-                                {isInCart ? (
+                                {isInOrder ? (
                                     <Button
                                         className="bg-danger btn-sm border-0 w-100"
-                                        onClick={onRemoveFromCart ? () => onRemoveFromCart(props.id) : () => {}}
+                                        onClick={onRemoveFromOrder ? () => onRemoveFromOrder(props.id) : () => {}}
                                     >
                                         Quitar del carrito
                                     </Button>
                                 ) : (
                                     <Button
                                         className="bg-success btn-sm border-0 w-100"
-                                        onClick={onAddToCart ? () => onAddToCart(props.id) : () => {}}
+                                        onClick={onAddToOrder ? () => onAddToOrder(props.id) : () => {}}
                                     >
                                         Agregar a carrito
                                     </Button>
@@ -90,12 +90,12 @@ const ProductCard: React.FC<IProductCardProps> = ({
         //         <Button className="btn-sm" onClick={onViewDetails}>
         //             Ver detalles
         //         </Button>
-        //         {isInCart ? (
-        //             <Button className="bg-danger btn-sm border-0" onClick={onRemoveFromCart ? () => onRemoveFromCart(props.id) : () => {}}>
+        //         {isInOrder ? (
+        //             <Button className="bg-danger btn-sm border-0" onClick={onRemoveFromOrder ? () => onRemoveFromOrder(props.id) : () => {}}>
         //                 Quitar del carrito
         //             </Button>
         //         ) : (
-        //             <Button className="bg-success btn-sm border-0" onClick={onAddToCart ? () => onAddToCart(props.id) : () => {}}>
+        //             <Button className="bg-success btn-sm border-0" onClick={onAddToOrder ? () => onAddToOrder(props.id) : () => {}}>
         //                 Agregar a carrito
         //             </Button>
         //         )}

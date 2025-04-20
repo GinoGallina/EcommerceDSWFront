@@ -1,7 +1,7 @@
 import * as Constants from './constants/StorageKey';
 import secureLocalStorage from 'react-secure-storage';
 import { LocalStorageKeys } from './constants/StorageKey';
-import { ICartItem } from '../interfaces/ICart/ICart';
+import { IOrderItem } from '../interfaces/IOrder/IOrder';
 
 // Set & remove data from local storage
 const set = (key: LocalStorageKeys, value: string) => {
@@ -33,10 +33,10 @@ export class LocalStorage {
     static setSessionExpiration = (v: string) => set(Constants.SESSION_EXPIRATION, v);
     static getSessionExpiration = () => get(Constants.SESSION_EXPIRATION);
 
-    static setCartItems = (cart: ICartItem[]) => set(Constants.CART_ITEMS, JSON.stringify(cart));
-    static getCartItems = (): ICartItem[] => {
-        const cart = get(Constants.CART_ITEMS);
-        return cart ? JSON.parse(cart) : [];
+    static setOrderItems = (order: IOrderItem[]) => set(Constants.CART_ITEMS, JSON.stringify(order));
+    static getOrderItems = (): IOrderItem[] => {
+        const order = get(Constants.CART_ITEMS);
+        return order ? JSON.parse(order) : [];
     };
 
     static clearSessionData = () => {

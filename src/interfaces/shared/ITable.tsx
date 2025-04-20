@@ -1,9 +1,8 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { ReactNode } from 'react';
-import { ICategoryList } from '../ICategory/ICategory';
 
-export interface IColumn {
-    name: string;
+export interface IColumn<T> {
+    name: keyof T | '';
     text: string;
     textCenter?: boolean;
     className?: string;
@@ -12,17 +11,28 @@ export interface IColumn {
     clickableColumn?: boolean;
     list?: boolean;
     icon?: IconProp;
-    formatter?: (name: string, row: ICategoryList) => string;
-    component?: (props: ColumnComponentType) => ReactNode;
+    formatter?: (value: string, row: T) => string;
+    component?: (props: ColumnComponentType<T>) => ReactNode;
 }
 
-export type RowType = ICategoryList;
-
-export type ColumnComponentType = {
-    row: RowType;
+export type ColumnComponentType<T> = {
+    row: T;
     disabled?: boolean;
     onClick: (e: React.MouseEvent) => void;
     onUpdate: (id: string) => void;
 };
 
-export type RowsType = ICategoryList[];
+export type BaseRowProps = {
+    href?: string;
+    style?: React.CSSProperties;
+    isSelected?: boolean;
+    disabled?: boolean;
+};
+
+export type RowType<T> = T & BaseRowProps;
+
+export type RowsType<T> = RowType<T>[];
+
+export interface IGenericTableColumn {
+    actions: string;
+}

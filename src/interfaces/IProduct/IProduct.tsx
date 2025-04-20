@@ -1,4 +1,4 @@
-import { IGenericGetAllResquest, IGenericList, IGenericResponse } from '../shared/IGenericRequest';
+import { IGenericGetAllResquest, IGenericList, IGenericGetAllResponse } from '../shared/IGenericRequest';
 
 export interface IProductForm {
     name: string;
@@ -27,7 +27,7 @@ export interface IProductListGetAllRequest extends IGenericGetAllResquest {
     lessThan?: boolean;
 }
 
-export interface IProductResponse extends IGenericResponse {
+export interface IProductResponse extends IGenericGetAllResponse {
     products: IProductList[];
 }
 

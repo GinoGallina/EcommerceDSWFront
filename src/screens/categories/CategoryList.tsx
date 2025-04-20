@@ -5,20 +5,20 @@ import { useNavigate } from 'react-router';
 import { Messages } from '../../app/constants/Messages';
 import API from '../../app/API';
 import { buildGenericGetAllRq } from '../../app/Helpers';
-import { ICategoryList, ICategoryResponse } from '../../interfaces/ICategory/ICategory';
+import { ICategoryList, IGetAllCategoryResponse } from '../../interfaces/ICategory/ICategory';
 import { columns, sortCategoryItems } from './Categroy.data';
-import { ColumnComponentType } from '../../interfaces/shared/ITable';
+import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { ISortRequest } from '../../interfaces';
 
 const CategoryList = () => {
     const navigate = useNavigate();
 
-    const categoryColumns = [
+    const categoryColumns: IColumn<ICategoryList>[] = [
         ...columns,
         {
-            name: 'actions',
+            name: '',
             text: 'Acciones',
-            component: (props: ColumnComponentType) => <ActionButtons {...props} female entity="categoría" />,
+            component: (props: ColumnComponentType<ICategoryList>) => <ActionButtons {...props} female entity="categoría" />,
             className: 'text-center',
         },
     ];
@@ -43,7 +43,7 @@ const CategoryList = () => {
     useEffect(() => {
         const rq = buildGenericGetAllRq(currentPage, sort);
 
-        API.get<ICategoryResponse>('category/getAll', rq).then((r) => {
+        API.get<IGetAllCategoryResponse>('category/getAll', rq).then((r) => {
             const categories = r.data.categories.map((x) => {
                 return {
                     ...x,
@@ -91,7 +91,7 @@ const CategoryList = () => {
                                     <Input showIcon borderless placeholder="Buscar" value={nameFilter} onChange={handleFilterCategories} />
                                 </Col>
                             </Row>
-                            <Table
+                            <Table<ICategoryList>
                                 className="mb-5"
                                 columns={categoryColumns}
                                 rows={categories.filter((x) => x.name.toLowerCase().includes(nameFilter.toLowerCase()))}
