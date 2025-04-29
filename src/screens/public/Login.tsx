@@ -59,6 +59,7 @@ const Login = () => {
         LocalStorage.setUserRoles(data.user.roles);
         LocalStorage.setUserName(data.user.username);
         LocalStorage.setUserEmail(data.user.email);
+        LocalStorage.setUserAddress(data.user.address);
         LocalStorage.setSessionExpiration(data.sessionExpiration);
     };
 

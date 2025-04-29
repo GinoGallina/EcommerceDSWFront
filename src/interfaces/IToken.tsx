@@ -19,5 +19,6 @@ export interface ITokenResponse {
         roles: string;
         username: string;
         email: string;
+        address: string;
     };
 }

@@ -30,6 +30,9 @@ export class LocalStorage {
     static setUserEmail = (v: string) => set(Constants.USER_EMAIL, v);
     static getUserEmail = () => get(Constants.USER_EMAIL);
 
+    static setUserAddress = (v: string) => set(Constants.USER_ADDRESS, v);
+    static getUserAddress = () => get(Constants.USER_ADDRESS);
+
     static setSessionExpiration = (v: string) => set(Constants.SESSION_EXPIRATION, v);
     static getSessionExpiration = () => get(Constants.SESSION_EXPIRATION);
 

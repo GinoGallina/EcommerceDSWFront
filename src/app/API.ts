@@ -16,8 +16,20 @@ interface APIResponse<T> {
     };
 }
 
-const get = async <T>(path: string, rq: Record<string, string> | IGenericGetAllResquest): Promise<APIResponse<T>> => {
-    const params = new URLSearchParams(rq as Record<string, string>);
+const get = async <T>(
+    path: string,
+    rq: Record<string, string | number | boolean | Array<string | number>> | IGenericGetAllResquest
+): Promise<APIResponse<T>> => {
+    const params = new URLSearchParams();
+
+    Object.entries(rq).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+            value.forEach((v) => params.append(key, String(v)));
+        } else {
+            params.append(key, String(value));
+        }
+    });
+
     const response = await fetch(`${URL}/${path}?${params}`, {
         method: 'GET',
         headers: {

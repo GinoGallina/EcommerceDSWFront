@@ -1,0 +1,140 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { Col, Image, Row } from 'react-bootstrap';
+import { BreadCrumb, Button, Card, QuantityInput, Spinner } from '../../components';
+import API from '../../app/API';
+import { getBreadcrumbItems } from './Products.helpers';
+import noImage from '../../assets/no_image.jpg';
+import { formatCurrency } from '../../app/Helpers';
+import { IProductDetailsForm } from '../../interfaces/IProduct/IProduct';
+import { useOrder } from '../../contexts/OrderContext';
+import './productDetails.scss';
+
+const InitialProductDetails: IProductDetailsForm = {
+    name: '',
+    description: '',
+    image: '',
+    price: '',
+    stock: '',
+    categoryName: '',
+    userName: '',
+};
+
+const ProductDetails = () => {
+    const navigate = useNavigate();
+
+    const params = useParams();
+    const id = params.id;
+
+    // State
+    const [form, setForm] = useState(InitialProductDetails);
+    const [loading, setLoading] = useState(id ? true : false);
+    const { orderItems, addToOrder, removeFromOrder } = useOrder();
+
+    // Effects
+    useEffect(() => {
+        if (id) {
+            API.get<IProductDetailsForm>('product/getDetails/' + id, {}).then((r) => {
+                setForm(r.data);
+                setLoading(false);
+            });
+        }
+    }, [id]);
+
+    return (
+        <>
+            <BreadCrumb items={getBreadcrumbItems(form.name)} title={form.name} />
+            <div>
+                <Col xs={11} className="container product-details">
+                    <Card
+                        title={form.name}
+                        body={
+                            loading ? (
+                                <Spinner />
+                            ) : (
+                                <>
+                                    <Row>
+                                        <Col xs={12} md={5}>
+                                            <div className="mx-auto my-auto" style={{ maxHeight: '350px', maxWidth: '350px' }}>
+                                                <Image className="w-100 h-100" src={form.image || noImage}></Image>
+                                            </div>
+                                        </Col>
+                                        <Col xs={12} md={7}>
+                                            <Row className="h-100 flex-column" style={{ fontSize: '25px' }}>
+                                                <Col className="mb-3" xs={12}>
+                                                    <span style={{ color: 'gray' }}>{form.categoryName}</span>
+                                                </Col>
+                                                <Col className="mb-3 description" xs={12}>
+                                                    {form.description}
+                                                </Col>
+                                                <Col className="mb-3" xs={12}>
+                                                    {Number(form.stock) > 0 ? (
+                                                        <span className="text-success">
+                                                            In stock ({form.stock} {form.stock == '1' ? 'unit' : 'units'})
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-danger">Out of stock</span>
+                                                    )}
+                                                </Col>
+                                                <Col className="mb-3" xs={12}>
+                                                    <span style={{ fontWeight: 'bold' }}>{formatCurrency(form.price)}</span>
+                                                </Col>
+                                                <Col className="mt-auto" xs={12}>
+                                                    <Row>
+                                                        {orderItems.find((x) => x.productId === id) && (
+                                                            <Col>
+                                                                <QuantityInput
+                                                                    alignDirection="start"
+                                                                    productId={id!}
+                                                                    quantity={orderItems.find((x) => x.productId === id)?.quantity || 0}
+                                                                />
+                                                            </Col>
+                                                        )}
+                                                        <Col xs={12} md={4}>
+                                                            {orderItems.some((item) => item.productId === id) ? (
+                                                                <Button
+                                                                    className="bg-danger btn-sm border-0 w-100"
+                                                                    onClick={() => removeFromOrder(id!)}
+                                                                >
+                                                                    Quitar del carrito
+                                                                </Button>
+                                                            ) : (
+                                                                <Button
+                                                                    className="bg-success btn-sm border-0 w-100"
+                                                                    onClick={() =>
+                                                                        addToOrder({
+                                                                            name: form.name,
+                                                                            price: Number(form.price),
+                                                                            productId: id!,
+                                                                            quantity: 1,
+                                                                            image: form.image,
+                                                                        })
+                                                                    }
+                                                                >
+                                                                    Agregar a carrito
+                                                                </Button>
+                                                            )}
+                                                        </Col>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                </>
+                            )
+                        }
+                        footer={
+                            <div className="d-flex justify-content-start">
+                                <Button variant="secondary" className="me-2" onClick={() => navigate('/productos/list')}>
+                                    Volver
+                                </Button>
+                            </div>
+                        }
+                    />
+                </Col>
+            </div>
+        </>
+    );
+};
+
+export default ProductDetails;

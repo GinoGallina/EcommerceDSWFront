@@ -16,6 +16,8 @@ export interface IComboDropdown {
     placeholder?: string;
     isMulti: boolean;
     exclude?: string[];
+    useDefaultDisableOption?: boolean;
     disableOption?: (option: DropdownOption) => boolean;
     onChange: (value: string) => void;
+    ref?: React.RefObject<{ items: () => GetComboItemType[] | null } | null>;
 }

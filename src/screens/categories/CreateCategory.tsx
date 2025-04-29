@@ -24,7 +24,7 @@ const CreateCategory = ({ isWatching = false }) => {
     // Effects
     useEffect(() => {
         if (id) {
-            API.get<ICategoryForm>('category/getOne', { id }).then((r) => {
+            API.get<ICategoryForm>('category/getOne/' + id, {}).then((r) => {
                 setForm(r.data);
                 setLoading(false);
             });
@@ -35,7 +35,7 @@ const CreateCategory = ({ isWatching = false }) => {
     const handleSubmit = async () => {
         if (submiting) return;
 
-        //ver stock y price
+        // TODO ver stock y price
         if (!form.name) {
             Toast.warning(Messages.Validation.requiredFields);
             return;

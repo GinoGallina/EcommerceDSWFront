@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faClipboard, faClipboardList, faCreditCard, faHouse, faList } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faClipboard, faClipboardList, faCreditCard, faHouse, faList, faUser } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../Tooltip/Tooltip';
 import { Link } from 'react-router-dom';
 import './navbar.scss';
@@ -24,47 +24,67 @@ const NavBar = () => {
                         </Link>
                     </Tooltip>
                 </li>
-                <hr className="mx-3 my-3" style={{ color: 'white' }} />
-                <li className="mt-3">
-                    <Tooltip text="Categorias" placement="right">
-                        <Link to="/categorias/list">
-                            <FontAwesomeIcon icon={faList} />
-                        </Link>
-                    </Tooltip>
-                </li>
-                <hr className="mx-3 my-3" style={{ color: 'white' }} />
-                {/* {App.isSeller() && ( */}
-                <li className="mt-3">
-                    <Tooltip text="Mis Productos" placement="right">
-                        <Link to="/misProductos/list">
-                            <FontAwesomeIcon icon={faClipboardList} />
-                        </Link>
-                    </Tooltip>
-                </li>
-                {/* )} */}
+                {App.isAdmin() && (
+                    <>
+                        <hr className="mx-3 my-3" style={{ color: 'white' }} />
+                        <li className="mt-3">
+                            <Tooltip text="Categorias" placement="right">
+                                <Link to="/categorias/list">
+                                    <FontAwesomeIcon icon={faList} />
+                                </Link>
+                            </Tooltip>
+                        </li>
+                    </>
+                )}
+                {App.isSeller() && (
+                    <>
+                        <hr className="mx-3 my-3" style={{ color: 'white' }} />
+                        <li className="mt-3">
+                            <Tooltip text="Mis Productos" placement="right">
+                                <Link to="/misProductos/list">
+                                    <FontAwesomeIcon icon={faClipboardList} />
+                                </Link>
+                            </Tooltip>
+                        </li>
+                    </>
+                )}
                 {/* {App.isSeller() && ( */}
                 <hr className="mx-3 my-3" style={{ color: 'white' }} />
                 <li className="mt-3">
                     <Tooltip text="Mis Compras" placement="right">
-                        <Link to="/carrito/misCompras">
+                        <Link to="/ordenes/misCompras">
                             <FontAwesomeIcon icon={faClipboard} />
                         </Link>
                     </Tooltip>
                 </li>
                 {/* )} */}
-                <hr className="mx-3 my-3" style={{ color: 'white' }} />
                 {App.isAdmin() && (
-                    <li className="mt-3">
-                        <Tooltip text="Métodos de pago" placement="right">
-                            <Link to="/metodosPago/list">
-                                <FontAwesomeIcon icon={faCreditCard} />
-                            </Link>
-                        </Tooltip>
-                    </li>
+                    <>
+                        <hr className="mx-3 my-3" style={{ color: 'white' }} />
+                        <li className="mt-3">
+                            <Tooltip text="Métodos de pago" placement="right">
+                                <Link to="/metodosPago/list">
+                                    <FontAwesomeIcon icon={faCreditCard} />
+                                </Link>
+                            </Tooltip>
+                        </li>
+                    </>
                 )}
-                <hr className="mx-3 my-3" style={{ color: 'white' }} />
+                {App.isAdmin() && (
+                    <>
+                        <hr className="mx-3 my-3" style={{ color: 'white' }} />
+                        <li className="mt-3">
+                            <Tooltip text="Usuarios" placement="right">
+                                <Link to="/usuarios/list">
+                                    <FontAwesomeIcon icon={faUser} />
+                                </Link>
+                            </Tooltip>
+                        </li>
+                    </>
+                )}
                 {App.isSeller() && (
                     <>
+                        <hr className="mx-3 my-3" style={{ color: 'white' }} />
                         <li className="mt-3">
                             <Tooltip text="Mis Productos" placement="right">
                                 <Link to="/misProductos/list">

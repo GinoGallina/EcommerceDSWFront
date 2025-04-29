@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../app/constants/Messages';
 import { productCols, sortProductItems } from './Products.data';
-import { ColumnComponentType } from '../../interfaces/shared/ITable';
+import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import API from '../../app/API';
 import { ISortRequest } from '../../interfaces';
@@ -28,12 +28,13 @@ const MyProductList = () => {
             active: true as const,
         },
     ];
-    const productColumns = [
+
+    const productColumns: IColumn<IProductList>[] = [
         ...productCols,
         {
-            name: 'actions',
+            name: '',
             text: 'Acciones',
-            component: (props: ColumnComponentType) => <ActionButtons {...props} entity="producto" />,
+            component: (props: ColumnComponentType<IProductList>) => <ActionButtons {...props} entity="producto" />,
             className: 'text-center',
         },
     ];
@@ -111,7 +112,7 @@ const MyProductList = () => {
                                     <Input showIcon borderless placeholder="Buscar" value={nameFilter} onChange={handleFilterProducts} />
                                 </Col>
                             </Row>
-                            <Table
+                            <Table<IProductList>
                                 className="mb-5"
                                 columns={productColumns}
                                 rows={products.filter((x) => x.name.toLowerCase().includes(nameFilter.toLowerCase()))}
@@ -126,7 +127,7 @@ const MyProductList = () => {
                     }
                     footer={
                         <div className="d-flex justify-content-end">
-                            <Button onClick={() => navigate('/productos/new')} variant="primary">
+                            <Button onClick={() => navigate('/misProductos/new')} variant="primary">
                                 Nuevo producto
                             </Button>
                         </div>

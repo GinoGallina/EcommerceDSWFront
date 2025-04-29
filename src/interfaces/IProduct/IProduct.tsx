@@ -9,6 +9,15 @@ export interface IProductForm {
     categoryId: string;
     userId: string;
 }
+export interface IProductDetailsForm {
+    name: string;
+    description: string;
+    price: string;
+    stock: string;
+    image: string;
+    categoryName: string;
+    userName: string;
+}
 
 export interface IProductList extends IGenericList {
     name: string;

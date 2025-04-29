@@ -12,10 +12,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
     return (
         <>
             <ToastContainer />
-            <div
-                className="container-fluid px-0 mx-0"
-                style={{ minHeight: '100vh', overflow: 'hidden' }}
-            >
+            <div className="container-fluid px-0 mx-0" style={{ minHeight: '100vh', overflow: 'hidden' }}>
                 <div
                     className="container px-0 mx-0"
                     style={{

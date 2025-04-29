@@ -1,4 +1,7 @@
-export const productCols = [
+import { IColumn } from '../../interfaces';
+import { IProductList } from '../../interfaces/IProduct/IProduct';
+
+export const productCols: IColumn<IProductList>[] = [
     {
         name: 'name',
         text: 'Nombre',

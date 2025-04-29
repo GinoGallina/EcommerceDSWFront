@@ -1,54 +1,27 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    ActionButtons,
-    // ActionButtons,
-    BreadCrumb,
-    Button,
-    Card,
-    CategoryDropdown,
-    CheckBox,
-    // Card,
-    Input,
-    Pagination,
-    Table,
-    TableSort,
-    // ProductsDropdown,
-    // Table,
-    // TableSort,
-    Toast,
-} from '../../components';
+import { BreadCrumb, CategoryDropdown, CheckBox, Input, Pagination, TableSort } from '../../components';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-import { Messages } from '../../app/constants/Messages';
-// import App from '../../app/App';
-// import { BreadCrumbItem } from '../../interfaces/shared/BreadCrumInterface';
-// import ProductCard from '../../components/ProductCard/ProductCard';
-import { productCols, sortProductItems, sortProductListItems } from './Products.data';
-import { ColumnComponentType } from '../../interfaces/shared/ITable';
+import { sortProductListItems } from './Products.data';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import API from '../../app/API';
 import { ISortRequest } from '../../interfaces';
 import { IProductList, IProductListGetAllRequest, IProductResponse } from '../../interfaces/IProduct/IProduct';
 import ProductCard from '../../components/ProductCard/ProductCard';
-import { LocalStorage } from '../../app/LocalStorage';
-// import { clientCols, productCols, sortProductItems } from './Products.data';
-// import { getAllProducts, getBreadcrumbItems, getClientProducts } from './Products.helpers';
+import { useDebounce } from '../../hooks/useDebounce';
+import { useOrder } from '../../contexts/OrderContext';
+import { useNavigate } from 'react-router-dom';
+
 const ProductList = () => {
     const navigate = useNavigate();
 
-    // const [clients, setClients] = useState([]);
-    // const [prodFilter, setProdFilter] = useState('');
-    // const [clientFilter, setClientFilter] = useState('');
-    // const [selectedProduct, setSelectedProduct] = useState(null);
-
     // States
     const [products, setProducts] = useState<IProductList[]>([]);
+    const { orderItems, addToOrder, removeFromOrder } = useOrder();
 
     // Filters
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState<ISortRequest | null>(null);
-    const [currentOrder, setCurrentOrder] = useState(LocalStorage.getOrderItems());
     const [filters, setFilters] = useState<{
         category: string[];
         text: string;
@@ -66,12 +39,15 @@ const ProductList = () => {
         },
     ];
 
+    const debouncedText = useDebounce(filters.text, 300);
+
     // Effects
     useEffect(() => {
         const rq: IProductListGetAllRequest = buildGenericGetAllRq(currentPage, sort, undefined, 20);
 
         rq.available = filters.stockAvailable;
         rq.categoryIds = filters.category;
+        rq.text = debouncedText;
 
         API.get<IProductResponse>('product/getAll', rq).then((r) => {
             const products = r.data.products.map((x) => {
@@ -82,11 +58,8 @@ const ProductList = () => {
             });
             setProducts(products);
             setTotalCount(r.data.totalCount);
-            if (products.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
         });
-    }, [currentPage, filters.category, filters.stockAvailable, sort]);
+    }, [currentPage, filters.category, filters.stockAvailable, debouncedText, sort]);
 
     // Handlers
 
@@ -135,31 +108,20 @@ const ProductList = () => {
 
     const handleAddToOrder = (productId: string) => {
         const product = products.find((x) => x.id === productId);
-        if (product) {
-            if (!currentOrder.some((x) => x.productId === productId)) {
-                const newOrder = [
-                    ...currentOrder,
-                    {
-                        productId,
-                        name: product?.name,
-                        price: product?.price,
-                        quantity: 1,
-                        image: product?.image,
-                    },
-                ];
-                LocalStorage.setOrderItems(newOrder);
-                setCurrentOrder(newOrder);
-            }
+        if (product && !orderItems.some((x) => x.productId === productId)) {
+            addToOrder({
+                productId,
+                name: product.name,
+                price: product.price,
+                quantity: 1,
+                image: product.image,
+            });
         }
     };
 
     const handleRemoveFromOrder = (productId: string) => {
-        const newOrder = currentOrder.filter((x) => x.productId !== productId);
-        LocalStorage.setOrderItems(newOrder);
-        setCurrentOrder(newOrder);
+        removeFromOrder(productId);
     };
-
-    // console.log(currentOrder);
 
     return (
         <>
@@ -193,7 +155,14 @@ const ProductList = () => {
                             </Col>
                             <Col xs={12}>
                                 <CheckBox
-                                    label="Mostrar unicamente disponibles"
+                                    label="Mostrar solo disponibles"
+                                    checked={filters.stockAvailable}
+                                    onChange={(v) => handleFiltersChange(v, 'stockAvailable')}
+                                />
+                            </Col>
+                            <Col xs={12}>
+                                <CheckBox
+                                    label="Mostrar solo en oferta"
                                     checked={filters.stockAvailable}
                                     onChange={(v) => handleFiltersChange(v, 'stockAvailable')}
                                 />
@@ -210,13 +179,16 @@ const ProductList = () => {
                                         x.name.toLowerCase().includes(filters.text.toLowerCase())
                                 )
                                 .filter((x) => filters.category.length === 0 || filters.category.includes(x.categoryId))
-                                .map((x, idx) => (
+                                .map((product, idx) => (
                                     <Col xs={12} sm={6} md={4} lg={3} className="mb-3" key={idx}>
                                         <ProductCard
-                                            {...x}
-                                            isInOrder={currentOrder.some((item) => item.productId === x.id)}
+                                            {...product}
+                                            isInOrder={orderItems.some((item) => item.productId === product.id)}
                                             onAddToOrder={handleAddToOrder}
                                             onRemoveFromOrder={handleRemoveFromOrder}
+                                            onViewDetails={() => {
+                                                navigate('/productos/' + product.id);
+                                            }}
                                         />
                                     </Col>
                                 ))}

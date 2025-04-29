@@ -8,7 +8,7 @@ interface ICheckBoxProps {
     checked?: boolean;
     isSwitch?: boolean;
     name?: string;
-    label?: string;
+    label: string;
     disabled?: boolean;
     className?: string;
     style?: CSSProperties;

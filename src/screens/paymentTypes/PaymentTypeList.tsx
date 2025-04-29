@@ -7,19 +7,19 @@ import API from '../../app/API';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 
 import { columns, sortCategoryItems } from './PaymentType.data';
-import { ColumnComponentType } from '../../interfaces/shared/ITable';
+import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { ISortRequest } from '../../interfaces';
 import { IPaymentTypeList, IPaymentTypeResponse } from '../../interfaces/IPaymentType/IPaymentType';
 
 const PaymentTypeList = () => {
     const navigate = useNavigate();
 
-    const paymentTypesColumns = [
+    const paymentTypesColumns: IColumn<IPaymentTypeList>[] = [
         ...columns,
         {
-            name: 'actions',
+            name: '',
             text: 'Acciones',
-            component: (props: ColumnComponentType) => <ActionButtons {...props} female entity="paymentType" />,
+            component: (props: ColumnComponentType<IPaymentTypeList>) => <ActionButtons {...props} female entity="paymentType" />,
             className: 'text-center',
         },
     ];
@@ -95,7 +95,7 @@ const PaymentTypeList = () => {
                             <Table
                                 className="mb-5"
                                 columns={paymentTypesColumns}
-                                rows={paymentTypes.filter((x) => x.description.toLowerCase().includes(nameFilter.toLowerCase()))}
+                                rows={paymentTypes.filter((x) => x.name.toLowerCase().includes(nameFilter.toLowerCase()))}
                                 emptyTableMessage="No se encontraron metodos de pago"
                                 pagination={true}
                                 currentPage={currentPage}

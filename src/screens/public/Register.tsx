@@ -69,7 +69,7 @@ const Register = () => {
         LocalStorage.setUserName(data.user.username);
         LocalStorage.setUserEmail(data.user.email);
         LocalStorage.setSessionExpiration(data.sessionExpiration);
-        // navigate;
+        LocalStorage.setUserAddress(data.user.address);
     };
 
     return (

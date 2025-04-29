@@ -1,11 +1,11 @@
 import { IGenericList, IGenericGetAllResponse } from '../shared/IGenericRequest';
 
 export interface IPaymentTypeForm {
-    description: string;
+    name: string;
 }
 
 export interface IPaymentTypeList extends IGenericList {
-    description: string;
+    name: string;
 }
 
 export interface IPaymentTypeResponse extends IGenericGetAllResponse {

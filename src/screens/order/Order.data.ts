@@ -28,6 +28,11 @@ export const confirmOrderCols = [
 export const getAllOrderCols = () => {
     const cols: IColumn<IOrderList>[] = [
         {
+            text: 'Número',
+            name: 'id',
+            className: 'text-start',
+        },
+        {
             text: 'Método de pago',
             name: 'paymentType',
             className: 'text-start',
@@ -35,6 +40,11 @@ export const getAllOrderCols = () => {
         {
             text: 'Dirección',
             name: 'shippingAddress',
+            className: 'text-center',
+        },
+        {
+            text: 'Fecha de realización',
+            name: 'createdAt',
             className: 'text-center',
         },
     ];

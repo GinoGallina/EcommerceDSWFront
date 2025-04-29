@@ -26,7 +26,7 @@ const CreateProduct = ({ isWatching = false }) => {
     // Effects
     useEffect(() => {
         if (id) {
-            API.get<IProductForm>('product/getOne', { id }).then((r) => {
+            API.get<IProductForm>('product/getOne/' + id, {}).then((r) => {
                 setForm(r.data);
                 setLoading(false);
             });
@@ -94,7 +94,7 @@ const CreateProduct = ({ isWatching = false }) => {
 
     return (
         <>
-            <BreadCrumb items={getBreadcrumbItems(id ? 'Editar' : 'Nuevo')} title="Productos" />
+            <BreadCrumb items={getBreadcrumbItems(id ? (isWatching ? 'Ver' : 'Editar') : 'Nuevo')} title="Mis productos" />
             <div>
                 <Col xs={11} className="container">
                     <Card

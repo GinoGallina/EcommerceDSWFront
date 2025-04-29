@@ -214,7 +214,7 @@
 
         .close-dialog {
             position: absolute;
-            top: 10px;
+            top: 5px;
             right: 10px;
             padding: 3px;
             cursor: pointer;
@@ -356,4 +356,8 @@
             display: none;
         }
     }
+}
+
+.bg-alternate {
+    background-color: rgba(70, 131, 180, 0.07);
 }

@@ -70,6 +70,7 @@ const Dropdown = forwardRef(
 
         useImperativeHandle(ref, () => ({
             clear: () => setSelectedValue(isMulti ? [] : null),
+            items: () => items,
         }));
 
         const handleChange = useCallback(

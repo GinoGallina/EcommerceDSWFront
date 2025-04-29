@@ -1,40 +1,26 @@
-import { Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './quantityInput.scss';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import Input from '../../Input/Input';
-import { ADD, MINUS } from '../../TopBar/TopBar.const';
-import { LocalStorage } from '../../../app/LocalStorage';
-import { IOrderItem } from '../../../interfaces/IOrder/IOrder';
+import { useOrder } from '../../../contexts/OrderContext';
+import './quantityInput.scss';
+import { ADD, ICartAction, MINUS } from '../../../app/constants/Shared';
 
 interface QuantityInputProps {
     quantity: number;
     productId: string;
-    xs: number;
-    md: number;
-    setOrder: React.Dispatch<React.SetStateAction<IOrderItem[]>>;
+    quantityInputClassName?: string;
+    alignDirection?: string;
 }
 
-const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, setOrder, xs = 6, md = 3 }) => {
-    const handleClickQuantityButton = (id: string, action: string) => {
-        let newOrder;
-        setOrder((prevOrder) => {
-            newOrder = prevOrder.map((x) => {
-                if (x.productId === id) {
-                    if (action === MINUS && x.quantity === 0) return x;
-                    return {
-                        ...x,
-                        quantity: action === ADD ? x.quantity + 1 : x.quantity - 1,
-                    };
-                }
-                return x;
-            });
-            return newOrder;
-        });
-        if (newOrder) LocalStorage.setOrderItems(newOrder);
+const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, alignDirection = 'center', quantityInputClassName = '' }) => {
+    const { updateQuantity } = useOrder();
+
+    const handleClickQuantityButton = (id: string, action: ICartAction) => {
+        updateQuantity(id, action);
     };
+
     return (
-        <Col xs={xs} md={md} className="d-flex quantity-input justify-content-center">
+        <div className={`d-flex quantity-input justify-content-${alignDirection} ${quantityInputClassName}`}>
             <FontAwesomeIcon
                 className="my-auto p-1 me-1 icon-minus"
                 onClick={() => handleClickQuantityButton(productId, MINUS)}
@@ -46,6 +32,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, setO
                 <Input
                     value={quantity.toString()}
                     type="number"
+                    // TODO
                     // onChange={(v) => handleChangeItemQuantity2(v, product.productId)}
                     minValue={0}
                 />
@@ -57,7 +44,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, setO
                 color="white"
                 size="sm"
             />
-        </Col>
+        </div>
     );
 };
 

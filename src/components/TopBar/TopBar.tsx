@@ -6,18 +6,18 @@ import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 import LogoMini from '../../assets/logo-mini.png';
 import Logo from '../../assets/ecommerce-logo-topbar.webp';
-// import SidePanel from '../SidePanel/SidePanel';
 import UserDetails from './UserDetails';
-import { LocalStorage } from '../../app/LocalStorage';
 import OrderMenu from './Order/OrderMenu';
 import './topbar.scss';
+import { useOrder } from '../../contexts/OrderContext';
 
 const TopBar = () => {
     const navigate = useNavigate();
-    const [order, setOrder] = useState(LocalStorage.getOrderItems());
+
     const [showUser, setShowUser] = useState(false);
     const [showOrder, setShowOrder] = useState(false);
 
+    const { orderItems } = useOrder();
     // const [showSidePanel, setShowSidePanel] = useState(false);
     // const [showNotifications, setShowNotifications] = useState(false);
 
@@ -121,14 +121,14 @@ const TopBar = () => {
                 <div className="d-flex flex-row">
                     <span className={classNames('icon-container', 'position-relative')} onClick={handleShowOrder}>
                         <FontAwesomeIcon icon={faCartShopping} size="xl" ref={orderIconRef} />
-                        {order.length > 0 && <span className="order-badge">{order.length}</span>}
+                        {orderItems.length > 0 && <span className="order-badge">{orderItems.length}</span>}
                     </span>
                     <span className={classNames('icon-container', showUser && 'show-card')} onClick={handleShowUserInfo}>
                         <FontAwesomeIcon icon={faUser} size="xl" ref={userIconRef} />
                     </span>
                 </div>
                 {/* Order */}
-                <OrderMenu order={order} showOrder={showOrder} userInfoRef={userInfoRef} setShowOrder={setShowOrder} setOrder={setOrder} />
+                <OrderMenu order={orderItems} showOrder={showOrder} userInfoRef={userInfoRef} setShowOrder={setShowOrder} />
                 {/* User details */}
                 <div className={classNames('user-container', showUser && 'show-card')} onBlur={handleHideUserInfo} ref={userInfoRef}>
                     <UserDetails setShowUser={setShowUser} handleHideUserInfo={handleHideUserInfo} />

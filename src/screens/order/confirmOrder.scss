@@ -4,10 +4,6 @@
         border: 1px solid rgba(0, 0, 0, 0.09);
     }
 
-    .bg-alternate {
-        background-color: rgba(70, 131, 180, 0.07);
-    }
-
     svg {
         cursor: pointer;
         transition: background-color 0.2s ease-out;
@@ -18,4 +14,8 @@
             }
         }
     }
+}
+
+.bg-alternate {
+    background-color: rgba(70, 131, 180, 0.07);
 }

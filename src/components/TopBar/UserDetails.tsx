@@ -19,7 +19,7 @@ const UserDetails: React.FC<IUserDetailsProps> = ({ handleHideUserInfo, setShowU
 
     const handlePerfilDetails = () => {
         setShowUser(false);
-        navigate(`/usuario/detallesPerfil/${LocalStorage.getUserId()}`);
+        navigate(`/usuarios/detallesPerfil/${LocalStorage.getUserId()}`);
     };
     return (
         <>

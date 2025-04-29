@@ -1,7 +1,10 @@
-export const columns = [
+import { IColumn } from '../../interfaces';
+import { IPaymentTypeList } from '../../interfaces/IPaymentType/IPaymentType';
+
+export const columns: IColumn<IPaymentTypeList>[] = [
     {
-        name: 'description',
-        text: 'Descripción',
+        name: 'name',
+        text: 'Nombre',
         textCenter: true,
     },
     {

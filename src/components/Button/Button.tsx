@@ -13,6 +13,7 @@ interface ButtonProps {
     variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
     onClick: (event: MouseEvent<HTMLButtonElement>) => void;
     icon?: IconProp;
+    left?: boolean;
     link?: boolean;
     disabled?: boolean;
     href?: string;
@@ -39,6 +40,7 @@ const Button = forwardRef<ButtonHandle, ButtonProps>(
             disabled = false,
             href,
             size,
+            left = false,
             ...props
         },
         ref
@@ -48,6 +50,17 @@ const Button = forwardRef<ButtonHandle, ButtonProps>(
         useImperativeHandle(ref, () => ({
             focus: () => buttonRef.current && buttonRef.current.focus(),
         }));
+
+        const Icon = () =>
+            icon && (
+                <FontAwesomeIcon
+                    icon={icon}
+                    style={{
+                        ...iconStyle,
+                        marginLeft: (iconStyle && iconStyle.marginLeft) || '5px',
+                    }}
+                />
+            );
 
         return (
             <BS.Button
@@ -65,16 +78,9 @@ const Button = forwardRef<ButtonHandle, ButtonProps>(
                 type={type}
                 onClick={onClick}
             >
+                {icon && left && Icon()}
                 {children}
-                {icon && (
-                    <FontAwesomeIcon
-                        icon={icon}
-                        style={{
-                            ...iconStyle,
-                            marginLeft: (iconStyle && iconStyle.marginLeft) || '5px',
-                        }}
-                    />
-                )}
+                {icon && !left && Icon()}
             </BS.Button>
         );
     }

@@ -1,9 +1,10 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useImperativeHandle, useState } from 'react';
 import { Dropdown } from '../..';
 import { formatComboItems } from '../../../app/Helpers';
 import API from '../../../app/API';
 import { GetComboItemType, IComboDropdown, IGetComboRequest } from '../../../interfaces/shared/IGetCombo';
-import { DropdownValue } from '../../../interfaces';
+import { DropdownOption, DropdownValue } from '../../../interfaces';
+import { Roles } from '../../../app/constants/Roles';
 
 const RolesDropdown: React.FC<IComboDropdown> = ({
     value = null,
@@ -13,10 +14,16 @@ const RolesDropdown: React.FC<IComboDropdown> = ({
     placeholder = 'Seleccione un rol',
     isMulti = false,
     exclude = [],
+    useDefaultDisableOption = true,
     disableOption,
     onChange,
+    ref,
 }) => {
     const [items, setItems] = useState<GetComboItemType[] | null>(null);
+
+    useImperativeHandle(ref, () => ({
+        items: () => items,
+    }));
 
     // Get users
     useEffect(() => {
@@ -29,6 +36,17 @@ const RolesDropdown: React.FC<IComboDropdown> = ({
 
     const handleChange = (options: string) => {
         onChange(options);
+    };
+
+    const handleDisableRoleOptions = (v: DropdownOption) => {
+        if (disableOption) return disableOption(v);
+        if (useDefaultDisableOption)
+            return (
+                (v.label !== Roles.Admin && value?.includes(items?.find((x) => x.label === Roles.Admin)?.value || '')) ||
+                (v.label === Roles.Admin &&
+                    (value?.includes(items?.find((x) => x.label === Roles.User)?.value || '') ||
+                        value?.includes(items?.find((x) => x.label === Roles.Seller)?.value || '')))
+            );
     };
 
     return (
@@ -44,7 +62,8 @@ const RolesDropdown: React.FC<IComboDropdown> = ({
                     : (items?.filter((x) => !exclude.map((x) => x.toLocaleLowerCase()).includes(x.label.toLocaleLowerCase())) ?? [])
             }
             value={value}
-            disableOption={disableOption}
+            disableOption={(v) => handleDisableRoleOptions(v) || false}
+            ref={ref}
             onChange={handleChange as (value: DropdownValue) => void}
         />
     );

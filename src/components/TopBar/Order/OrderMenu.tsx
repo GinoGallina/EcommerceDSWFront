@@ -9,13 +9,12 @@ import { IOrderItem } from '../../../interfaces/IOrder/IOrder';
 
 interface IOrderMenuProps {
     order: IOrderItem[];
-    setOrder: React.Dispatch<React.SetStateAction<IOrderItem[]>>;
     showOrder: boolean;
     userInfoRef: React.RefObject<HTMLDivElement | null>;
     setShowOrder: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const OrderMenu: React.FC<IOrderMenuProps> = ({ order, showOrder, userInfoRef, setShowOrder, setOrder }) => {
+const OrderMenu: React.FC<IOrderMenuProps> = ({ order, showOrder, userInfoRef, setShowOrder }) => {
     const navigate = useNavigate();
 
     const handleOrder = () => {
@@ -25,13 +24,12 @@ const OrderMenu: React.FC<IOrderMenuProps> = ({ order, showOrder, userInfoRef, s
     return (
         <div className={classNames('order-container', showOrder && 'show-card')} onBlur={handleOrder} ref={userInfoRef}>
             <FontAwesomeIcon icon={faClose} size="sm" className="close-dialog" onClick={handleOrder} />
-            {order.map((x) => (
-                <>
-                    <OrderMenuItem order={order} product={x} setOrder={setOrder} />
-                    <hr className="mt-1" />
-                </>
+            {order.map((x, idx) => (
+                <OrderMenuItem key={idx} idx={idx} product={x} />
             ))}
+            <hr />
             <div className={classNames('text-end fs-3 text-success d-flex justify-content-between', order.length === 0 && 'mt-auto')}>
+                Total del carrito: {formatCurrency(order.reduce((sum, item) => sum + item.price * item.quantity, 0))}
                 {order.length !== 0 && (
                     <Button
                         variant="success"
@@ -43,7 +41,6 @@ const OrderMenu: React.FC<IOrderMenuProps> = ({ order, showOrder, userInfoRef, s
                         Comprar
                     </Button>
                 )}
-                Total del carrito: {formatCurrency(order.reduce((sum, item) => sum + item.price * item.quantity, 0))}
             </div>
         </div>
     );

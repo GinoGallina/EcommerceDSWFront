@@ -19,6 +19,10 @@ const CreatePaymentType = lazy(() => import('../screens/paymentTypes/CreatePayme
 const PaymentTypeList = lazy(() => import('../screens/paymentTypes/PaymentTypeList.tsx'));
 const ConfirmOrder = lazy(() => import('../screens/order/ConfirmOrder.tsx'));
 const OrderList = lazy(() => import('../screens/order/OrderList.tsx'));
+const OrderDetails = lazy(() => import('../screens/order/OrderDetails.tsx'));
+const UserList = lazy(() => import('../screens/users/UserList.tsx'));
+const CreateUser = lazy(() => import('../screens/users/CreateUser.tsx'));
+const ProductDetails = lazy(() => import('../screens/products/ProductDetails.tsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to="/login" />);
 const AdminRoute = () => (App.isAdmin() ? <Outlet /> : <Navigate to="/notAllowed" />);
@@ -57,25 +61,9 @@ export const AppRoutes = () => (
                     />
                     <Route
                         path="/productos/:id"
-                        // element={
-                        //     <DefaultLayout>
-                        //         <CreateProduct isWatching />
-                        //     </DefaultLayout>
-                        // }
-                    />
-                    <Route
-                        path="/productos/edit/:id"
-                        // element={
-                        //     <DefaultLayout>
-                        //         <CreateProduct isEditing />
-                        //     </DefaultLayout>
-                        // }
-                    />
-                    <Route
-                        path="/productos/new"
                         element={
                             <DefaultLayout>
-                                <CreateProduct />
+                                <ProductDetails />
                             </DefaultLayout>
                         }
                     />
@@ -164,14 +152,13 @@ export const AppRoutes = () => (
                         }
                     />
                     <Route
-                        path="/misProductos/nuevo"
+                        path="/misProductos/new"
                         element={
                             <DefaultLayout>
                                 <CreateProduct />
                             </DefaultLayout>
                         }
                     />
-
                     <Route
                         path="/misProductos/:id"
                         element={
@@ -201,11 +188,66 @@ export const AppRoutes = () => (
                         </DefaultLayout>
                     }
                 />
+            </Route>
+
+            <Route path="/ordenes" element={<PrivateRoute />}>
                 <Route
-                    path="/carrito/misCompras"
+                    path="/ordenes/misCompras"
                     element={
                         <DefaultLayout>
                             <OrderList />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/ordenes/:id"
+                    element={
+                        <DefaultLayout>
+                            <OrderDetails isWatching />
+                        </DefaultLayout>
+                    }
+                />
+            </Route>
+
+            {/* Usuario */}
+            <Route path="/usuarios" element={<PrivateRoute />}>
+                <Route
+                    path="/usuarios/list"
+                    element={
+                        <DefaultLayout>
+                            <UserList />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/usuarios/new"
+                    element={
+                        <DefaultLayout>
+                            <CreateUser />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/usuarios/:id"
+                    element={
+                        <DefaultLayout>
+                            <CreateUser isWatching />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/usuarios/detallesPerfil/:id"
+                    element={
+                        <DefaultLayout>
+                            <CreateUser viewProfileDetails />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/usuarios/edit/:id"
+                    element={
+                        <DefaultLayout>
+                            <CreateUser />
                         </DefaultLayout>
                     }
                 />

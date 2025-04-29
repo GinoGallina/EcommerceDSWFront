@@ -23,7 +23,7 @@ const CreatePaymentType = ({ isWatching = false }) => {
     // Effects
     useEffect(() => {
         if (id) {
-            API.get<IPaymentTypeForm>('paymentType/getOne', { id }).then((r) => {
+            API.get<IPaymentTypeForm>('paymentType/getOne/' + id, {}).then((r) => {
                 setForm(r.data);
                 setLoading(false);
             });
