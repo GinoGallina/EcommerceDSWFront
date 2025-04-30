@@ -120,6 +120,7 @@ const CreateProduct = ({ isWatching = false }) => {
                                                 disabled={isWatching}
                                                 placeholder="Descripción"
                                                 value={form.description}
+                                                maxLength={255}
                                                 onChange={(value) => handleInputChange(value, 'description')}
                                             />
                                         </Col>

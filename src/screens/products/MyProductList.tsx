@@ -8,7 +8,7 @@ import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import API from '../../app/API';
 import { ISortRequest } from '../../interfaces';
-import { IProductList, IProductResponse } from '../../interfaces/IProduct/IProduct';
+import { IProductList, IProductListGetAllResponse } from '../../interfaces/IProduct/IProduct';
 
 const MyProductList = () => {
     const navigate = useNavigate();
@@ -43,7 +43,7 @@ const MyProductList = () => {
     useEffect(() => {
         const rq = buildGenericGetAllRq(currentPage, sort);
 
-        API.get<IProductResponse>('product/getAll', rq).then((r) => {
+        API.get<IProductListGetAllResponse>('product/getAll', rq).then((r) => {
             const products = r.data.products.map((x) => {
                 return {
                     ...x,
@@ -57,27 +57,6 @@ const MyProductList = () => {
             }
         });
     }, [currentPage, sort]);
-
-    // Handlers
-    // const handleFilterProducts = (value) => {
-    //     setProdFilter(value);
-    // };
-
-    // const handleFilterClients = (value) => {
-    //     setClientFilter(value);
-    // };
-
-    // const handlePageChange = (page) => {
-    //     setCurrentPage(page);
-    // };
-
-    // const handleSortChange = ({ column, direction }) => {
-    //     setSort({ column, direction });
-    // };
-
-    // const updateDeletedRow = (id) => {
-    //     setProducts((prevRow) => prevRow.filter((row) => row.id !== id));
-    // };
 
     // Handlers
     const handleFilterProducts = (value: string) => {

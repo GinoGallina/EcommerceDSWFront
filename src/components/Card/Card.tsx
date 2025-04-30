@@ -13,14 +13,7 @@ interface CardProps {
     footer?: ReactNode;
 }
 
-const Card: React.FC<CardProps> = ({
-    className,
-    cardBodyClassName,
-    title,
-    header,
-    body,
-    footer,
-}) => (
+const Card: React.FC<CardProps> = ({ className, cardBodyClassName, title, header, body, footer }) => (
     <BS.Card className={classNames('mb-3 p-3 shadow', className)}>
         <h1 className="text-center">{title}</h1>
         {header && header}

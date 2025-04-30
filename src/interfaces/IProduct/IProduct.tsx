@@ -16,7 +16,11 @@ export interface IProductDetailsForm {
     stock: string;
     image: string;
     categoryName: string;
-    userName: string;
+    sellerDetails: {
+        userName: string;
+        storeName: string;
+        storeDescription: string;
+    };
 }
 
 export interface IProductList extends IGenericList {
@@ -28,15 +32,16 @@ export interface IProductList extends IGenericList {
     categoryId: string;
 }
 
+// Get All
 export interface IProductListGetAllRequest extends IGenericGetAllResquest {
-    text?: string;
-    categoryIds?: string[];
-    available?: boolean;
+    text: string;
+    categoryIds: string[];
+    available: boolean;
     price?: number;
     lessThan?: boolean;
 }
 
-export interface IProductResponse extends IGenericGetAllResponse {
+export interface IProductListGetAllResponse extends IGenericGetAllResponse {
     products: IProductList[];
 }
 

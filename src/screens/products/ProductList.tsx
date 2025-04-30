@@ -5,7 +5,7 @@ import { sortProductListItems } from './Products.data';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import API from '../../app/API';
 import { ISortRequest } from '../../interfaces';
-import { IProductList, IProductListGetAllRequest, IProductResponse } from '../../interfaces/IProduct/IProduct';
+import { IProductList, IProductListGetAllRequest, IProductListGetAllResponse } from '../../interfaces/IProduct/IProduct';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useOrder } from '../../contexts/OrderContext';
@@ -43,13 +43,14 @@ const ProductList = () => {
 
     // Effects
     useEffect(() => {
-        const rq: IProductListGetAllRequest = buildGenericGetAllRq(currentPage, sort, undefined, 20);
+        const rq: IProductListGetAllRequest = {
+            ...buildGenericGetAllRq(currentPage, sort, undefined, 20),
+            available: filters.stockAvailable,
+            categoryIds: filters.category,
+            text: debouncedText,
+        };
 
-        rq.available = filters.stockAvailable;
-        rq.categoryIds = filters.category;
-        rq.text = debouncedText;
-
-        API.get<IProductResponse>('product/getAll', rq).then((r) => {
+        API.get<IProductListGetAllResponse>('product/getAll', rq).then((r) => {
             const products = r.data.products.map((x) => {
                 return {
                     ...x,
@@ -160,13 +161,6 @@ const ProductList = () => {
                                     onChange={(v) => handleFiltersChange(v, 'stockAvailable')}
                                 />
                             </Col>
-                            <Col xs={12}>
-                                <CheckBox
-                                    label="Mostrar solo en oferta"
-                                    checked={filters.stockAvailable}
-                                    onChange={(v) => handleFiltersChange(v, 'stockAvailable')}
-                                />
-                            </Col>
                         </Row>
                     </Col>
                     <Col xs={12} sm={10}>
@@ -193,12 +187,7 @@ const ProductList = () => {
                                     </Col>
                                 ))}
                             <Col xs={12} className="d-flex justify-content-end mt-3">
-                                <Pagination
-                                    currentPage={currentPage}
-                                    itemsPerPage={20}
-                                    totalCount={totalCount}
-                                    setCurrentPage={setCurrentPage}
-                                ></Pagination>
+                                <Pagination currentPage={currentPage} itemsPerPage={20} totalCount={totalCount} setCurrentPage={setCurrentPage} />
                             </Col>
                         </Row>
                     </Col>
