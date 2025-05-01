@@ -1,14 +1,6 @@
 import { IGenericGetAllResquest, IGenericList, IGenericGetAllResponse } from '../shared/IGenericRequest';
 
-export interface IProductForm {
-    name: string;
-    description: string;
-    price: string;
-    stock: string;
-    image: string;
-    categoryId: string;
-    userId: string;
-}
+// Details
 export interface IProductDetailsForm {
     name: string;
     description: string;
@@ -23,16 +15,19 @@ export interface IProductDetailsForm {
     };
 }
 
+// Get All
 export interface IProductList extends IGenericList {
     name: string;
     description: string;
     price: number;
     stock: number;
     image: string;
-    categoryId: string;
+    rating: {
+        rate: number;
+        totalReviews: number;
+    };
+    categoryName?: string;
 }
-
-// Get All
 export interface IProductListGetAllRequest extends IGenericGetAllResquest {
     text: string;
     categoryIds: string[];
@@ -64,4 +59,14 @@ export interface ICreateProductResponse {
     price: number;
     image?: string;
     createdAt: string;
+}
+
+export interface IProductForm {
+    name: string;
+    description: string;
+    price: string;
+    stock: string;
+    image: string;
+    categoryId: string;
+    userId: string;
 }

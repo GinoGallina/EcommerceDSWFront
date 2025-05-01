@@ -24,24 +24,30 @@ const OrderMenu: React.FC<IOrderMenuProps> = ({ order, showOrder, userInfoRef, s
     return (
         <div className={classNames('order-container', showOrder && 'show-card')} onBlur={handleOrder} ref={userInfoRef}>
             <FontAwesomeIcon icon={faClose} size="sm" className="close-dialog" onClick={handleOrder} />
-            {order.map((x, idx) => (
-                <OrderMenuItem key={idx} idx={idx} product={x} />
-            ))}
-            <hr />
-            <div className={classNames('text-end fs-3 text-success d-flex justify-content-between', order.length === 0 && 'mt-auto')}>
-                Total del carrito: {formatCurrency(order.reduce((sum, item) => sum + item.price * item.quantity, 0))}
-                {order.length !== 0 && (
-                    <Button
-                        variant="success"
-                        onClick={() => {
-                            navigate('/carrito/confirmar');
-                        }}
-                        icon={faShoppingBag}
-                    >
-                        Comprar
-                    </Button>
-                )}
-            </div>
+            {order.length > 0 ? (
+                <>
+                    {order.map((x, idx) => (
+                        <OrderMenuItem key={idx} idx={idx} product={x} />
+                    ))}
+                    <hr />
+                    <div className={classNames('text-end fs-3 text-success d-flex justify-content-between', order.length === 0 && 'mt-auto')}>
+                        Total del carrito: {formatCurrency(order.reduce((sum, item) => sum + item.price * item.quantity, 0))}
+                        {order.length !== 0 && (
+                            <Button
+                                variant="success"
+                                onClick={() => {
+                                    navigate('/carrito/confirmar');
+                                }}
+                                icon={faShoppingBag}
+                            >
+                                Comprar
+                            </Button>
+                        )}
+                    </div>
+                </>
+            ) : (
+                <p className="mb-0 text-center">No hay productos en el carrito</p>
+            )}
         </div>
     );
 };

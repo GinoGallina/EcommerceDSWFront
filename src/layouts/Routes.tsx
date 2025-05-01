@@ -27,7 +27,6 @@ const ProductDetails = lazy(() => import('../screens/products/ProductDetails.tsx
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to="/login" />);
 const AdminRoute = () => (App.isAdmin() ? <Outlet /> : <Navigate to="/notAllowed" />);
 const SellerRoute = () => (App.isSeller() ? <Outlet /> : <Navigate to="/notAllowed" />);
-const UserRoute = () => (App.isUser() ? <Outlet /> : <Navigate to="/notAllowed" />);
 
 export const AppRoutes = () => (
     <Suspense
@@ -142,7 +141,7 @@ export const AppRoutes = () => (
                 </Route>
 
                 {/* Productos Seller */}
-                <Route path="/misProductos" element={<PrivateRoute />}>
+                <Route path="/misProductos" element={<SellerRoute />}>
                     <Route
                         path="/misProductos/list"
                         element={
@@ -203,14 +202,14 @@ export const AppRoutes = () => (
                     path="/ordenes/:id"
                     element={
                         <DefaultLayout>
-                            <OrderDetails isWatching />
+                            <OrderDetails />
                         </DefaultLayout>
                     }
                 />
             </Route>
 
             {/* Usuario */}
-            <Route path="/usuarios" element={<PrivateRoute />}>
+            <Route path="/usuarios" element={<AdminRoute />}>
                 <Route
                     path="/usuarios/list"
                     element={
@@ -236,18 +235,22 @@ export const AppRoutes = () => (
                     }
                 />
                 <Route
-                    path="/usuarios/detallesPerfil/:id"
-                    element={
-                        <DefaultLayout>
-                            <CreateUser viewProfileDetails />
-                        </DefaultLayout>
-                    }
-                />
-                <Route
                     path="/usuarios/edit/:id"
                     element={
                         <DefaultLayout>
                             <CreateUser />
+                        </DefaultLayout>
+                    }
+                />
+            </Route>
+
+            {/* Usuario compartido */}
+            <Route path="/usuarios" element={<PrivateRoute />}>
+                <Route
+                    path="/usuarios/detallesPerfil/:id"
+                    element={
+                        <DefaultLayout>
+                            <CreateUser viewProfileDetails />
                         </DefaultLayout>
                     }
                 />

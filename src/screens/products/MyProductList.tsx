@@ -43,7 +43,7 @@ const MyProductList = () => {
     useEffect(() => {
         const rq = buildGenericGetAllRq(currentPage, sort);
 
-        API.get<IProductListGetAllResponse>('product/getAll', rq).then((r) => {
+        API.get<IProductListGetAllResponse>('product/getAllMyProducts', rq).then((r) => {
             const products = r.data.products.map((x) => {
                 return {
                     ...x,

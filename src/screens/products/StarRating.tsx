@@ -4,14 +4,16 @@ import React from 'react';
 
 type StarRatingProps = {
     rate: number;
+    totalReviews?: number;
     onChange: (rating: number) => void;
     max?: number;
     readOnly?: boolean;
 };
 
-export const StarRating: React.FC<StarRatingProps> = ({ rate, onChange, max = 5, readOnly = false }) => {
+export const StarRating: React.FC<StarRatingProps> = ({ rate, totalReviews = null, onChange, max = 5, readOnly = false }) => {
     return (
         <div className="d-flex align-items-center gap-1">
+            <p className="mb-0">{rate}</p>
             {[...Array(max)].map((_, i) => {
                 const value = i + 1;
                 return (
@@ -27,7 +29,7 @@ export const StarRating: React.FC<StarRatingProps> = ({ rate, onChange, max = 5,
                     </button>
                 );
             })}
-            <p className="mb-0">({rate})</p>
+            {totalReviews !== null && <p className="mb-0">({totalReviews})</p>}
         </div>
     );
 };

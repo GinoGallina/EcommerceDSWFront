@@ -92,6 +92,7 @@ const CreateCategory = ({ isWatching = false }) => {
                                                 disabled={isWatching}
                                                 placeholder="Nombre"
                                                 value={form.name}
+                                                maxLength={60}
                                                 onChange={(value) => handleInputChange(value, 'name')}
                                             />
                                         </Col>

@@ -18,7 +18,7 @@ interface APIResponse<T> {
 
 const get = async <T>(
     path: string,
-    rq: Record<string, string | number | boolean | Array<string | number>> | IGenericGetAllResquest
+    rq: Record<string, string | number | boolean | Array<string | number | boolean>> | IGenericGetAllResquest
 ): Promise<APIResponse<T>> => {
     const params = new URLSearchParams();
 

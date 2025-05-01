@@ -10,7 +10,7 @@ interface ButtonProps {
     className?: string;
     iconStyle?: CSSProperties;
     type?: 'button' | 'reset' | 'submit';
-    variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
+    variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark' | 'outline-secondary';
     onClick: (event: MouseEvent<HTMLButtonElement>) => void;
     icon?: IconProp;
     left?: boolean;

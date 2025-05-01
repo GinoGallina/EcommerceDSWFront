@@ -1,6 +1,24 @@
 import { BreadCrumbItem } from '../../components/BreadCrumb/BreadCrumb';
 
-export const getBreadcrumbItems = (label: string) => {
+export const getBreadcrumbItemsCreateProduct = (label: string) => {
+    const items: BreadCrumbItem[] = [
+        {
+            active: label ? false : true,
+            url: '/misProductos/list',
+            label: 'Mis Productos',
+        },
+    ];
+
+    if (label) {
+        items.push({
+            active: true,
+            label,
+        });
+    }
+
+    return items;
+};
+export const getBreadcrumbItemsProductDetails = (label: string) => {
     const items: BreadCrumbItem[] = [
         {
             active: label ? false : true,

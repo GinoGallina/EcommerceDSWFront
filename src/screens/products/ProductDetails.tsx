@@ -1,23 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Col, Image, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, Input, Loader, Pagination, QuantityInput, Spinner, Toast } from '../../components';
+import { BreadCrumb, Button, Card, QuantityInput, Spinner } from '../../components';
 import API from '../../app/API';
-import { getBreadcrumbItems } from './Products.helpers';
+import { getBreadcrumbItemsProductDetails } from './Products.helpers';
 import noImage from '../../assets/no_image.jpg';
-import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
+import { formatCurrency } from '../../app/Helpers';
 import { IProductDetailsForm } from '../../interfaces/IProduct/IProduct';
 import { useOrder } from '../../contexts/OrderContext';
 import './productDetails.scss';
-import { StarRating } from './StarRating';
-import {
-    ICreateReviewRequest,
-    ICreateReviewResponse,
-    IReviewGetAllResponse,
-    IReviewList,
-    IReviewListGetAllRequest,
-} from '../../interfaces/IReview/IReview';
-import { LocalStorage } from '../../app/LocalStorage';
+import { ReviewsCard } from './ReviewsCard';
 
 const InitialProductDetails: IProductDetailsForm = {
     name: '',
@@ -41,16 +33,8 @@ const ProductDetails = () => {
 
     // State
     const [form, setForm] = useState(InitialProductDetails);
-    const [comment, setComment] = useState('');
-    const [rate, setRate] = useState(0);
     const [loading, setLoading] = useState(id ? true : false);
-    const [submiting, setSubmiting] = useState(false);
     const { orderItems, addToOrder, removeFromOrder } = useOrder();
-    const [reviews, setReviews] = useState<IReviewList[]>([]);
-    const [totalCount, setTotalCount] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const paginationAmount = 10;
 
     // Effects
     useEffect(() => {
@@ -62,56 +46,9 @@ const ProductDetails = () => {
         }
     }, [id]);
 
-    useEffect(() => {
-        const rq: IReviewListGetAllRequest = { ...buildGenericGetAllRq(currentPage, null, undefined, paginationAmount), productId: id! };
-
-        API.get<IReviewGetAllResponse>('review/getAll/', rq).then((r) => {
-            const reviews = r.data.reviews.map((x) => {
-                return {
-                    ...x,
-                };
-            });
-            setReviews(reviews);
-            setTotalCount(r.data.totalCount);
-        });
-    }, [currentPage, id]);
-
-    const handleSubmit = async () => {
-        if (submiting) return;
-
-        if (!comment) {
-            Toast.warning('No puede ingresar un comentario vacío en la reseña.');
-            return;
-        }
-
-        setSubmiting(true);
-
-        API.post<ICreateReviewResponse, ICreateReviewRequest>(`review/create`, { ProductId: id!, Rate: rate, Description: comment })
-            .then((r) => {
-                if (r.message) Toast.success(r.message);
-                setReviews((prevState) => [
-                    {
-                        description: comment,
-                        rate: rate,
-                        user: LocalStorage.getUserName(),
-                        createdAt: 'Ahora',
-                    },
-                    ...prevState,
-                ]);
-                setComment('');
-                setRate(0);
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
-            })
-            .finally(() => {
-                setSubmiting(false);
-            });
-    };
-
     return (
         <>
-            <BreadCrumb items={getBreadcrumbItems(form.name)} title={form.name} />
+            <BreadCrumb items={getBreadcrumbItemsProductDetails(form.name)} title={form.name} />
             <div>
                 <Col xs={11} className="container product-details">
                     <Card
@@ -143,7 +80,7 @@ const ProductDetails = () => {
                                                             </h5>
                                                         </>
                                                     ) : (
-                                                        <h5 className="text-danger">Out of stock</h5>
+                                                        <h5 className="text-danger">Sin Stock</h5>
                                                     )}
                                                 </Col>
                                                 <Col className="mb-3" xs={12}>
@@ -160,7 +97,7 @@ const ProductDetails = () => {
                                                                 />
                                                             </Col>
                                                         )}
-                                                        <Col xs={12} md={4}>
+                                                        <Col xs={12} md={6} lg={4}>
                                                             {orderItems.some((item) => item.productId === id) ? (
                                                                 <Button
                                                                     className="bg-danger btn-sm border-0 w-100"
@@ -171,6 +108,7 @@ const ProductDetails = () => {
                                                             ) : (
                                                                 <Button
                                                                     className="bg-success btn-sm border-0 w-100"
+                                                                    disabled={Number(form.stock) === 0}
                                                                     onClick={() =>
                                                                         addToOrder({
                                                                             name: form.name,
@@ -181,7 +119,7 @@ const ProductDetails = () => {
                                                                         })
                                                                     }
                                                                 >
-                                                                    Agregar a carrito
+                                                                    Agregar al carrito
                                                                 </Button>
                                                             )}
                                                         </Col>
@@ -226,74 +164,7 @@ const ProductDetails = () => {
                             )
                         }
                     />
-                    <Card
-                        title="Reseñas"
-                        body={
-                            loading ? (
-                                <Spinner />
-                            ) : (
-                                <>
-                                    {reviews.length === 0 ? (
-                                        <p>No se encontraron reseñas para este producto</p>
-                                    ) : (
-                                        <Row>
-                                            {reviews.map((review, idx) => {
-                                                return (
-                                                    <Col key={idx} xs={12} className="p-3 border mb-3 shadow-sm bg-white w-100">
-                                                        <Row>
-                                                            <Col xs={6}>
-                                                                <strong>{review.user}</strong>
-                                                            </Col>
-
-                                                            <Col xs={6} className="text-end">
-                                                                <p>{review.createdAt}</p>
-                                                            </Col>
-                                                            <Col xs={12}>
-                                                                <StarRating rate={review.rate} readOnly onChange={() => {}}></StarRating>
-                                                            </Col>
-                                                            <Col xs={12}>
-                                                                <p className="mb-0">{review.description}</p>
-                                                            </Col>
-                                                        </Row>
-                                                    </Col>
-                                                );
-                                            })}
-                                            <Col xs={12} className="d-flex justify-content-end mt-3">
-                                                <Pagination
-                                                    currentPage={currentPage}
-                                                    itemsPerPage={paginationAmount}
-                                                    totalCount={totalCount}
-                                                    setCurrentPage={setCurrentPage}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    )}
-                                </>
-                            )
-                        }
-                        footer={
-                            <Row>
-                                <Col xs={10}>
-                                    <>
-                                        <StarRating rate={rate} onChange={(v) => setRate(v)}></StarRating>
-                                        <Input
-                                            value={comment}
-                                            className="mt-2"
-                                            maxLength={350}
-                                            tag="textarea"
-                                            placeholder="Deja tu comentario..."
-                                            onChange={(v) => setComment(v)}
-                                        />
-                                    </>
-                                </Col>
-                                <Col className="d-flex justify-content-end align-items-end" xs={2}>
-                                    <Button onClick={handleSubmit} disabled={submiting}>
-                                        {submiting ? <Loader /> : 'Enviar'}
-                                    </Button>
-                                </Col>
-                            </Row>
-                        }
-                    />
+                    <ReviewsCard loading={loading} id={id!} />
                 </Col>
             </div>
         </>

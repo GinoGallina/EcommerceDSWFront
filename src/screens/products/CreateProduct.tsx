@@ -6,7 +6,7 @@ import { InitialFormStates } from '../../app/InitialFormStates';
 import Toast from '../../components/Toast/Toast';
 import API from '../../app/API';
 import { Messages } from '../../app/constants/Messages';
-import { getBreadcrumbItems } from '../products/Products.helpers';
+import { getBreadcrumbItemsCreateProduct } from '../products/Products.helpers';
 import { IProductForm } from '../../interfaces';
 import App from '../../app/App';
 import { LocalStorage } from '../../app/LocalStorage';
@@ -94,7 +94,7 @@ const CreateProduct = ({ isWatching = false }) => {
 
     return (
         <>
-            <BreadCrumb items={getBreadcrumbItems(id ? (isWatching ? 'Ver' : 'Editar') : 'Nuevo')} title="Mis productos" />
+            <BreadCrumb items={getBreadcrumbItemsCreateProduct(id ? (isWatching ? 'Ver' : 'Editar') : 'Nuevo')} title="Mis productos" />
             <div>
                 <Col xs={11} className="container">
                     <Card
@@ -111,12 +111,14 @@ const CreateProduct = ({ isWatching = false }) => {
                                                 disabled={isWatching}
                                                 placeholder="Nombre"
                                                 value={form.name}
+                                                maxLength={40}
                                                 onChange={(value) => handleInputChange(value, 'name')}
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className="pe-3 mb-3">
                                             <Label required>Descripción</Label>
                                             <Input
+                                                tag={form.description.length > 40 ? 'textarea' : 'input'}
                                                 disabled={isWatching}
                                                 placeholder="Descripción"
                                                 value={form.description}

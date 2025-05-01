@@ -26,10 +26,14 @@ const ProductList = () => {
         category: string[];
         text: string;
         stockAvailable: boolean;
+        priceOption: string;
+        price: string;
     }>({
         category: [],
         text: '',
         stockAvailable: true,
+        price: '',
+        priceOption: '',
     });
 
     const productsBreadCrums = [
@@ -63,37 +67,6 @@ const ProductList = () => {
     }, [currentPage, filters.category, filters.stockAvailable, debouncedText, sort]);
 
     // Handlers
-
-    // const handleFilterClients = (value) => {
-    //     setClientFilter(value);
-    // };
-
-    // const handlePageChange = (page) => {
-    //     setCurrentPage(page);
-    // };
-
-    // const handleSortChange = ({ column, direction }) => {
-    //     setSort({ column, direction });
-    // };
-
-    // const updateDeletedRow = (id) => {
-    //     setProducts((prevRow) => prevRow.filter((row) => row.id !== id));
-    // };
-
-    // Render
-    // if (!App.isAdmin()) {
-    //     return navigate('/notAllowed');
-    // }
-
-    // Handlers
-    const handleFilterProducts = (value: string) => {
-        setNameFilter(value);
-    };
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
-
     const handleSortChange = ({ column, direction }: ISortRequest) => {
         setSort({ column, direction });
     };
@@ -127,7 +100,7 @@ const ProductList = () => {
     return (
         <>
             <BreadCrumb items={productsBreadCrums} title="Productos" />
-            <Col xs={11} className="container-fluid">
+            <Col xs={11} className="container-fluid p-0">
                 <Col xs={12} className="mb-3">
                     <Row className="justify-content-end">
                         <Col xs={12} sm={6} lg={3} className="mb-3">
@@ -147,45 +120,84 @@ const ProductList = () => {
                 <Row className="justify-content-center">
                     <Col xs={12} md={2}>
                         <Row>
-                            <Col xs={12} className="mb-2">
-                                <CategoryDropdown
-                                    value={filters.category}
-                                    isMulti={true}
-                                    onChange={(v) => handleFiltersChange(v, 'category')}
-                                ></CategoryDropdown>
+                            <Col xs={12} className="mb-3">
+                                <CategoryDropdown value={filters.category} isMulti={true} onChange={(v) => handleFiltersChange(v, 'category')} />
                             </Col>
-                            <Col xs={12}>
+                            <Col xs={12} className="mb-3">
                                 <CheckBox
                                     label="Mostrar solo disponibles"
                                     checked={filters.stockAvailable}
                                     onChange={(v) => handleFiltersChange(v, 'stockAvailable')}
                                 />
                             </Col>
+                            <Col xs={12} className="">
+                                <Input
+                                    borderless
+                                    type="number"
+                                    placeholder="Filtrar por precio"
+                                    value={filters.price}
+                                    minValue={0}
+                                    className="mb-2"
+                                    onChange={(v) => handleFiltersChange(v, 'price')}
+                                />
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="condition"
+                                        id="lte"
+                                        value="lte"
+                                        onChange={(v) => handleFiltersChange(v.target.value, 'priceOption')}
+                                    />
+                                    <label className="form-check-label" htmlFor="lte">
+                                        Menor o igual a
+                                    </label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="condition"
+                                        id="gte"
+                                        value="gte"
+                                        onChange={(v) => handleFiltersChange(v.target.value, 'priceOption')}
+                                    />
+                                    <label className="form-check-label" htmlFor="gte">
+                                        Mayor o igual a
+                                    </label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="condition"
+                                        id="eq"
+                                        value="eq"
+                                        onChange={(v) => handleFiltersChange(v.target.value, 'priceOption')}
+                                    />
+                                    <label className="form-check-label" htmlFor="eq">
+                                        Exactamente
+                                    </label>
+                                </div>
+                            </Col>
                         </Row>
                     </Col>
                     <Col xs={12} sm={10}>
                         <Row>
-                            {products
-                                .filter(
-                                    (x) =>
-                                        !filters.text ||
-                                        x.description.toLowerCase().includes(filters.text.toLowerCase()) ||
-                                        x.name.toLowerCase().includes(filters.text.toLowerCase())
-                                )
-                                .filter((x) => filters.category.length === 0 || filters.category.includes(x.categoryId))
-                                .map((product, idx) => (
-                                    <Col xs={12} sm={6} md={4} lg={3} className="mb-3" key={idx}>
-                                        <ProductCard
-                                            {...product}
-                                            isInOrder={orderItems.some((item) => item.productId === product.id)}
-                                            onAddToOrder={handleAddToOrder}
-                                            onRemoveFromOrder={handleRemoveFromOrder}
-                                            onViewDetails={() => {
-                                                navigate('/productos/' + product.id);
-                                            }}
-                                        />
-                                    </Col>
-                                ))}
+                            {products.map((product, idx) => (
+                                <Col key={idx} xs={10} sm={6} md={4} lg={3} className="mb-3 mx-auto">
+                                    <ProductCard
+                                        {...product}
+                                        categoryName={product.categoryName || ''}
+                                        isInOrder={orderItems.some((item) => item.productId === product.id)}
+                                        onAddToOrder={handleAddToOrder}
+                                        onRemoveFromOrder={handleRemoveFromOrder}
+                                        onViewDetails={() => {
+                                            navigate('/productos/' + product.id);
+                                        }}
+                                    />
+                                </Col>
+                            ))}
                             <Col xs={12} className="d-flex justify-content-end mt-3">
                                 <Pagination currentPage={currentPage} itemsPerPage={20} totalCount={totalCount} setCurrentPage={setCurrentPage} />
                             </Col>

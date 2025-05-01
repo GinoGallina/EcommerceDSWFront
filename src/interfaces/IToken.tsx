@@ -9,6 +9,9 @@ export interface IRegisterRequest {
     Username: string;
     Address: string;
     Roles: string[];
+    StoreName?: string;
+    StoreDescription?: string;
+    Cbu?: string;
 }
 
 export interface ITokenResponse {

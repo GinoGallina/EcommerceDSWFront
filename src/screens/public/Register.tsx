@@ -1,5 +1,5 @@
 import { Card, CardBody, Col } from 'react-bootstrap';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import API from '../../app/API';
@@ -16,6 +16,8 @@ import Button from '../../components/Button/Button';
 import './register.scss';
 import { RolesDropdown } from '../../components';
 import { Roles } from '../../app/constants/Roles';
+import { GetComboItemType } from '../../interfaces/shared/IGetCombo';
+import { useDropdownItems } from '../../hooks/useDropdownItems';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -26,7 +28,13 @@ const Register = () => {
         userName: '',
         address: '',
         roles: [''],
+        storeName: '',
+        storeDescription: '',
+        cbu: '',
     });
+
+    const rolesDropdownRef = useRef<{ items: () => GetComboItemType[] | null } | null>(null);
+    const rolesItems = useDropdownItems(rolesDropdownRef);
 
     const handleInputChange = (value: string, input: string) => {
         setForm((prevForm) => ({ ...prevForm, [input]: value }));
@@ -40,14 +48,24 @@ const Register = () => {
             return;
         }
 
+        if (isSellerSelected() && (!form.storeName || !form.storeDescription || !form.cbu)) {
+            Toast.warning(Messages.Validation.requiredFields);
+            return;
+        }
+
         setLoading(true);
 
-        const rq = {
+        // TODO: generic trim
+
+        const rq: IRegisterRequest = {
             Email: form.email.trim(),
             Password: form.password.trim(),
             Username: form.userName.trim(),
             Address: form.address.trim(),
             Roles: form.roles,
+            StoreName: form.storeName.trim(),
+            StoreDescription: form.storeDescription.trim(),
+            Cbu: form.cbu.trim(),
         };
 
         API.post<ITokenResponse, IRegisterRequest>('auth/register', rq)
@@ -70,6 +88,10 @@ const Register = () => {
         LocalStorage.setUserEmail(data.user.email);
         LocalStorage.setSessionExpiration(data.sessionExpiration);
         LocalStorage.setUserAddress(data.user.address);
+    };
+
+    const isSellerSelected = () => {
+        return form.roles.includes(rolesItems?.find((x) => x.label === Roles.Seller)?.value || '');
     };
 
     return (
@@ -129,12 +151,36 @@ const Register = () => {
                                 exclude={[Roles.Admin]}
                                 onChange={(value) => handleInputChange(value, 'roles')}
                                 isMulti={true}
+                                ref={rolesDropdownRef}
                             ></RolesDropdown>
                         </Col>
+                        {isSellerSelected() && (
+                            <>
+                                <Col xs={12} className="pe-3 mb-3">
+                                    <Label required>Nombre de su negocio</Label>
+                                    <Input
+                                        placeholder="Nombre de su negocio"
+                                        value={form.storeName}
+                                        onChange={(value) => handleInputChange(value, 'storeName')}
+                                    />
+                                </Col>
+                                <Col xs={12} className="pe-3 mb-3">
+                                    <Label required>Descripción de su negocio</Label>
+                                    <Input
+                                        placeholder="Descripción de su negocio"
+                                        value={form.storeDescription}
+                                        onChange={(value) => handleInputChange(value, 'storeDescription')}
+                                    />
+                                </Col>
+                                <Col xs={12} className="pe-3 mb-3">
+                                    <Label required>CBU</Label>
+                                    <Input placeholder="CBU" type="number" value={form.cbu} onChange={(value) => handleInputChange(value, 'cbu')} />
+                                </Col>
+                            </>
+                        )}
                         <Col xs={12} className="text-center">
                             <Link to="/login">Ya tiene cuenta? Inicia sesión</Link>
                         </Col>
-                        {/* {form.rolesIds.includes()} */}
                         <Col xs={12} className="d-flex mt-4">
                             <Button className="w-100" onClick={handleSubmit} disabled={loading}>
                                 {loading ? <Loader /> : 'REGISTRAR'}
