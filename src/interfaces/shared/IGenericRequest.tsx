@@ -8,6 +8,8 @@ export interface IDateRange {
     from: string;
     to: string;
 }
+
+// Get All / List
 export interface IGenericGetAllResquest {
     page?: number | null;
     limit: number;
@@ -15,9 +17,9 @@ export interface IGenericGetAllResquest {
     sortDirection?: string | null;
     dateFrom?: string;
     dateTo?: string;
+    text?: string;
 }
 
-// Get All / List
 export interface IGenericGetAllResponse {
     totalCount: number;
 }

@@ -1,5 +1,5 @@
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, CategoryDropdown, CheckBox, Input, Pagination, TableSort } from '../../components';
+import { BreadCrumb, CategoryDropdown, CheckBox, Input, Pagination, RadioButton, TableSort } from '../../components';
 import { useEffect, useState } from 'react';
 import { sortProductListItems } from './Products.data';
 import { buildGenericGetAllRq } from '../../app/Helpers';
@@ -52,6 +52,8 @@ const ProductList = () => {
             available: filters.stockAvailable,
             categoryIds: filters.category,
             text: debouncedText,
+            price: filters.price,
+            priceOption: filters.priceOption,
         };
 
         API.get<IProductListGetAllResponse>('product/getAll', rq).then((r) => {
@@ -64,7 +66,7 @@ const ProductList = () => {
             setProducts(products);
             setTotalCount(r.data.totalCount);
         });
-    }, [currentPage, filters.category, filters.stockAvailable, debouncedText, sort]);
+    }, [currentPage, filters.category, filters.stockAvailable, debouncedText, sort, filters.price, filters.priceOption]);
 
     // Handlers
     const handleSortChange = ({ column, direction }: ISortRequest) => {
@@ -121,8 +123,13 @@ const ProductList = () => {
                     <Col xs={12} md={2}>
                         <Row>
                             <Col xs={12} className="mb-3">
-                                <CategoryDropdown value={filters.category} isMulti={true} onChange={(v) => handleFiltersChange(v, 'category')} />
+                                <CategoryDropdown
+                                    value={filters.category}
+                                    isMulti={true}
+                                    onChange={(v) => handleFiltersChange(v as string, 'category')}
+                                />
                             </Col>
+                            <hr />
                             <Col xs={12} className="mb-3">
                                 <CheckBox
                                     label="Mostrar solo disponibles"
@@ -130,55 +137,30 @@ const ProductList = () => {
                                     onChange={(v) => handleFiltersChange(v, 'stockAvailable')}
                                 />
                             </Col>
+                            <hr />
                             <Col xs={12} className="">
                                 <Input
                                     borderless
                                     type="number"
+                                    isFloat
                                     placeholder="Filtrar por precio"
                                     value={filters.price}
                                     minValue={0}
                                     className="mb-2"
                                     onChange={(v) => handleFiltersChange(v, 'price')}
                                 />
-                                <div className="form-check">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="condition"
-                                        id="lte"
-                                        value="lte"
-                                        onChange={(v) => handleFiltersChange(v.target.value, 'priceOption')}
-                                    />
-                                    <label className="form-check-label" htmlFor="lte">
-                                        Menor o igual a
-                                    </label>
-                                </div>
-                                <div className="form-check">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="condition"
-                                        id="gte"
-                                        value="gte"
-                                        onChange={(v) => handleFiltersChange(v.target.value, 'priceOption')}
-                                    />
-                                    <label className="form-check-label" htmlFor="gte">
-                                        Mayor o igual a
-                                    </label>
-                                </div>
-                                <div className="form-check">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="condition"
-                                        id="eq"
-                                        value="eq"
-                                        onChange={(v) => handleFiltersChange(v.target.value, 'priceOption')}
-                                    />
-                                    <label className="form-check-label" htmlFor="eq">
-                                        Exactamente
-                                    </label>
-                                </div>
+                                <RadioButton value="lte" name="condition" onChange={(v) => handleFiltersChange(v, 'priceOption')}>
+                                    Menor o igual a
+                                </RadioButton>
+                                <RadioButton value="gte" name="condition" onChange={(v) => handleFiltersChange(v, 'priceOption')}>
+                                    Mayor o igual a
+                                </RadioButton>
+                                <RadioButton value="eq" name="condition" onChange={(v) => handleFiltersChange(v, 'priceOption')}>
+                                    Exactamente
+                                </RadioButton>
+                                <RadioButton value="empty" name="condition" isDefault onChange={(v) => handleFiltersChange(v, 'priceOption')}>
+                                    Ninguno
+                                </RadioButton>
                             </Col>
                         </Row>
                     </Col>

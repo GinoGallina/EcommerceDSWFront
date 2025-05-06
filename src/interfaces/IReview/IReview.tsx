@@ -2,6 +2,7 @@ import { IGenericGetAllResponse, IGenericGetAllResquest } from '../shared/IGener
 
 // Get All
 export interface IReviewList {
+    id: string;
     description: string;
     rate: number;
     user: string;

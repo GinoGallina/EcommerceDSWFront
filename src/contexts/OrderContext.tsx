@@ -1,14 +1,14 @@
 import { createContext, useContext, useState } from 'react';
 import { LocalStorage } from '../app/LocalStorage';
 import { IOrderItem } from '../interfaces/IOrder/IOrder';
-import { ADD, ICartAction } from '../app/constants/Shared';
+import { ADD, ICartAction, MINUS, REPLACE } from '../app/constants/Shared';
 
 interface IOrderContextType {
     orderItems: IOrderItem[];
     addToOrder: (item: IOrderItem) => void;
     removeFromOrder: (productId: string) => void;
     setOrderItems: (items: IOrderItem[]) => void;
-    updateQuantity: (productId: string, action: ICartAction) => void;
+    updateQuantity: (productId: string, action: ICartAction, value?: string) => void;
     cleanOrder: () => void;
 }
 
@@ -39,12 +39,27 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         setOrderItems(newItems);
     };
 
-    const updateQuantity = (productId: string, action: ICartAction) => {
+    const updateQuantity = (productId: string, action: ICartAction, value?: string) => {
         const updatedItems = orderItems
             .map((item) => {
                 if (item.productId === productId) {
-                    const newQuantity = action === ADD ? item.quantity + 1 : item.quantity - 1;
-                    if (newQuantity <= 0) return null;
+                    let newQuantity: number;
+                    const finalValue = Number(value) || 0;
+
+                    switch (action) {
+                        case ADD:
+                            newQuantity = item.quantity + 1;
+                            break;
+                        case MINUS:
+                            newQuantity = item.quantity - 1 < 0 ? 0 : item.quantity - 1;
+                            break;
+                        case REPLACE:
+                            newQuantity = finalValue < 0 ? 0 : finalValue;
+                            break;
+                        default:
+                            newQuantity = item.quantity;
+                            break;
+                    }
                     return { ...item, quantity: newQuantity };
                 }
                 return item;
@@ -61,6 +76,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useOrder = () => {
     const context = useContext(OrderContext);
     if (!context) {

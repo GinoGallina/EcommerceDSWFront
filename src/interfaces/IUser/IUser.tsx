@@ -1,18 +1,9 @@
-import { IGenericGetAllResponse, IGenericList } from '../shared/IGenericRequest';
+import { IGenericGetAllResponse, IGenericGetAllResquest, IGenericList } from '../shared/IGenericRequest';
 
-export interface IUserForm {
-    username: string;
-    email: string;
-    password?: string;
-    address: string;
+// User Get All
+export interface IGetAllUserRequest extends IGenericGetAllResquest {
     roles: string[];
-    storeName?: string;
-    storeDescription?: string;
-    cbu?: string;
-    cuit?: string;
 }
-
-// User List
 export interface IGetAllUserResponse extends IGenericGetAllResponse {
     users: IUserList[];
 }
@@ -25,6 +16,18 @@ export interface IUserList extends IGenericList {
 }
 
 // Create User
+
+export interface IUserForm {
+    username: string;
+    email: string;
+    password?: string;
+    address: string;
+    roles: string[];
+    storeName?: string;
+    storeDescription?: string;
+    cbu?: string;
+    cuit?: string;
+}
 export interface ICreateUserRequest {
     Id?: string;
     Username: string;

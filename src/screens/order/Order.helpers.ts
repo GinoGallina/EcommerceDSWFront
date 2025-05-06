@@ -10,6 +10,8 @@ export const getStatus = (value: string) => {
             return { value: 'Enviado', color: 'rgba(23, 162, 184)' };
         case OrderItemStatuses.Delivered:
             return { value: 'Entregado', color: 'rgba(0, 123, 255)' };
+        case OrderItemStatuses.Canceled:
+            return { value: 'Cancelada', color: 'rgba(220, 53, 69)' };
         default:
             return { value: '', color: '' };
     }

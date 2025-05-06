@@ -25,9 +25,11 @@ const OrderMenuItem: React.FC<IOrderMenuItemProps> = ({ product, idx }) => {
                 <Image src={product.image || noImage} className="w-100 h-100" />
             </Col>
             <Col xs={8} className="order-details d-flex flex-column p-2">
-                <div className="fs-4">{product.name}</div>
+                <h4 className="fs-4">{product.name}</h4>
                 <div>
-                    Precio unitario: <span className="text-success">${product.price}</span>
+                    <p className="mb-0">
+                        Precio unitario: <span className="text-success">${product.price}</span>
+                    </p>
                 </div>
                 <div className="mt-2">
                     <Row>
@@ -35,7 +37,9 @@ const OrderMenuItem: React.FC<IOrderMenuItemProps> = ({ product, idx }) => {
                             <QuantityInput quantity={product.quantity} productId={product.productId} />
                         </Col>
                         <Col xs={7} className="text-end">
-                            <span className="fs-4 text-success text-end">Total: {formatCurrency(product.price * product.quantity)}</span>
+                            <p className="mb-0">
+                                <span className="fs-4 text-success text-end">Total: {formatCurrency(product.price * product.quantity)}</span>
+                            </p>
                         </Col>
                     </Row>
                 </div>

@@ -14,7 +14,7 @@ const UserDetails: React.FC<IUserDetailsProps> = ({ handleHideUserInfo, setShowU
 
     const handleLogout = () => {
         LocalStorage.clearSessionData();
-        navigate('/');
+        navigate('/login');
     };
 
     const handlePerfilDetails = () => {

@@ -3,7 +3,7 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import Input from '../../Input/Input';
 import { useOrder } from '../../../contexts/OrderContext';
 import './quantityInput.scss';
-import { ADD, ICartAction, MINUS } from '../../../app/constants/Shared';
+import { ADD, ICartAction, MINUS, REPLACE } from '../../../app/constants/Shared';
 
 interface QuantityInputProps {
     quantity: number;
@@ -15,8 +15,8 @@ interface QuantityInputProps {
 const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, alignDirection = 'center', quantityInputClassName = '' }) => {
     const { updateQuantity } = useOrder();
 
-    const handleClickQuantityButton = (id: string, action: ICartAction) => {
-        updateQuantity(id, action);
+    const handleClickQuantityButton = (id: string, action: ICartAction, value?: string) => {
+        updateQuantity(id, action, value);
     };
 
     return (
@@ -29,13 +29,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, alig
                 size="sm"
             />
             <div className="w-25">
-                <Input
-                    value={quantity.toString()}
-                    type="number"
-                    // TODO
-                    // onChange={(v) => handleChangeItemQuantity2(v, product.productId)}
-                    minValue={0}
-                />
+                <Input value={quantity.toString()} type="number" onChange={(v) => handleClickQuantityButton(productId, REPLACE, v)} minValue={0} />
             </div>
             <FontAwesomeIcon
                 className="my-auto p-1 ms-1 icon-plus"

@@ -18,6 +18,7 @@ import { RolesDropdown } from '../../components';
 import { Roles } from '../../app/constants/Roles';
 import { GetComboItemType } from '../../interfaces/shared/IGetCombo';
 import { useDropdownItems } from '../../hooks/useDropdownItems';
+import { formatRole } from '../../app/Helpers';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -91,7 +92,7 @@ const Register = () => {
     };
 
     const isSellerSelected = () => {
-        return form.roles.includes(rolesItems?.find((x) => x.label === Roles.Seller)?.value || '');
+        return form.roles.includes(rolesItems?.find((x) => x.label === formatRole(Roles.Seller))?.value || '');
     };
 
     return (
@@ -149,7 +150,7 @@ const Register = () => {
                             <RolesDropdown
                                 value={form.roles}
                                 exclude={[Roles.Admin]}
-                                onChange={(value) => handleInputChange(value, 'roles')}
+                                onChange={(value) => handleInputChange(value as string, 'roles')}
                                 isMulti={true}
                                 ref={rolesDropdownRef}
                             ></RolesDropdown>
@@ -169,6 +170,7 @@ const Register = () => {
                                     <Input
                                         placeholder="Descripción de su negocio"
                                         value={form.storeDescription}
+                                        maxLength={200}
                                         onChange={(value) => handleInputChange(value, 'storeDescription')}
                                     />
                                 </Col>

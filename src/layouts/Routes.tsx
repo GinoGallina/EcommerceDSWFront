@@ -22,11 +22,12 @@ const OrderList = lazy(() => import('../screens/order/OrderList.tsx'));
 const OrderDetails = lazy(() => import('../screens/order/OrderDetails.tsx'));
 const UserList = lazy(() => import('../screens/users/UserList.tsx'));
 const CreateUser = lazy(() => import('../screens/users/CreateUser.tsx'));
-const ProductDetails = lazy(() => import('../screens/products/ProductDetails.tsx'));
+const ProductDetails = lazy(() => import('../screens/products/Details/ProductDetails.tsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to="/login" />);
 const AdminRoute = () => (App.isAdmin() ? <Outlet /> : <Navigate to="/notAllowed" />);
-const SellerRoute = () => (App.isSeller() ? <Outlet /> : <Navigate to="/notAllowed" />);
+// const SellerRoute = () => (App.isSeller() ? <Outlet /> : <Navigate to="/notAllowed" />);
+const SellerAdminRoute = () => (App.isSeller() || App.isAdmin() ? <Outlet /> : <Navigate to="/notAllowed" />);
 
 export const AppRoutes = () => (
     <Suspense
@@ -141,7 +142,7 @@ export const AppRoutes = () => (
                 </Route>
 
                 {/* Productos Seller */}
-                <Route path="/misProductos" element={<SellerRoute />}>
+                <Route path="/misProductos" element={<SellerAdminRoute />}>
                     <Route
                         path="/misProductos/list"
                         element={

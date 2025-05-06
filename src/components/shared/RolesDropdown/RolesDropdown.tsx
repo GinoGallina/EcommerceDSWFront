@@ -1,6 +1,6 @@
 import { memo, useEffect, useImperativeHandle, useState } from 'react';
 import { Dropdown } from '../..';
-import { formatComboItems } from '../../../app/Helpers';
+import { formatComboItems, formatRole } from '../../../app/Helpers';
 import API from '../../../app/API';
 import { GetComboItemType, IComboDropdown, IGetComboRequest } from '../../../interfaces/shared/IGetCombo';
 import { DropdownOption, DropdownValue } from '../../../interfaces';
@@ -30,11 +30,18 @@ const RolesDropdown: React.FC<IComboDropdown> = ({
         if (items) return;
 
         API.get<IGetComboRequest>('role/getCombo', {}).then((r) => {
-            setItems(formatComboItems(r.data.items));
+            setItems(
+                formatComboItems(
+                    r.data.items.map((x) => ({
+                        ...x,
+                        label: formatRole(x.label),
+                    }))
+                )
+            );
         });
     }, [items]);
 
-    const handleChange = (options: string) => {
+    const handleChange = (options: DropdownValue) => {
         onChange(options);
     };
 
@@ -64,7 +71,7 @@ const RolesDropdown: React.FC<IComboDropdown> = ({
             value={value}
             disableOption={(v) => handleDisableRoleOptions(v) || false}
             ref={ref}
-            onChange={handleChange as (value: DropdownValue) => void}
+            onChange={handleChange}
         />
     );
 };

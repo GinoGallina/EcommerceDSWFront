@@ -26,7 +26,7 @@ const CategoryDropdown: React.FC<IComboDropdown> = ({
         });
     }, [items]);
 
-    const handleChange = (options: string) => {
+    const handleChange = (options: DropdownValue) => {
         onChange(options);
     };
 
@@ -40,7 +40,7 @@ const CategoryDropdown: React.FC<IComboDropdown> = ({
             items={items ?? []}
             disableOption={disableOption}
             value={value}
-            onChange={handleChange as (value: DropdownValue) => void}
+            onChange={handleChange}
         />
     );
 };

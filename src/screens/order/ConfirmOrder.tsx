@@ -1,7 +1,7 @@
 import { Col, Image, Row } from 'react-bootstrap';
 import { BreadCrumb, Button, Card, CheckBox, Input, PaymentTypeDropdown, QuantityInput, Toast } from '../../components';
 import { useState } from 'react';
-import { IConfirmOrderRequest } from '../../interfaces/IOrder/IOrder';
+import { IConfirmOrderRequest, IConfirmOrderResponse } from '../../interfaces/IOrder/IOrder';
 import { LocalStorage } from '../../app/LocalStorage';
 import { confirmOrderCols } from './Order.data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -42,8 +42,8 @@ const ConfirmOrder = () => {
             return;
         }
 
-        if (orderItems.some((x) => x.quantity < 0)) {
-            Toast.warning(Messages.Validation.graterThanZero('cantidad', true));
+        if (orderItems.some((x) => x.quantity <= 0)) {
+            Toast.warning(Messages.Validation.graterOrEqualThanZero('cantidad del producto', true));
             return;
         }
 
@@ -59,7 +59,7 @@ const ConfirmOrder = () => {
         };
 
         // TODO
-        API.post<unknown, IConfirmOrderRequest>(`order/create`, rq)
+        API.post<IConfirmOrderResponse, IConfirmOrderRequest>(`order/create`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
                 cleanOrder();
@@ -133,7 +133,13 @@ const ConfirmOrder = () => {
                                         );
                                     })}
                                     <Col className="text-start mt-4" xs={12} md={4}>
-                                        <PaymentTypeDropdown required value={paymentType} isMulti={false} onChange={(v) => setPaymentType(v)} />
+                                        <PaymentTypeDropdown
+                                            label="Método de pago"
+                                            required
+                                            value={paymentType}
+                                            isMulti={false}
+                                            onChange={(v) => setPaymentType(v)}
+                                        />
                                     </Col>
                                     <Col className="text-start mt-4" xs={12} md={4}>
                                         <CheckBox

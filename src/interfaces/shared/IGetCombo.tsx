@@ -1,4 +1,4 @@
-import { DropdownOption } from './IDropdown';
+import { DropdownOption, DropdownValue } from './IDropdown';
 
 export type GetComboItemType = { value: string; label: string };
 
@@ -18,6 +18,6 @@ export interface IComboDropdown {
     exclude?: string[];
     useDefaultDisableOption?: boolean;
     disableOption?: (option: DropdownOption) => boolean;
-    onChange: (value: string) => void;
+    onChange: (value: DropdownValue) => void;
     ref?: React.RefObject<{ items: () => GetComboItemType[] | null } | null>;
 }

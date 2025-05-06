@@ -1,10 +1,6 @@
 import { IGenericList, IGenericGetAllResponse } from '../shared/IGenericRequest';
 
-export interface ICategoryForm {
-    name: string;
-}
-
-// Category List
+// Get All
 export interface IGetAllCategoryResponse extends IGenericGetAllResponse {
     categories: ICategoryList[];
 }
@@ -12,7 +8,11 @@ export interface ICategoryList extends IGenericList {
     name: string;
 }
 
-// Create Category
+// Create and Updatete Category
+export interface ICategoryForm {
+    name: string;
+}
+
 export interface ICreateCategoryRequest {
     Id?: string;
     Name: string;

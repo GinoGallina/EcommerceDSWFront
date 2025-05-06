@@ -9,6 +9,7 @@ import { ICategoryList, IGetAllCategoryResponse } from '../../interfaces/ICatego
 import { columns, sortCategoryItems } from './Categroy.data';
 import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { ISortRequest } from '../../interfaces';
+import { useDebounce } from '../../hooks/useDebounce';
 
 const CategoryList = () => {
     const navigate = useNavigate();
@@ -31,6 +32,7 @@ const CategoryList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState<ISortRequest | null>(null);
+    const debouncedText = useDebounce(nameFilter, 300);
 
     const categoriesBreadCrums = [
         {
@@ -42,6 +44,8 @@ const CategoryList = () => {
     // Effects
     useEffect(() => {
         const rq = buildGenericGetAllRq(currentPage, sort);
+
+        rq.text = debouncedText;
 
         API.get<IGetAllCategoryResponse>('category/getAll', rq).then((r) => {
             const categories = r.data.categories.map((x) => {
@@ -56,7 +60,7 @@ const CategoryList = () => {
                 Toast.warning(Messages.Error.noRows);
             }
         });
-    }, [currentPage, sort]);
+    }, [currentPage, debouncedText, sort]);
 
     // Handlers
     const handleFilterCategories = (value: string) => {
@@ -94,7 +98,7 @@ const CategoryList = () => {
                             <Table<ICategoryList>
                                 className="mb-5"
                                 columns={categoryColumns}
-                                rows={categories.filter((x) => x.name.toLowerCase().includes(nameFilter.toLowerCase()))}
+                                rows={categories}
                                 emptyTableMessage="No se encontraron categorias"
                                 pagination={true}
                                 currentPage={currentPage}

@@ -3,7 +3,7 @@ import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../app/constants/Messages';
-import { productCols, sortProductItems } from './Products.data';
+import { myProductCols, sortMyProductItems } from './Products.data';
 import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import API from '../../app/API';
@@ -30,11 +30,11 @@ const MyProductList = () => {
     ];
 
     const productColumns: IColumn<IProductList>[] = [
-        ...productCols,
+        ...myProductCols,
         {
             name: '',
             text: 'Acciones',
-            component: (props: ColumnComponentType<IProductList>) => <ActionButtons {...props} entity="producto" />,
+            component: (props: ColumnComponentType<IProductList>) => <ActionButtons {...props} canDelete={true} entity="producto" />,
             className: 'text-center',
         },
     ];
@@ -85,7 +85,7 @@ const MyProductList = () => {
                         <>
                             <Row>
                                 <Col xs={12} sm={6} lg={3} className="mb-3">
-                                    <TableSort items={sortProductItems} onChange={handleSortChange} />
+                                    <TableSort items={sortMyProductItems} onChange={handleSortChange} />
                                 </Col>
                                 <Col xs={12} sm={6} lg={4} className="mb-3 pe-3">
                                     <Input showIcon borderless placeholder="Buscar" value={nameFilter} onChange={handleFilterProducts} />

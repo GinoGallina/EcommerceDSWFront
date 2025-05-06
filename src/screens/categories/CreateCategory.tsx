@@ -47,17 +47,10 @@ const CreateCategory = ({ isWatching = false }) => {
             Name: form.name,
         };
 
-        if (id) {
-            rq.Id = id;
-        }
-
-        API.post<ICreateCategoryResponse, ICreateCategoryRequest>(`category/${id ? 'update' : 'create'}`, rq)
+        API.post<ICreateCategoryResponse, ICreateCategoryRequest>(`category/${id ? `update/${id}` : 'create'}`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
                 navigate('/categorias/list');
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setSubmiting(false);

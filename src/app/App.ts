@@ -30,17 +30,12 @@ const isUser = () => {
     const roles = LocalStorage.getUserRoles();
     return roles && roles.includes(Roles.User);
 };
-const isUserAndSeller = () => {
-    const roles = LocalStorage.getUserRoles();
-    return roles && roles.includes(Roles.User) && roles.includes(Roles.Seller);
-};
 
 const App = {
     isLoggedIn,
     isAdmin,
     isSeller,
     isUser,
-    isUserAndSeller,
 };
 
 export default App;

@@ -33,6 +33,10 @@ const CreateProduct = ({ isWatching = false }) => {
         }
     }, [id]);
 
+    useEffect(() => {
+        if (!App.isAdmin() && form.userId && form.userId !== LocalStorage.getUserId()) navigate('/');
+    }, [form.userId, navigate]);
+
     // Handlers
     const handleSubmit = async () => {
         if (submiting) return;
@@ -40,6 +44,11 @@ const CreateProduct = ({ isWatching = false }) => {
         //ver stock y price
         // TODO user
         if (!form.name || !form.description || !form.price || !form.stock || !form.categoryId) {
+            Toast.warning(Messages.Validation.requiredFields);
+            return;
+        }
+
+        if (!form.userId && App.isAdmin()) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
@@ -70,13 +79,10 @@ const CreateProduct = ({ isWatching = false }) => {
             rq.Id = id;
         }
 
-        API.post<ICreateProductResponse, ICreateProductRequest>(`product/${id ? 'update' : 'create'}`, rq)
+        API.post<ICreateProductResponse, ICreateProductRequest>(`product/${id ? `update/${id}` : 'create'}`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
                 navigate('/misProductos/list');
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setSubmiting(false);

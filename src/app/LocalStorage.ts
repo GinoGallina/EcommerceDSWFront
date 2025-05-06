@@ -20,7 +20,6 @@ export class LocalStorage {
     static setUserId = (v: string) => set(Constants.USER_ID, v);
     static getUserId = () => get(Constants.USER_ID);
 
-    // TODO: should be string[]
     static setUserRoles = (v: string) => set(Constants.USER_ROLES, v);
     static getUserRoles = () => get(Constants.USER_ROLES);
 

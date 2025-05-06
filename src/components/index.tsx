@@ -12,6 +12,7 @@ import CheckBox from './CheckBox/CheckBox';
 import InfoButton from './InfoButton/InfoButton';
 import Dropdown from './Dropdown/Dropdown';
 import Table from './Table/Table';
+import RadioButton from './RadioButton/RadioButton';
 import TableSort from './shared/TableSort/TableSort';
 import Pagination from './Pagination/Pagination';
 import ActionButtons from './shared/ActionButtons/ActionButtons';
@@ -44,4 +45,5 @@ export {
     UserDropdown,
     PaymentTypeDropdown,
     QuantityInput,
+    RadioButton,
 };

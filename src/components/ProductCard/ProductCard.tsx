@@ -4,7 +4,7 @@ import { CSSProperties } from 'react';
 import noImage from '../../assets/no_image.jpg';
 import './productCard.scss';
 import { Card } from 'react-bootstrap';
-import { StarRating } from '../../screens/products/StarRating';
+import { StarRating } from '../../screens/products/Reviews/StarRating';
 
 interface IProductCardProps {
     cardBodyClassName?: string;

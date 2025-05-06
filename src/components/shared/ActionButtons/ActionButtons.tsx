@@ -57,12 +57,12 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         <>
             <DeleteConfirmationModal
                 item={`est${female ? 'a' : 'e'} ${entity}`}
-                message={`Esta acción se puede deshacer. Una vez eliminad${female ? 'a' : 'o'} ${female ? 'la' : 'el'} ${entity}, el producto se podrá recuperar.`}
+                message={`Esta acción no se puede deshacer. Una vez eliminad${female ? 'a' : 'o'} ${female ? 'la' : 'el'} ${entity} no se podrá recuperar.`}
                 onConfirm={() => onUpdate(row.id)}
                 ref={deleteModalRef}
             />
             <Row>
-                <Col className="action-button--container">
+                <Col className="action-button-container d-flex justify-content-center align-items-center">
                     {showWatch && (
                         <Tooltip text="Ver" placement="top">
                             <FontAwesomeIcon className="action-button" icon={faEye} color="black" onClick={handleWatch} />

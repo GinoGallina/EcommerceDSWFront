@@ -2,26 +2,12 @@ import { IDateRange, IGenericGetAllResquest, ISortRequest } from '../interfaces'
 import { GetComboItemTypeRq } from '../interfaces/shared/IGetCombo';
 import { Roles } from './constants/Roles';
 
-// export const formatOptions = (options) => {
-//     return options.map((option) => ({
-//         value: option,
-//         label: option,
-//     }));
-// };
-
 export const formatComboItems = (items: GetComboItemTypeRq[]) => {
     return items.map((item) => ({
         value: item.id,
         label: item.label,
     }));
 };
-
-// export const formatOptionsBoolean = (options) => {
-//     return options.map((option) => ({
-//         value: option.value,
-//         label: option.label,
-//     }));
-// };
 
 export const formatCurrency = (value: string | number) => {
     if (Number(value) < 0)
@@ -39,7 +25,7 @@ export const formatCurrency = (value: string | number) => {
 export const formatRole = (role: string) => {
     switch (role) {
         case Roles.Admin:
-            return 'Admin';
+            return 'Administrador';
         case Roles.Seller:
             return 'Vendedor';
         case Roles.User:

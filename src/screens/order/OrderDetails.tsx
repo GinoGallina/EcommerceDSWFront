@@ -1,23 +1,30 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Col, Image, Row } from 'react-bootstrap';
-import { BreadCrumb, Card, Spinner } from '../../components';
+import { BreadCrumb, Button, Card, Loader, Spinner, Toast } from '../../components';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import API from '../../app/API';
 import App from '../../app/App';
-import { IOrderDetailsForm } from '../../interfaces/IOrder/IOrder';
+import { IOrderCancelOrderResponse, IOrderCancelProductRequest, IOrderDetailsForm } from '../../interfaces/IOrder/IOrder';
 import { getStatus } from './Order.helpers';
 import { formatCurrency } from '../../app/Helpers';
 import noImage from '../../assets/no_image.jpg';
+import Tooltip from '../../components/Tooltip/Tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { OrderItemStatuses, OrderStatuses } from '../../app/constants/Statuses';
 import './orderDetail.scss';
+import { LocalStorage } from '../../app/LocalStorage';
 
 const OrderDetails = () => {
     const params = useParams();
     const id = params.id;
+    const navigate = useNavigate();
 
     // State
     const [form, setForm] = useState(InitialFormStates.OrderDetails);
     const [loading, setLoading] = useState(id ? true : false);
+    const [submiting, setSubmiting] = useState(false);
 
     const ordersBreadCrums = [
         {
@@ -41,6 +48,59 @@ const OrderDetails = () => {
         }
     }, [id]);
 
+    useEffect(() => {
+        if (!App.isAdmin() && form.userId && form.userId !== LocalStorage.getUserId()) navigate('/');
+    }, [form.userId, navigate]);
+
+    const handleCancelProduct = (productId: string) => {
+        if (submiting) return;
+
+        API.post<IOrderCancelOrderResponse, IOrderCancelProductRequest>(`order/cancelProduct/${id}`, { ProductId: productId })
+            .then((r) => {
+                if (r.message) Toast.success(r.message);
+                setForm((prevForm) => {
+                    const newItems = prevForm.items.map((x) => {
+                        if (x.productId === productId)
+                            return {
+                                ...x,
+                                status: OrderItemStatuses.Canceled,
+                            };
+                        return x;
+                    });
+                    return {
+                        ...prevForm,
+                        items: newItems,
+                        status: newItems.every((x) => x.status === OrderItemStatuses.Canceled) ? OrderStatuses.Canceled : prevForm.status,
+                    };
+                });
+            })
+            .finally(() => {
+                setSubmiting(false);
+            });
+    };
+
+    const handleCancelOrder = () => {
+        if (submiting) return;
+
+        API.post<IOrderCancelOrderResponse, unknown>(`order/cancelOrder/${id}`, {})
+            .then((r) => {
+                if (r.message) Toast.success(r.message);
+                setForm((prevForm) => ({
+                    ...prevForm,
+                    status: OrderStatuses.Canceled,
+                    items: prevForm.items.map((x) => {
+                        return {
+                            ...x,
+                            status: OrderItemStatuses.Canceled,
+                        };
+                    }),
+                }));
+            })
+            .finally(() => {
+                setSubmiting(false);
+            });
+    };
+
     const orderStatus = getStatus(form.status);
 
     return (
@@ -49,27 +109,32 @@ const OrderDetails = () => {
             <div>
                 <Col xs={11} className="container order-detail-container">
                     <Card
-                        title={`Orden N° ${id}`}
+                        title="Resumen de la orden"
                         body={
                             loading ? (
                                 <Spinner />
                             ) : (
                                 <Row className="align-items-center">
-                                    <Col xs={12} className="mb-3">
-                                        <strong>Estado: </strong>
-                                        <span style={{ color: orderStatus.color, fontWeight: 'bold' }}>{orderStatus.value}</span>
-                                    </Col>
-                                    <Col xs={12} className="mb-3">
-                                        <strong>Dirección:</strong> {form.shippingAddress}
-                                    </Col>
-                                    <Col xs={12} className="mb-3">
-                                        <strong>Método de Pago:</strong> {form.paymentType}
-                                    </Col>
-                                    <Col xs={12} className="mb-4">
-                                        <strong>Total: </strong>
-                                        <span className="text-success" style={{ fontWeight: 'bold' }}>
-                                            {formatCurrency(form.total)}
+                                    <Col md={6} className="mb-2">
+                                        <strong>📦 Estado:</strong>
+                                        <span className="ms-2 fw-bold" style={{ color: orderStatus.color }}>
+                                            {orderStatus.value}
                                         </span>
+                                    </Col>
+
+                                    <Col md={6} className="mb-2">
+                                        <strong>🏠 Dirección:</strong>
+                                        <span className="ms-2">{form.shippingAddress}</span>
+                                    </Col>
+
+                                    <Col md={6} className="mb-3">
+                                        <strong>💳 Método de Pago:</strong>
+                                        <span className="ms-2">{form.paymentType}</span>
+                                    </Col>
+
+                                    <Col md={6} className="mb-3">
+                                        <strong>🧾 Total:</strong>
+                                        <span className="ms-2 text-success fw-bold">{formatCurrency(form.total)}</span>
                                     </Col>
                                     <hr />
                                     {form.items.map((orderItem, index) => (
@@ -83,48 +148,97 @@ const OrderDetails = () => {
                                             className="mb-4 d-flex justify-content-center"
                                             style={{ justifyContent: index % 2 === 0 ? 'flex-start' : 'flex-end' }}
                                         >
-                                            <div className="p-3 border rounded-4 shadow-sm bg-white w-100">
+                                            <div className="p-4 border rounded-4 shadow-sm bg-white w-100">
                                                 <Row>
-                                                    <Col className="d-flex align-items-between mb-2 mb-sm-0" xs={12} sm={6}>
-                                                        <Row className="order-item-details">
-                                                            <Col xs={12} className="mb-2">
-                                                                <strong>Producto:</strong>
-                                                                &nbsp;
-                                                                {orderItem.product}
-                                                            </Col>
-                                                            <Col xs={12} className="mb-2">
-                                                                <strong>Cantidad:</strong>
-                                                                &nbsp;
-                                                                {orderItem.quantity}
-                                                            </Col>
-                                                            <Col xs={12} className="mb-2">
-                                                                <strong>Precio:</strong>
-                                                                &nbsp;
-                                                                {formatCurrency(orderItem.price)}
-                                                            </Col>
-                                                            <Col xs={12}>
-                                                                <strong>Estado:</strong>
-                                                                &nbsp;
-                                                                <span style={{ color: getStatus(orderItem.status).color, fontWeight: 'bold' }}>
+                                                    <Col xs={12} md={8}>
+                                                        <h5 className="mb-3">Detalle del Producto</h5>
+                                                        <ul className="list-unstyled mb-0">
+                                                            <li className="mb-2">
+                                                                <strong>🛍 Producto:</strong>{' '}
+                                                                <span className="ms-2">
+                                                                    {orderItem.product} (x{orderItem.quantity})
+                                                                </span>
+                                                            </li>
+                                                            <li className="mb-2">
+                                                                <strong>💲 Precio:</strong>
+                                                                <span className="ms-2 text-success fw-bold">{formatCurrency(orderItem.price)}</span>
+                                                            </li>
+                                                            <li className="mb-2">
+                                                                <strong>🧾 Total:</strong>
+                                                                <span className="ms-2 text-success fw-bold">
+                                                                    {formatCurrency(orderItem.price * orderItem.quantity)}
+                                                                </span>
+                                                            </li>
+                                                            <li className="mb-2">
+                                                                <strong>📦 Estado:</strong>
+                                                                <span className="ms-2 fw-bold" style={{ color: getStatus(orderItem.status).color }}>
                                                                     {getStatus(orderItem.status).value}
                                                                 </span>
-                                                            </Col>
-                                                        </Row>
+                                                            </li>
+                                                        </ul>
                                                     </Col>
-                                                    <Col className="d-flex" xs={12} sm={6}>
-                                                        <div
-                                                            className="mx-auto my-auto w-100 h-100"
-                                                            style={{ maxHeight: '250px', maxWidth: '250px' }}
-                                                        >
-                                                            <Image className="w-100 h-100" src={orderItem.imagen || noImage}></Image>
-                                                        </div>
+                                                    <Col xs={12} md={4} className="d-flex align-items-center justify-content-center mt-3 mt-md-0">
+                                                        <Image
+                                                            src={orderItem.imagen || noImage}
+                                                            alt="Imagen del producto"
+                                                            className="rounded-3 border"
+                                                            style={{ maxHeight: '200px', objectFit: 'cover' }}
+                                                            fluid
+                                                        />
                                                     </Col>
                                                 </Row>
+                                                {orderItem.status === OrderStatuses.Pending && (
+                                                    <Row>
+                                                        <Col className="mt-1 text-center">
+                                                            <Button
+                                                                variant="danger"
+                                                                size="sm"
+                                                                disabled={orderItem.status !== OrderStatuses.Pending}
+                                                                onClick={() => handleCancelProduct(orderItem.productId)}
+                                                            >
+                                                                {submiting ? <Loader /> : ' Cancelar producto'}
+                                                            </Button>
+                                                            <div className="d-inline-flex h-100 ">
+                                                                <Tooltip
+                                                                    placement="top"
+                                                                    text="Solo podrá cancelar el producto si su estado es PENDIENTE."
+                                                                >
+                                                                    <FontAwesomeIcon className="my-auto ms-2" icon={faInfoCircle} color="black" />
+                                                                </Tooltip>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                )}
                                             </div>
                                         </Col>
                                     ))}
                                 </Row>
                             )
+                        }
+                        footer={
+                            <Row>
+                                <Col className="text-end">
+                                    <Button
+                                        variant="danger"
+                                        disabled={
+                                            !form.items.every(
+                                                (x) => x.status === OrderItemStatuses.Pending || x.status === OrderItemStatuses.Canceled
+                                            ) || form.items.every((x) => x.status === OrderItemStatuses.Canceled)
+                                        }
+                                        onClick={handleCancelOrder}
+                                    >
+                                        {submiting ? <Loader /> : ' Cancelar orden'}
+                                    </Button>
+                                    <div className="d-inline-flex h-100 ">
+                                        <Tooltip
+                                            placement="top"
+                                            text="Solo podrá cancelar la orden si el estado de todos los productos es PENDIENTE."
+                                        >
+                                            <FontAwesomeIcon className="my-auto ms-2" icon={faInfoCircle} color="black" />
+                                        </Tooltip>
+                                    </div>
+                                </Col>
+                            </Row>
                         }
                     />
                 </Col>

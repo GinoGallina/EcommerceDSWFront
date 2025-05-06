@@ -19,12 +19,14 @@ export class InitialFormStates {
     static OrderDetails: IOrderDetailsForm = {
         paymentType: '',
         user: '',
+        userId: '',
         shippingAddress: '',
         status: '',
         total: 0,
         items: [
             {
                 product: '',
+                productId: '',
                 quantity: 0,
                 status: '',
                 price: 0,

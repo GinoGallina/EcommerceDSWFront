@@ -10,12 +10,7 @@ interface TooltipProps {
     children: ReactElement<unknown, string | JSXElementConstructor<unknown>>;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({
-    textStyle = {},
-    text = '',
-    placement = 'bottom',
-    children,
-}) => {
+const Tooltip: React.FC<TooltipProps> = ({ textStyle = {}, text = '', placement = 'bottom', children }) => {
     const tooltipContent = (
         <BS.Tooltip>
             <RawHtml style={{ ...textStyle, margin: '5px' }} html={text} />

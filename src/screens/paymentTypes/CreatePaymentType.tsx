@@ -7,7 +7,7 @@ import Toast from '../../components/Toast/Toast';
 import API from '../../app/API';
 import { Messages } from '../../app/constants/Messages';
 import { getBreadcrumbItems } from './PaymentType.helpers';
-import { IPaymentTypeForm } from '../../interfaces/IPaymentType/IPaymentType';
+import { IPaymentTypeCreateRequest, IPaymentTypeCreateResponse, IPaymentTypeForm } from '../../interfaces/IPaymentType/IPaymentType';
 
 const CreatePaymentType = ({ isWatching = false }) => {
     const navigate = useNavigate();
@@ -34,31 +34,21 @@ const CreatePaymentType = ({ isWatching = false }) => {
     const handleSubmit = async () => {
         if (submiting) return;
 
-        if (!form.description) {
+        if (!form.name) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
 
         setSubmiting(true);
 
-        const rq: {
-            Id?: string;
-            Description: string;
-        } = {
-            Description: form.description,
+        const rq: IPaymentTypeCreateRequest = {
+            Name: form.name,
         };
 
-        if (id) {
-            rq.Id = id;
-        }
-
-        API.post(`paymentType/${id ? 'update' : 'create'}`, rq)
+        API.post<IPaymentTypeCreateResponse, IPaymentTypeCreateRequest>(`paymentType/${id ? `update/${id}` : 'create'}`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
                 navigate('/metodosPago/list');
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setSubmiting(false);
@@ -92,8 +82,8 @@ const CreatePaymentType = ({ isWatching = false }) => {
                                             <Input
                                                 disabled={isWatching}
                                                 placeholder="Descripción"
-                                                value={form.description}
-                                                onChange={(value) => handleInputChange(value, 'description')}
+                                                value={form.name}
+                                                onChange={(value) => handleInputChange(value, 'name')}
                                             />
                                         </Col>
                                     </Row>

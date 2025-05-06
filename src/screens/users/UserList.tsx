@@ -7,9 +7,9 @@ import API from '../../app/API';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { ISortRequest } from '../../interfaces';
-import { IGetAllUserResponse, IUserList } from '../../interfaces/IUser/IUser';
+import { IGetAllUserRequest, IGetAllUserResponse, IUserList } from '../../interfaces/IUser/IUser';
 import { columns, sortUserItems } from './Users.data';
-import { Roles } from '../../app/constants/Roles';
+import { useDebounce } from '../../hooks/useDebounce';
 
 const UserList = () => {
     const navigate = useNavigate();
@@ -31,10 +31,11 @@ const UserList = () => {
 
     // Filters
     const [nameFilter, setNameFilter] = useState('');
-    const [roleFilter, setRoleFilter] = useState([Roles.Admin, Roles.Seller, Roles.User]);
+    const [roleFilter, setRoleFilter] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState<ISortRequest | null>(null);
+    const debouncedText = useDebounce(nameFilter, 300);
 
     const usersBreadCrums = [
         {
@@ -45,7 +46,11 @@ const UserList = () => {
 
     // Effects
     useEffect(() => {
-        const rq = buildGenericGetAllRq(currentPage, sort);
+        const rq: IGetAllUserRequest = {
+            ...buildGenericGetAllRq(currentPage, sort),
+            roles: roleFilter,
+            text: debouncedText,
+        };
 
         API.get<IGetAllUserResponse>('user/getAll', rq).then((r) => {
             const users = r.data.users.map((x) => {
@@ -60,7 +65,7 @@ const UserList = () => {
                 Toast.warning(Messages.Error.noRows);
             }
         });
-    }, [currentPage, sort]);
+    }, [currentPage, debouncedText, roleFilter, sort]);
 
     // Handlers
     const handleFilterusers = (value: string) => {
@@ -75,7 +80,7 @@ const UserList = () => {
         setSort({ column, direction });
     };
 
-    const handleRoleChange = (value: string) => {
+    const handleRoleChange = (value: string[]) => {
         setRoleFilter(value);
     };
 
@@ -100,7 +105,7 @@ const UserList = () => {
                                         isMulti
                                         value={roleFilter}
                                         useDefaultDisableOption={false}
-                                        onChange={handleRoleChange}
+                                        onChange={(v) => handleRoleChange(v as string[])}
                                         ref={rolesDropdownRef}
                                     />
                                 </Col>
@@ -111,11 +116,7 @@ const UserList = () => {
                             <Table<IUserList>
                                 className="mb-5"
                                 columns={userColumns}
-                                rows={users.filter(
-                                    (x) =>
-                                        x.username.toLowerCase().includes(nameFilter.toLowerCase()) ||
-                                        x.email.toLowerCase().includes(nameFilter.toLowerCase())
-                                )}
+                                rows={users}
                                 emptyTableMessage="No se encontraron usuarios"
                                 pagination={true}
                                 currentPage={currentPage}

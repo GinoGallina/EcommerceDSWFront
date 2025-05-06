@@ -10,11 +10,13 @@ import { getBreadcrumbItems } from './Users.helpers';
 import { GetComboItemType } from '../../interfaces/shared/IGetCombo';
 import { Roles } from '../../app/constants/Roles';
 import { useDropdownItems } from '../../hooks/useDropdownItems';
+import App from '../../app/App';
+import { LocalStorage } from '../../app/LocalStorage';
+import { formatRole } from '../../app/Helpers';
 
 const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
     const navigate = useNavigate();
 
-    // const modalRef = useRef();
     const params = useParams();
     const id = (params && params.id) || null;
 
@@ -40,12 +42,11 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
     const handleSubmit = async () => {
         if (submitting) return;
 
-        if (!form.username || !form.email || !form.password || !form.address || form.roles.length === 0) {
+        if (!form.username || !form.email || (!form.password && !id) || !form.address || form.roles.length === 0) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
 
-        // if (isSellerSelected() && (!form.storeName || !form.storeDescription || !form.cbu || !form.cuit)) {
         if (isSellerSelected() && (!form.storeName || !form.storeDescription || !form.cbu)) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
@@ -64,14 +65,13 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
             Cbu: form.cbu,
         };
 
-        if (id) {
-            rq.Id = id;
-        }
-
-        API.post<ICreateUserResponse, ICreateUserRequest>(`user/${id ? 'update' : 'create'}`, rq)
+        API.post<ICreateUserResponse, ICreateUserRequest>(`user/${id ? `update/${id}` : 'create'}`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
-                navigate('/usuarios/list');
+                LocalStorage.setUserEmail(rq.Email);
+                LocalStorage.setUserAddress(rq.Address);
+                LocalStorage.setUserName(rq.Username);
+                if (App.isAdmin()) navigate('/usuarios/list');
             })
             .finally(() => {
                 setSubmitting(false);
@@ -87,18 +87,13 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
         });
     };
 
-    const handleChangePassword = () => {
-        // modalRef.current.open(id);
-    };
-
     const isSellerSelected = () => {
-        return form.roles.includes(rolesItems?.find((x) => x.label === Roles.Seller)?.value || '');
+        return form.roles.includes(rolesItems?.find((x) => x.label === formatRole(Roles.Seller))?.value || '');
     };
 
     return (
         <>
             <BreadCrumb items={getBreadcrumbItems(id ? (isWatching ? 'Ver' : 'Editar') : 'Nuevo')} title="Usuarios" />
-            {/* <ChangePasswordModal ref={modalRef} /> */}
             <div>
                 <Col xs={11} className="container">
                     <Card
@@ -112,7 +107,7 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
                                         <Col xs={12} md={4} className="pe-3 mb-3">
                                             <Label required={!isWatching || !viewProfileDetails}>Nombre de usuario</Label>
                                             <Input
-                                                disabled={isWatching || viewProfileDetails}
+                                                disabled={isWatching}
                                                 placeholder="Nombre de usuario"
                                                 value={form.username}
                                                 onChange={(value) => handleInputChange(value, 'username')}
@@ -121,7 +116,7 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
                                         <Col xs={12} md={4} className="pe-3 mb-3">
                                             <Label required={!isWatching || !viewProfileDetails}>Email</Label>
                                             <Input
-                                                disabled={isWatching || viewProfileDetails}
+                                                disabled={isWatching}
                                                 placeholder="Email"
                                                 value={form.email}
                                                 onChange={(value) => handleInputChange(value, 'email')}
@@ -130,7 +125,7 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
                                         <Col xs={12} md={4} className="pe-3 mb-3">
                                             <Label required={!isWatching || !viewProfileDetails}>Dirección</Label>
                                             <Input
-                                                disabled={isWatching || viewProfileDetails}
+                                                disabled={isWatching}
                                                 placeholder="Dirección"
                                                 value={form.address}
                                                 onChange={(value) => handleInputChange(value, 'address')}
@@ -144,7 +139,7 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
                                                 placeholder="Seleccione uno o más roles"
                                                 required
                                                 value={form.roles}
-                                                onChange={(value) => handleInputChange(value, 'roles')}
+                                                onChange={(value) => handleInputChange(value as string, 'roles')}
                                                 ref={rolesDropdownRef}
                                             />
                                         </Col>
@@ -165,7 +160,7 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
                                                 <Col xs={12} md={4} className="pe-3 mb-3">
                                                     <Label required={!isWatching || !viewProfileDetails}>Nombre de su negocio</Label>
                                                     <Input
-                                                        disabled={isWatching || viewProfileDetails}
+                                                        disabled={isWatching}
                                                         placeholder="Nombre de su negocio"
                                                         value={form.storeName}
                                                         onChange={(value) => handleInputChange(value, 'storeName')}
@@ -174,16 +169,17 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
                                                 <Col xs={12} md={4} className="pe-3 mb-3">
                                                     <Label required={!isWatching || !viewProfileDetails}>Descripción de su negocio</Label>
                                                     <Input
-                                                        disabled={isWatching || viewProfileDetails}
+                                                        disabled={isWatching}
                                                         placeholder="Descripción de su negocio"
                                                         value={form.storeDescription}
+                                                        maxLength={200}
                                                         onChange={(value) => handleInputChange(value, 'storeDescription')}
                                                     />
                                                 </Col>
                                                 <Col xs={12} md={4} className="pe-3 mb-3">
                                                     <Label required={!isWatching || !viewProfileDetails}>CBU</Label>
                                                     <Input
-                                                        disabled={isWatching || viewProfileDetails}
+                                                        disabled={isWatching}
                                                         placeholder="CBU"
                                                         type="number"
                                                         value={form.cbu}
@@ -199,18 +195,6 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
                         footer={
                             !isWatching && (
                                 <div className="d-flex justify-content-end">
-                                    {id && (
-                                        <Button
-                                            onClick={handleChangePassword}
-                                            className="me-auto"
-                                            style={{
-                                                backgroundColor: 'rgb(143, 162, 188)',
-                                                borderColor: 'rgb(143, 162, 188)',
-                                            }}
-                                        >
-                                            Cambiar contraseña
-                                        </Button>
-                                    )}
                                     <Button onClick={handleSubmit} disabled={submitting}>
                                         {submitting ? <Loader /> : id ? 'Actualizar' : 'Enviar'}
                                     </Button>

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Col, Image, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, QuantityInput, Spinner } from '../../components';
-import API from '../../app/API';
-import { getBreadcrumbItemsProductDetails } from './Products.helpers';
-import noImage from '../../assets/no_image.jpg';
-import { formatCurrency } from '../../app/Helpers';
-import { IProductDetailsForm } from '../../interfaces/IProduct/IProduct';
-import { useOrder } from '../../contexts/OrderContext';
+import { BreadCrumb, Button, Card, QuantityInput, Spinner } from '../../../components';
+import API from '../../../app/API';
+import { getBreadcrumbItemsProductDetails } from '../Products.helpers';
+import noImage from '../../../assets/no_image.jpg';
+import { formatCurrency } from '../../../app/Helpers';
+import { IProductDetailsForm } from '../../../interfaces/IProduct/IProduct';
+import { useOrder } from '../../../contexts/OrderContext';
+import { ReviewsCard } from '../Reviews/ReviewsCard';
 import './productDetails.scss';
-import { ReviewsCard } from './ReviewsCard';
 
 const InitialProductDetails: IProductDetailsForm = {
     name: '',

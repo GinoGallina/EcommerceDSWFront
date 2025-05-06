@@ -32,8 +32,8 @@ export interface IProductListGetAllRequest extends IGenericGetAllResquest {
     text: string;
     categoryIds: string[];
     available: boolean;
-    price?: number;
-    lessThan?: boolean;
+    price?: string;
+    priceOption?: string;
 }
 
 export interface IProductListGetAllResponse extends IGenericGetAllResponse {

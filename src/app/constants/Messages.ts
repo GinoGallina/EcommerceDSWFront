@@ -12,5 +12,6 @@ export class Messages {
         requiredFields: 'Por favor, complete todos los campos obligatorios.',
         passwordCheck: 'La contraseña debe ser la misma en ambos campos',
         graterThanZero: (entity: string, femenine: boolean = false) => `${femenine ? 'La' : 'El'} ${entity} debe ser mayor a cero`,
+        graterOrEqualThanZero: (entity: string, femenine: boolean = false) => `${femenine ? 'La' : 'El'} ${entity} debe ser mayor o igual a cero`,
     };
 }

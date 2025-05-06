@@ -10,6 +10,7 @@ import { columns, sortCategoryItems } from './PaymentType.data';
 import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { ISortRequest } from '../../interfaces';
 import { IPaymentTypeList, IPaymentTypeResponse } from '../../interfaces/IPaymentType/IPaymentType';
+import { useDebounce } from '../../hooks/useDebounce';
 
 const PaymentTypeList = () => {
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ const PaymentTypeList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState<ISortRequest | null>(null);
+    const debouncedText = useDebounce(nameFilter, 300);
 
     const categoriesBreadCrums = [
         {
@@ -43,6 +45,8 @@ const PaymentTypeList = () => {
     // Effects
     useEffect(() => {
         const rq = buildGenericGetAllRq(currentPage, sort);
+
+        rq.text = debouncedText;
 
         API.get<IPaymentTypeResponse>('paymentType/getAll', rq).then((r) => {
             const categories = r.data.paymentTypes.map((x) => {
@@ -57,7 +61,7 @@ const PaymentTypeList = () => {
                 Toast.warning(Messages.Error.noRows);
             }
         });
-    }, [currentPage, sort]);
+    }, [currentPage, debouncedText, sort]);
 
     // Handlers
     const handleFilterPaymentTypes = (value: string) => {
@@ -95,7 +99,7 @@ const PaymentTypeList = () => {
                             <Table
                                 className="mb-5"
                                 columns={paymentTypesColumns}
-                                rows={paymentTypes.filter((x) => x.name.toLowerCase().includes(nameFilter.toLowerCase()))}
+                                rows={paymentTypes}
                                 emptyTableMessage="No se encontraron metodos de pago"
                                 pagination={true}
                                 currentPage={currentPage}

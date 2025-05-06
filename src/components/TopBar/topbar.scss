@@ -73,8 +73,7 @@
     }
 
     .order-container {
-        max-height: 750px;
-        min-width: 600px;
+        max-height: 550px;
         max-width: 650px;
         overflow-y: scroll;
         right: 95px;
@@ -100,6 +99,7 @@
             }
             input {
                 -moz-appearance: textfield;
+                appearance: textfield;
             }
         }
 
