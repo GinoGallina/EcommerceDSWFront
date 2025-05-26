@@ -180,7 +180,7 @@ const OrderDetails = () => {
                                                     <Col xs={12} md={4} className="d-flex align-items-center justify-content-center mt-3 mt-md-0">
                                                         <Image
                                                             src={orderItem.imagen || noImage}
-                                                            alt="Imagen del producto"
+                                                            alt="Producto"
                                                             className="rounded-3 border"
                                                             style={{ maxHeight: '200px', objectFit: 'cover' }}
                                                             fluid

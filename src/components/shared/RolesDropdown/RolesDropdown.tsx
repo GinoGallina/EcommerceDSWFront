@@ -49,10 +49,10 @@ const RolesDropdown: React.FC<IComboDropdown> = ({
         if (disableOption) return disableOption(v);
         if (useDefaultDisableOption)
             return (
-                (v.label !== Roles.Admin && value?.includes(items?.find((x) => x.label === Roles.Admin)?.value || '')) ||
-                (v.label === Roles.Admin &&
-                    (value?.includes(items?.find((x) => x.label === Roles.User)?.value || '') ||
-                        value?.includes(items?.find((x) => x.label === Roles.Seller)?.value || '')))
+                (v.label !== formatRole(Roles.Admin) && value?.includes(items?.find((x) => x.label === formatRole(Roles.Admin))?.value || '')) ||
+                (v.label === formatRole(Roles.Admin) &&
+                    (value?.includes(items?.find((x) => x.label === formatRole(Roles.User))?.value || '') ||
+                        value?.includes(items?.find((x) => x.label === formatRole(Roles.Seller))?.value || '')))
             );
     };
 

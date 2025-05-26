@@ -35,7 +35,6 @@ const CreateCategory = ({ isWatching = false }) => {
     const handleSubmit = async () => {
         if (submiting) return;
 
-        // TODO ver stock y price
         if (!form.name) {
             Toast.warning(Messages.Validation.requiredFields);
             return;

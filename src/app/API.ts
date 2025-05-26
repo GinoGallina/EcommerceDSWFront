@@ -1,11 +1,10 @@
+// const URL = 'http://localhost:7777/api';
 const URL = import.meta.env.VITE_API_URL;
 import Toast from '../components/Toast/Toast';
 import { IGenericGetAllResquest } from '../interfaces';
-import { DownloadInterface } from '../interfaces/shared/Download';
 import { LocalStorage } from './LocalStorage';
 import { Messages } from './constants/Messages';
 
-// TODO: ver unknown, crear todos los tipos de datos y pasarlos depsues
 interface APIResponse<T> {
     data: T;
     success: boolean;
@@ -132,44 +131,9 @@ const post = async <TResponse, TRequest>(path: string, rq: TRequest, isFormData 
     return json;
 };
 
-const download = async (path: string, rq: Record<string, string>) => {
-    const response = await get<DownloadInterface>(path, rq);
-
-    if (!response || !response?.data) {
-        Toast.error(Messages.Error.generic);
-        return;
-    }
-
-    const imageResponse = await fetch(response.data?.signedUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': 'no-cors',
-        },
-    });
-
-    if (!imageResponse.ok) {
-        if (imageResponse.status === 403) return Toast.error(Messages.Error[403]);
-        else if (imageResponse.status === 404) return Toast.error(Messages.Error[404]);
-        else if (imageResponse.status >= 500) return Toast.error(Messages.Error[500]);
-        else return Toast.error(Messages.Error.generic);
-    }
-
-    const imageBlob = await imageResponse.blob();
-    const url = URL.createObjectURL(imageBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'imagen';
-    a.click();
-    URL.revokeObjectURL(url);
-
-    return response;
-};
-
 const API = {
     get,
     post,
-    download,
     getDifferentUrl,
 };
 

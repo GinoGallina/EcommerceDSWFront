@@ -55,16 +55,6 @@ export const buildGenericGetAllRq = (currentPage: number | null, sort?: ISortReq
     return rq;
 };
 
-export const validateInt = (value: string) => {
-    const parsedValue = parseInt(value);
-    return value === null || (!isNaN(parsedValue) && parsedValue);
-};
-
-export const validateFloat = (value: string) => {
-    const parsedValue = parseFloat(value);
-    return value === null || (!isNaN(parsedValue) && parsedValue);
-};
-
 const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -74,36 +64,7 @@ const formatDate = (dateString: string) => {
 };
 
 export class Dates {
-    static getToday(returnString = false) {
-        const today = new Date();
-        return returnString ? formatDate(today.toDateString()) : today;
-    }
-
-    static getTomorrow(date: string, returnString = false) {
-        const today = date ? new Date(date) : new Date();
-        const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-        return returnString ? formatDate(tomorrow.toDateString()) : tomorrow;
-    }
-
-    static getLastWeek() {
-        const today = new Date();
-        const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-        return formatDate(lastWeek.toDateString());
-    }
-
-    static getPreviousWeek(day: string) {
-        const date = new Date(day);
-        const lastWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 7);
-        return formatDate(lastWeek.toDateString());
-    }
-
     static formatDate(date: string) {
         return formatDate(date);
     }
-
-    static adjustDate = (date: string) => {
-        const newDate = new Date(date);
-        newDate.setHours(0, 0, 0, 0);
-        return newDate.toISOString();
-    };
 }

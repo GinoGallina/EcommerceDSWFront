@@ -147,7 +147,7 @@ const CreateProduct = ({ isWatching = false }) => {
                                             <Label required>Stock</Label>
                                             <Input
                                                 disabled={isWatching}
-                                                placeholder="Stock"
+                                                placeholder="Ingrese la cantidad de stock"
                                                 type="number"
                                                 value={form.stock}
                                                 onChange={(value) => handleInputChange(value, 'stock')}
@@ -160,9 +160,9 @@ const CreateProduct = ({ isWatching = false }) => {
                                                 disabled={isWatching}
                                                 isMulti={false}
                                                 onChange={(value) => {
-                                                    handleInputChange(value, 'categoryId');
+                                                    handleInputChange(value as string, 'categoryId');
                                                 }}
-                                            ></CategoryDropdown>
+                                            />
                                         </Col>
                                         {App.isAdmin() && (
                                             <Col xs={12} md={4} className="pe-3 mb-3">
@@ -172,13 +172,20 @@ const CreateProduct = ({ isWatching = false }) => {
                                                     disabled={isWatching}
                                                     isMulti={false}
                                                     onChange={(value) => {
-                                                        handleInputChange(value, 'userId');
+                                                        handleInputChange(value as string, 'userId');
                                                     }}
-                                                ></UserDropdown>
+                                                />
                                             </Col>
                                         )}
                                         <Col xs={12} md={4} className="pe-3 mb-3">
-                                            <Label>Imagen</Label>
+                                            <Label helpText="Ingrese la URL de la imagen que desee utilizar.">Imagen</Label>
+                                            <Input
+                                                disabled={isWatching}
+                                                placeholder="Imagen"
+                                                value={form.image}
+                                                maxLength={250}
+                                                onChange={(value) => handleInputChange(value, 'image')}
+                                            />
                                         </Col>
                                     </Row>
                                 </>

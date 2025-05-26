@@ -145,7 +145,12 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
                                         </Col>
                                         {!viewProfileDetails && !id && (
                                             <Col xs={12} md={4} className="pe-3 mb-3">
-                                                <Label required={!isWatching}>Contraseña</Label>
+                                                <Label
+                                                    helpText="La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un caracter especial"
+                                                    required={!isWatching}
+                                                >
+                                                    Contraseña
+                                                </Label>
                                                 <Input
                                                     disabled={isWatching}
                                                     placeholder="Contraseña"

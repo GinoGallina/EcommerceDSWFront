@@ -58,7 +58,6 @@ const ConfirmOrder = () => {
             Address: clientAddress.address,
         };
 
-        // TODO
         API.post<IConfirmOrderResponse, IConfirmOrderRequest>(`order/create`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
@@ -96,21 +95,39 @@ const ConfirmOrder = () => {
                                         return (
                                             <Col xs={12} className={`order-row ${idx % 2 === 0 ? 'bg-alternate' : ''}`} key={idx}>
                                                 <Row>
-                                                    <Col xs={12} md={3} className="d-flex mb-3 mb-md-0">
+                                                    <Col xs={12} md={3} className="d-flex align-items-center gap-3 mb-3 mb-lg-0">
                                                         <div
-                                                            className="me-2"
-                                                            style={{ maxWidth: '75px', maxHeight: '75px', minWidth: '75px', minHeight: '75px' }}
+                                                            style={{
+                                                                width: '75px',
+                                                                height: '75px',
+                                                                borderRadius: '8px',
+                                                                overflow: 'hidden',
+                                                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                                                                flexShrink: 0,
+                                                                display: 'flex',
+                                                            }}
                                                         >
-                                                            <Image src={orderItem.image || noImage} className="w-100 h-100" />
+                                                            <Image
+                                                                src={orderItem.image || noImage}
+                                                                alt="Producto"
+                                                                className="w-100 h-100"
+                                                                style={{ objectFit: 'cover' }}
+                                                            />
                                                         </div>
-                                                        <span className="fs-5">{orderItem.name}</span>
+                                                        <div
+                                                            style={{ fontSize: '1.1rem', fontWeight: '500', color: '#333', wordBreak: 'break-word' }}
+                                                        >
+                                                            {orderItem.name}
+                                                        </div>
                                                     </Col>
+
                                                     <Col md={3} className="d-none d-md-flex justify-content-center my-auto mb-md-auto">
                                                         <span className="text-success fs-5">{formatCurrency(orderItem.price)}</span>
                                                     </Col>
                                                     <Col xs={5} md={3} className="d-flex">
                                                         <QuantityInput
                                                             quantityInputClassName="justify-content-start"
+                                                            width="35%"
                                                             quantity={orderItem.quantity}
                                                             productId={orderItem.productId}
                                                         />
@@ -138,7 +155,7 @@ const ConfirmOrder = () => {
                                             required
                                             value={paymentType}
                                             isMulti={false}
-                                            onChange={(v) => setPaymentType(v)}
+                                            onChange={(v) => setPaymentType(v as string)}
                                         />
                                     </Col>
                                     <Col className="text-start mt-4" xs={12} md={4}>

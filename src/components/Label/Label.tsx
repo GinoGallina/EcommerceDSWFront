@@ -5,6 +5,7 @@ import './label.scss';
 
 interface LabelProps {
     children: string;
+    htmlFor?: string;
     required?: boolean;
     style?: CSSProperties;
     helpText?: string;
@@ -16,13 +17,14 @@ interface LabelProps {
 const Label: React.FC<LabelProps> = ({
     children,
     required = false,
+    htmlFor = '',
     style = {},
-    helpText = null,
+    helpText,
     helpColor = undefined,
     helpStyle = {},
     helpPlacement = undefined,
 }) => (
-    <FormLabel style={{ ...style, marginBottom: '2px' }}>
+    <FormLabel htmlFor={htmlFor || ''} style={{ ...style, marginBottom: '2px' }}>
         {children}
         {required && <span className="required"></span>}
         {helpText && (

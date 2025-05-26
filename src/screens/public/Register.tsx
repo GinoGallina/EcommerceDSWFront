@@ -135,7 +135,12 @@ const Register = () => {
                             />
                         </Col>
                         <Col xs={12} className="mt-3 ">
-                            <Label required>Contraseña</Label>
+                            <Label
+                                helpText="La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un caracter especial"
+                                required
+                            >
+                                Contraseña
+                            </Label>
                             <Input
                                 type="password"
                                 required
@@ -149,11 +154,11 @@ const Register = () => {
                             <Label required>Desea ser</Label>
                             <RolesDropdown
                                 value={form.roles}
-                                exclude={[Roles.Admin]}
+                                exclude={[formatRole(Roles.Admin)]}
                                 onChange={(value) => handleInputChange(value as string, 'roles')}
                                 isMulti={true}
                                 ref={rolesDropdownRef}
-                            ></RolesDropdown>
+                            />
                         </Col>
                         {isSellerSelected() && (
                             <>

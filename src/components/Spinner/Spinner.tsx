@@ -2,7 +2,7 @@ import './spinner.scss';
 
 const Spinner = ({ black = true }) => {
     return (
-        <div className="spinner-container">
+        <div data-testid="spinner" className="spinner-container">
             <span className={`spinner ${black ? 'black' : 'white'}`}></span>
         </div>
     );

@@ -9,7 +9,6 @@ import { formatCurrency } from '../../../app/Helpers';
 import { IProductDetailsForm } from '../../../interfaces/IProduct/IProduct';
 import { useOrder } from '../../../contexts/OrderContext';
 import { ReviewsCard } from '../Reviews/ReviewsCard';
-import './productDetails.scss';
 
 const InitialProductDetails: IProductDetailsForm = {
     name: '',
@@ -52,91 +51,94 @@ const ProductDetails = () => {
             <div>
                 <Col xs={11} className="container product-details">
                     <Card
-                        title={form.name}
                         body={
                             loading ? (
-                                <Spinner />
+                                <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
+                                    <Spinner />
+                                </div>
                             ) : (
-                                <>
-                                    <Row>
-                                        <Col xs={12} md={5}>
-                                            <div className="mx-auto my-auto" style={{ maxHeight: '350px', maxWidth: '350px' }}>
-                                                <Image className="w-100 h-100" src={form.image || noImage}></Image>
-                                            </div>
-                                        </Col>
-                                        <Col xs={12} md={7}>
-                                            <Row className="h-100 flex-column" style={{ fontSize: '25px' }}>
-                                                <Col className="mb-3" xs={12}>
-                                                    <h4>{form.categoryName}</h4>
-                                                </Col>
-                                                <Col className="mb-3 description" xs={12}>
+                                <Row className="g-4 align-items-start">
+                                    {/* Imagen */}
+                                    <Col xs={12} md={4} className="text-center">
+                                        <Image
+                                            src={form.image || noImage}
+                                            alt="Producto"
+                                            fluid
+                                            rounded
+                                            style={{ maxHeight: '350px', objectFit: 'contain', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}
+                                        />
+                                    </Col>
+
+                                    {/* Info product */}
+                                    <Col className="h-100" xs={12} md={8}>
+                                        <div className="d-flex flex-column h-100 justify-content-between">
+                                            <div>
+                                                <h2 className="mb-2">{form.name}</h2>
+                                                <h5 className="text-muted mb-3">{form.categoryName}</h5>
+                                                <p className="mb-4" style={{ fontSize: '18px', lineHeight: '1.5' }}>
                                                     {form.description}
-                                                </Col>
-                                                <Col className="mb-3" xs={12}>
+                                                </p>
+
+                                                <div className="mb-3">
                                                     {Number(form.stock) > 0 ? (
-                                                        <>
-                                                            <h5 className="text-success">
-                                                                In stock ({form.stock} {form.stock == '1' ? 'unit' : 'units'})
-                                                            </h5>
-                                                        </>
+                                                        <span className="text-success fw-semibold">
+                                                            En stock ({form.stock} {form.stock === '1' ? 'unidad' : 'unidades'})
+                                                        </span>
                                                     ) : (
-                                                        <h5 className="text-danger">Sin Stock</h5>
+                                                        <span className="text-danger fw-semibold">Sin stock</span>
                                                     )}
-                                                </Col>
-                                                <Col className="mb-3" xs={12}>
-                                                    <span style={{ fontWeight: 'bold' }}>{formatCurrency(form.price)}</span>
-                                                </Col>
-                                                <Col className="mt-auto" xs={12}>
-                                                    <Row>
-                                                        {orderItems.find((x) => x.productId === id) && (
-                                                            <Col>
-                                                                <QuantityInput
-                                                                    alignDirection="start"
-                                                                    productId={id!}
-                                                                    quantity={orderItems.find((x) => x.productId === id)?.quantity || 0}
-                                                                />
-                                                            </Col>
-                                                        )}
-                                                        <Col xs={12} md={6} lg={4}>
-                                                            {orderItems.some((item) => item.productId === id) ? (
-                                                                <Button
-                                                                    className="bg-danger btn-sm border-0 w-100"
-                                                                    onClick={() => removeFromOrder(id!)}
-                                                                >
-                                                                    Quitar del carrito
-                                                                </Button>
-                                                            ) : (
-                                                                <Button
-                                                                    className="bg-success btn-sm border-0 w-100"
-                                                                    disabled={Number(form.stock) === 0}
-                                                                    onClick={() =>
-                                                                        addToOrder({
-                                                                            name: form.name,
-                                                                            price: Number(form.price),
-                                                                            productId: id!,
-                                                                            quantity: 1,
-                                                                            image: form.image,
-                                                                        })
-                                                                    }
-                                                                >
-                                                                    Agregar al carrito
-                                                                </Button>
-                                                            )}
-                                                        </Col>
-                                                    </Row>
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                </>
+                                                </div>
+
+                                                <div className="mb-4">
+                                                    <span className="fs-4 fw-bold text-primary">{formatCurrency(form.price)}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Actions */}
+                                            <div>
+                                                {orderItems.find((x) => x.productId === id) && (
+                                                    <div className="mb-3">
+                                                        <QuantityInput
+                                                            alignDirection="start"
+                                                            productId={id!}
+                                                            quantity={orderItems.find((x) => x.productId === id)?.quantity || 0}
+                                                        />
+                                                    </div>
+                                                )}
+                                                <Row className="g-2">
+                                                    <Col xs={12} md={6}>
+                                                        <Button
+                                                            className="w-100 btn-sm"
+                                                            variant={orderItems.some((item) => item.productId === id) ? 'danger' : 'success'}
+                                                            disabled={Number(form.stock) === 0 && !orderItems.some((item) => item.productId === id)}
+                                                            onClick={() =>
+                                                                orderItems.some((item) => item.productId === id)
+                                                                    ? removeFromOrder(id!)
+                                                                    : addToOrder({
+                                                                          name: form.name,
+                                                                          price: Number(form.price),
+                                                                          productId: id!,
+                                                                          quantity: 1,
+                                                                          image: form.image,
+                                                                      })
+                                                            }
+                                                        >
+                                                            {orderItems.some((item) => item.productId === id)
+                                                                ? 'Quitar del carrito'
+                                                                : 'Agregar al carrito'}
+                                                        </Button>
+                                                    </Col>
+                                                    <Col xs={12} md={6}>
+                                                        <Button className="w-100 btn-sm" onClick={() => navigate('/productos/list')}>
+                                                            Volver
+                                                        </Button>
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
                             )
-                        }
-                        footer={
-                            <div className="d-flex justify-content-start">
-                                <Button variant="secondary" className="me-2" onClick={() => navigate('/productos/list')}>
-                                    Volver
-                                </Button>
-                            </div>
                         }
                     />
                     <Card

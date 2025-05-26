@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import API from '../../app/API';
 import { Messages } from '../../app/constants/Messages';
 import { LocalStorage } from '../../app/LocalStorage';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import Label from '../../components/Label/Label';
 import Input from '../../components/Input/Input';
 import Toast from '../../components/Toast/Toast';
@@ -29,12 +29,12 @@ const Login = () => {
     const handleSubmit = () => {
         if (loading) return;
 
+        setLoading(true);
+
         if (!form.email || !form.password) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
-
-        setLoading(true);
 
         const rq = {
             email: form.email.trim(),
@@ -71,8 +71,9 @@ const Login = () => {
                     <h3 className="text-center mt-4">Iniciar sesión</h3>
                     <CardBody>
                         <Col xs={12}>
-                            <Label>Email</Label>
+                            <Label htmlFor="email">Email</Label>
                             <Input
+                                id="email"
                                 type="email"
                                 value={form.email}
                                 onChange={(value) => handleInputChange(value, 'email')}
@@ -81,8 +82,9 @@ const Login = () => {
                             />
                         </Col>
                         <Col xs={12} className="mt-4 pb-4">
-                            <Label>Contraseña</Label>
+                            <Label htmlFor="password">Contraseña</Label>
                             <Input
+                                id="password"
                                 type="password"
                                 value={form.password}
                                 onChange={(value) => handleInputChange(value, 'password')}

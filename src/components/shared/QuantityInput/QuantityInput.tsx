@@ -10,9 +10,10 @@ interface QuantityInputProps {
     productId: string;
     quantityInputClassName?: string;
     alignDirection?: string;
+    width?: string;
 }
 
-const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, alignDirection = 'center', quantityInputClassName = '' }) => {
+const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, width, productId, alignDirection = 'center', quantityInputClassName = '' }) => {
     const { updateQuantity } = useOrder();
 
     const handleClickQuantityButton = (id: string, action: ICartAction, value?: string) => {
@@ -28,7 +29,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({ quantity, productId, alig
                 color="white"
                 size="sm"
             />
-            <div className="w-25">
+            <div style={{ width: width }}>
                 <Input value={quantity.toString()} type="number" onChange={(v) => handleClickQuantityButton(productId, REPLACE, v)} minValue={0} />
             </div>
             <FontAwesomeIcon

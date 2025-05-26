@@ -21,11 +21,20 @@ const OrderMenuItem: React.FC<IOrderMenuItemProps> = ({ product, idx }) => {
 
     return (
         <Row className={`${idx % 2 === 0 ? 'bg-alternate' : ''}`}>
-            <Col xs={3} className="img-container d-flex my-auto">
-                <Image src={product.image || noImage} className="w-100 h-100" />
+            <Col xs={3} className="d-flex">
+                <Image
+                    className="mx-auto my-auto"
+                    src={product.image || noImage}
+                    alt="Producto"
+                    fluid
+                    rounded
+                    style={{ maxHeight: '100px', objectFit: 'contain', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}
+                />
             </Col>
             <Col xs={8} className="order-details d-flex flex-column p-2">
-                <h4 className="fs-4">{product.name}</h4>
+                <h4 className="fs-4" style={{ wordBreak: 'break-word' }}>
+                    {product.name}
+                </h4>
                 <div>
                     <p className="mb-0">
                         Precio unitario: <span className="text-success">${product.price}</span>
@@ -34,7 +43,7 @@ const OrderMenuItem: React.FC<IOrderMenuItemProps> = ({ product, idx }) => {
                 <div className="mt-2">
                     <Row>
                         <Col xs={5}>
-                            <QuantityInput quantity={product.quantity} productId={product.productId} />
+                            <QuantityInput alignDirection="start" quantity={product.quantity} productId={product.productId} />
                         </Col>
                         <Col xs={7} className="text-end">
                             <p className="mb-0">

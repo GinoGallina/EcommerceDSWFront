@@ -8,6 +8,7 @@ import './input.scss';
 
 interface InputProps {
     value?: string;
+    id?: string;
     defaultValue?: string;
     tag?: 'input' | 'textarea';
     type?: React.HTMLInputTypeAttribute;
@@ -50,6 +51,7 @@ const Input = forwardRef<InputHandle, InputProps>(
     (
         {
             value = '',
+            id = '',
             tag = 'input',
             type = 'text',
             placeholder = '',
@@ -177,7 +179,7 @@ const Input = forwardRef<InputHandle, InputProps>(
             return (
                 <span className="input-container">
                     <span className="input-wrapper">
-                        <input {...inputProps} ref={inputRef as React.RefObject<HTMLInputElement>} onKeyDown={handleKeyDown} />
+                        <input {...inputProps} id={id} ref={inputRef as React.RefObject<HTMLInputElement>} onKeyDown={handleKeyDown} />
                         {showIcon && <FontAwesomeIcon style={{ left: '5px' }} icon={faSearch} color="#ccc" />}
                         {type === 'password' && (
                             <FontAwesomeIcon
@@ -202,7 +204,7 @@ const Input = forwardRef<InputHandle, InputProps>(
         } else if (tag === 'textarea') {
             return (
                 <span className="input-container">
-                    <textarea {...inputProps} ref={inputRef as React.RefObject<HTMLTextAreaElement>} cols={cols} rows={rows} />
+                    <textarea {...inputProps} id={id} ref={inputRef as React.RefObject<HTMLTextAreaElement>} cols={cols} rows={rows} />
                     {helpText && <small className={classNames('input-text', required && 'required')}>{helpText}</small>}
                     {extraHelpText && (
                         <InfoButton
