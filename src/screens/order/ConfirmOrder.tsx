@@ -6,7 +6,7 @@ import { LocalStorage } from '../../app/LocalStorage';
 import { confirmOrderCols } from './Order.data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faClose } from '@fortawesome/free-solid-svg-icons';
-import { formatCurrency } from '../../app/Helpers';
+import { formatCurrency, trimStrings } from '../../app/Helpers';
 import noImage from '../../assets/no_image.jpg';
 import './confirmOrder.scss';
 import { Messages } from '../../app/constants/Messages';
@@ -49,14 +49,14 @@ const ConfirmOrder = () => {
 
         setSubmiting(true);
 
-        const rq: IConfirmOrderRequest = {
+        const rq: IConfirmOrderRequest = trimStrings({
             PaymentTypeId: paymentType,
             Items: orderItems.map((x) => ({
                 ProductId: x.productId,
                 Quantity: x.quantity,
             })),
             Address: clientAddress.address,
-        };
+        });
 
         API.post<IConfirmOrderResponse, IConfirmOrderRequest>(`order/create`, rq)
             .then((r) => {

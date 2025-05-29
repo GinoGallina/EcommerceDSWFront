@@ -1,34 +1,50 @@
+import App from '../../app/App';
 import { IColumn } from '../../interfaces';
-import { IProductList } from '../../interfaces/IProduct/IProduct';
+import { IMyProductList } from '../../interfaces/IProduct/IProduct';
 
 // My Products
-export const myProductCols: IColumn<IProductList>[] = [
-    {
-        name: 'name',
-        text: 'Nombre',
-        textCenter: true,
-    },
-    {
-        name: 'price',
-        text: 'Precio',
-        textCenter: true,
-    },
-    {
-        name: 'stock',
-        text: 'Stock',
-        textCenter: true,
-    },
-    {
-        name: 'categoryName',
-        text: 'Categoría',
-        textCenter: true,
-    },
-    {
-        name: 'createdAt',
-        text: 'Fecha de creación',
-        textCenter: true,
-    },
-];
+export const myProductCols: IColumn<IMyProductList>[] = (() => {
+    const cols: IColumn<IMyProductList>[] = [
+        {
+            name: 'name',
+            text: 'Nombre',
+            textCenter: true,
+        },
+        {
+            name: 'categoryName',
+            text: 'Categoría',
+            textCenter: true,
+        },
+    ];
+
+    if (App.isAdmin()) {
+        cols.push({
+            name: 'user',
+            text: 'Usuario',
+            textCenter: true,
+        });
+    }
+
+    cols.push(
+        {
+            name: 'price',
+            text: 'Precio',
+            textCenter: true,
+        },
+        {
+            name: 'stock',
+            text: 'Stock',
+            textCenter: true,
+        },
+        {
+            name: 'createdAt',
+            text: 'Fecha de creación',
+            textCenter: true,
+        }
+    );
+
+    return cols;
+})();
 
 export const sortMyProductItems = [
     { value: 'name-asc', label: 'Nombre - Asc.' },

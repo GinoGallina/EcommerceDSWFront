@@ -33,12 +33,11 @@ const CheckBox: React.FC<ICheckBoxProps> = forwardRef(
         },
         ref
     ) => {
-        const checkboxRef = useRef(null);
+        const checkboxRef = useRef<HTMLInputElement | null>(null);
         const [value, setValue] = useState(checked);
 
         useImperativeHandle(ref, () => ({
-            // TODO
-            // focus: () => checkboxRef.current && checkboxRef.current?.focus(),
+            focus: () => checkboxRef.current && checkboxRef.current?.focus(),
         }));
 
         const _update = (value: boolean) => {

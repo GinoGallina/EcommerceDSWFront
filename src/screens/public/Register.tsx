@@ -18,7 +18,7 @@ import { RolesDropdown } from '../../components';
 import { Roles } from '../../app/constants/Roles';
 import { GetComboItemType } from '../../interfaces/shared/IGetCombo';
 import { useDropdownItems } from '../../hooks/useDropdownItems';
-import { formatRole } from '../../app/Helpers';
+import { formatRole, trimStrings } from '../../app/Helpers';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -56,18 +56,16 @@ const Register = () => {
 
         setLoading(true);
 
-        // TODO: generic trim
-
-        const rq: IRegisterRequest = {
-            Email: form.email.trim(),
-            Password: form.password.trim(),
-            Username: form.userName.trim(),
-            Address: form.address.trim(),
+        const rq: IRegisterRequest = trimStrings({
+            Email: form.email,
+            Password: form.password,
+            Username: form.userName,
+            Address: form.address,
             Roles: form.roles,
-            StoreName: form.storeName.trim(),
-            StoreDescription: form.storeDescription.trim(),
-            Cbu: form.cbu.trim(),
-        };
+            StoreName: form.storeName,
+            StoreDescription: form.storeDescription,
+            Cbu: form.cbu,
+        });
 
         API.post<ITokenResponse, IRegisterRequest>('auth/register', rq)
             .then((response) => {

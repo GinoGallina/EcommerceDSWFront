@@ -9,6 +9,7 @@ import { formatCurrency } from '../../../app/Helpers';
 import { IProductDetailsForm } from '../../../interfaces/IProduct/IProduct';
 import { useOrder } from '../../../contexts/OrderContext';
 import { ReviewsCard } from '../Reviews/ReviewsCard';
+import { StarRating } from '../Reviews/StarRating';
 
 const InitialProductDetails: IProductDetailsForm = {
     name: '',
@@ -21,6 +22,10 @@ const InitialProductDetails: IProductDetailsForm = {
         userName: '',
         storeName: '',
         storeDescription: '',
+    },
+    rating: {
+        rate: 0,
+        totalReviews: 0,
     },
 };
 
@@ -88,7 +93,14 @@ const ProductDetails = () => {
                                                         <span className="text-danger fw-semibold">Sin stock</span>
                                                     )}
                                                 </div>
-
+                                                <div className="mb-2">
+                                                    <StarRating
+                                                        rate={form.rating.rate}
+                                                        totalReviews={form.rating.totalReviews}
+                                                        onChange={() => {}}
+                                                        readOnly
+                                                    />
+                                                </div>
                                                 <div className="mb-4">
                                                     <span className="fs-4 fw-bold text-primary">{formatCurrency(form.price)}</span>
                                                 </div>

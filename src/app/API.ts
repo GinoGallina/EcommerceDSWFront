@@ -1,4 +1,3 @@
-// const URL = 'http://localhost:7777/api';
 const URL = import.meta.env.VITE_API_URL;
 import Toast from '../components/Toast/Toast';
 import { IGenericGetAllResquest } from '../interfaces';
@@ -29,14 +28,21 @@ const get = async <T>(
         }
     });
 
-    const response = await fetch(`${URL}/${path}?${params}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': 'no-cors',
-            Authorization: `Bearer ${LocalStorage.getToken()}`,
-        },
-    });
+    let response: Response;
+
+    try {
+        response = await fetch(`${URL}/${path}?${params}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'no-cors',
+                Authorization: `Bearer ${LocalStorage.getToken()}`,
+            },
+        });
+    } catch (err) {
+        Toast.error('No se pudo conectar con el servidor. Verificá la URL o que el backend esté corriendo.');
+        throw err;
+    }
 
     let json: APIResponse<T> | null = null;
 
@@ -65,28 +71,6 @@ const get = async <T>(
     return json;
 };
 
-const getDifferentUrl = async <T>(url: string, rq: Record<string, string>) => {
-    const params = new URLSearchParams(rq);
-    const response = await fetch(`${url}?${params}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': 'no-cors',
-        },
-    });
-
-    if (!response.ok) {
-        if (response.status === 403) return Toast.error(Messages.Error[403]);
-        else if (response.status === 404) return Toast.error(Messages.Error[404]);
-        else if (response.status >= 500) return Toast.error(Messages.Error[500]);
-        else return Toast.error(Messages.Error.generic);
-    }
-
-    const json: APIResponse<T> = await response.json();
-
-    return json;
-};
-
 const post = async <TResponse, TRequest>(path: string, rq: TRequest, isFormData = false): Promise<APIResponse<TResponse>> => {
     const headers: HeadersInit = isFormData
         ? {}
@@ -94,15 +78,21 @@ const post = async <TResponse, TRequest>(path: string, rq: TRequest, isFormData 
               'Content-Type': 'application/json',
           };
 
-    const response = await fetch(`${URL}/${path}`, {
-        method: 'POST',
-        headers: {
-            ...headers,
-            'Access-Control-Allow-Origin': 'no-cors',
-            Authorization: `Bearer ${LocalStorage.getToken()}`,
-        },
-        body: isFormData ? (rq as FormData) : JSON.stringify(rq),
-    });
+    let response: Response;
+
+    try {
+        response = await fetch(`${URL}/${path}`, {
+            method: 'POST',
+            headers: {
+                ...headers,
+                Authorization: `Bearer ${LocalStorage.getToken()}`,
+            },
+            body: isFormData ? (rq as FormData) : JSON.stringify(rq),
+        });
+    } catch (err) {
+        Toast.error('No se pudo conectar con el servidor. Verificá la URL o que el backend esté corriendo.');
+        throw err;
+    }
 
     let json: APIResponse<TResponse> | null = null;
 
@@ -134,7 +124,6 @@ const post = async <TResponse, TRequest>(path: string, rq: TRequest, isFormData 
 const API = {
     get,
     post,
-    getDifferentUrl,
 };
 
 export default API;

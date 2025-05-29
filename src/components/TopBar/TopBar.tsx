@@ -65,15 +65,6 @@ const TopBar = () => {
             ) {
                 setShowUser(false);
             }
-            // TODO;
-            // if (
-            //     orderIconRef.current &&
-            //     !orderIconRef.current.contains(event.target as Node) &&
-            //     userIconRef.current &&
-            //     !userIconRef.current.contains(event.target as Node)
-            // ) {
-            //     setShowOrder(false);
-            // }
         };
 
         document.addEventListener('mousedown', handleClickOutside);

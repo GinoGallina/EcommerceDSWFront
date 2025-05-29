@@ -38,25 +38,6 @@
         }
     }
 
-    // TODO: No lo uso
-    .input-display {
-        background-color: inherit;
-
-        &-success {
-            background-color: rgba(143, 188, 143, 0.5) !important;
-        }
-
-        &-warning {
-            border: 1px solid rgba(255, 140, 0, 0.8);
-            background-color: rgba(255, 140, 0, 0.3) !important;
-        }
-
-        &-error {
-            border: 1px solid rgba(220, 20, 60, 0.8);
-            background-color: rgba(220, 20, 60, 0.3) !important;
-        }
-    }
-
     small.input-text {
         color: #99abb4 !important;
         font-size: 80%;

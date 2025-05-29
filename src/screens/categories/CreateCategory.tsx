@@ -9,6 +9,7 @@ import { Messages } from '../../app/constants/Messages';
 import { getBreadcrumbItems } from './Categroy.helpers';
 import { ICategoryForm } from '../../interfaces';
 import { ICreateCategoryRequest, ICreateCategoryResponse } from '../../interfaces/ICategory/ICategory';
+import { trimStrings } from '../../app/Helpers';
 
 const CreateCategory = ({ isWatching = false }) => {
     const navigate = useNavigate();
@@ -42,9 +43,9 @@ const CreateCategory = ({ isWatching = false }) => {
 
         setSubmiting(true);
 
-        const rq: ICreateCategoryRequest = {
+        const rq: ICreateCategoryRequest = trimStrings({
             Name: form.name,
-        };
+        });
 
         API.post<ICreateCategoryResponse, ICreateCategoryRequest>(`category/${id ? `update/${id}` : 'create'}`, rq)
             .then((r) => {
@@ -79,7 +80,9 @@ const CreateCategory = ({ isWatching = false }) => {
                                 <>
                                     <Row className="align-items-center">
                                         <Col xs={12} className="mb-3 pe-3">
-                                            <Label required>Nombre</Label>
+                                            <Label helpText="Máxima longitud: 60 carácteres" helpPlacement="right" required>
+                                                Nombre
+                                            </Label>
                                             <Input
                                                 disabled={isWatching}
                                                 placeholder="Nombre"

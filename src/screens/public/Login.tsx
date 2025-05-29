@@ -33,6 +33,7 @@ const Login = () => {
 
         if (!form.email || !form.password) {
             Toast.warning(Messages.Validation.requiredFields);
+            setLoading(false);
             return;
         }
 

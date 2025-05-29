@@ -18,13 +18,7 @@ const Tooltip: React.FC<TooltipProps> = ({ textStyle = {}, text = '', placement 
     );
 
     return (
-        <BS.OverlayTrigger
-            // TODO: Check touch
-            // trigger={['hover', 'focus', 'touch']}
-            trigger={['hover', 'focus']}
-            placement={placement}
-            overlay={tooltipContent}
-        >
+        <BS.OverlayTrigger trigger={['hover', 'focus']} placement={placement} overlay={tooltipContent}>
             {children}
         </BS.OverlayTrigger>
     );

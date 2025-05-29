@@ -6,6 +6,7 @@ export interface IReviewList {
     description: string;
     rate: number;
     user: string;
+    userId: string;
     createdAt: string;
 }
 

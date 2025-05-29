@@ -8,7 +8,8 @@ import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { buildGenericGetAllRq } from '../../app/Helpers';
 import API from '../../app/API';
 import { ISortRequest } from '../../interfaces';
-import { IProductList, IProductListGetAllResponse } from '../../interfaces/IProduct/IProduct';
+import { IMyProductList, IProductList, IProductListGetAllResponse } from '../../interfaces/IProduct/IProduct';
+import App from '../../app/App';
 
 const MyProductList = () => {
     const navigate = useNavigate();
@@ -24,17 +25,17 @@ const MyProductList = () => {
 
     const productsBreadCrums = [
         {
-            label: 'Mis productos',
+            label: App.isAdmin() ? 'Todos los productos' : 'Mis productos',
             active: true as const,
         },
     ];
 
-    const productColumns: IColumn<IProductList>[] = [
+    const productColumns: IColumn<IMyProductList>[] = [
         ...myProductCols,
         {
             name: '',
             text: 'Acciones',
-            component: (props: ColumnComponentType<IProductList>) => <ActionButtons {...props} canDelete={true} entity="producto" />,
+            component: (props: ColumnComponentType<IMyProductList>) => <ActionButtons {...props} canDelete={true} entity="producto" />,
             className: 'text-center',
         },
     ];
@@ -77,10 +78,10 @@ const MyProductList = () => {
 
     return (
         <>
-            <BreadCrumb items={productsBreadCrums} title="Mis productos" />
+            <BreadCrumb items={productsBreadCrums} title={App.isAdmin() ? 'Todos los productos' : 'Mis productos'} />
             <Col xs={11} className="container">
                 <Card
-                    title="Mis productos"
+                    title={App.isAdmin() ? 'Todos los productos' : 'Mis productos'}
                     body={
                         <>
                             <Row>

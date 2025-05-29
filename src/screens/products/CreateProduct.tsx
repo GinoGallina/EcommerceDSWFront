@@ -11,6 +11,7 @@ import { IProductForm } from '../../interfaces';
 import App from '../../app/App';
 import { LocalStorage } from '../../app/LocalStorage';
 import { ICreateProductRequest, ICreateProductResponse } from '../../interfaces/IProduct/IProduct';
+import { trimStrings } from '../../app/Helpers';
 
 const CreateProduct = ({ isWatching = false }) => {
     const navigate = useNavigate();
@@ -41,9 +42,7 @@ const CreateProduct = ({ isWatching = false }) => {
     const handleSubmit = async () => {
         if (submiting) return;
 
-        //ver stock y price
-        // TODO user
-        if (!form.name || !form.description || !form.price || !form.stock || !form.categoryId) {
+        if (!form.name || !form.description || !form.price || !form.stock || !form.categoryId || (App.isAdmin() && !form.userId)) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
@@ -65,7 +64,7 @@ const CreateProduct = ({ isWatching = false }) => {
 
         setSubmiting(true);
 
-        const rq: ICreateProductRequest = {
+        const rq: ICreateProductRequest = trimStrings({
             Name: form.name,
             Description: form.description,
             Stock: form.stock,
@@ -73,7 +72,7 @@ const CreateProduct = ({ isWatching = false }) => {
             Image: form.image,
             CategoryId: form.categoryId,
             UserId: App.isSeller() ? LocalStorage.getUserId() : form.userId,
-        };
+        });
 
         if (id) {
             rq.Id = id;
@@ -112,7 +111,9 @@ const CreateProduct = ({ isWatching = false }) => {
                                 <>
                                     <Row className="align-items-center">
                                         <Col xs={12} md={4} className="pe-3 mb-3">
-                                            <Label required>Nombre</Label>
+                                            <Label helpText="Máxima longitud: 40 carácteres" helpPlacement="right" required>
+                                                Nombre
+                                            </Label>
                                             <Input
                                                 disabled={isWatching}
                                                 placeholder="Nombre"
@@ -122,7 +123,9 @@ const CreateProduct = ({ isWatching = false }) => {
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className="pe-3 mb-3">
-                                            <Label required>Descripción</Label>
+                                            <Label helpText="Máxima longitud: 255 carácteres" helpPlacement="right" required>
+                                                Descripción
+                                            </Label>
                                             <Input
                                                 tag={form.description.length > 40 ? 'textarea' : 'input'}
                                                 disabled={isWatching}
@@ -204,6 +207,7 @@ const CreateProduct = ({ isWatching = false }) => {
                             </div>
                         }
                     />
+                    {isWatching && <div className="p-4 border rounded-4 shadow-sm bg-white"></div>}
                 </Col>
             </div>
         </>

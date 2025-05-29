@@ -12,7 +12,7 @@ import { Roles } from '../../app/constants/Roles';
 import { useDropdownItems } from '../../hooks/useDropdownItems';
 import App from '../../app/App';
 import { LocalStorage } from '../../app/LocalStorage';
-import { formatRole } from '../../app/Helpers';
+import { formatRole, trimStrings } from '../../app/Helpers';
 
 const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
     const navigate = useNavigate();
@@ -54,7 +54,7 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
 
         setSubmitting(true);
 
-        const rq: ICreateUserRequest = {
+        const rq: ICreateUserRequest = trimStrings({
             Username: form.username,
             Email: form.email,
             Password: form.password,
@@ -63,14 +63,16 @@ const CreateUser = ({ isWatching = false, viewProfileDetails = false }) => {
             StoreName: form.storeName,
             StoreDescription: form.storeDescription,
             Cbu: form.cbu,
-        };
+        });
 
         API.post<ICreateUserResponse, ICreateUserRequest>(`user/${id ? `update/${id}` : 'create'}`, rq)
             .then((r) => {
                 if (r.message) Toast.success(r.message);
-                LocalStorage.setUserEmail(rq.Email);
-                LocalStorage.setUserAddress(rq.Address);
-                LocalStorage.setUserName(rq.Username);
+                if (id === LocalStorage.getUserId()) {
+                    LocalStorage.setUserEmail(rq.Email);
+                    LocalStorage.setUserAddress(rq.Address);
+                    LocalStorage.setUserName(rq.Username);
+                }
                 if (App.isAdmin()) navigate('/usuarios/list');
             })
             .finally(() => {

@@ -8,6 +8,7 @@ import API from '../../app/API';
 import { Messages } from '../../app/constants/Messages';
 import { getBreadcrumbItems } from './PaymentType.helpers';
 import { IPaymentTypeCreateRequest, IPaymentTypeCreateResponse, IPaymentTypeForm } from '../../interfaces/IPaymentType/IPaymentType';
+import { trimStrings } from '../../app/Helpers';
 
 const CreatePaymentType = ({ isWatching = false }) => {
     const navigate = useNavigate();
@@ -41,9 +42,9 @@ const CreatePaymentType = ({ isWatching = false }) => {
 
         setSubmiting(true);
 
-        const rq: IPaymentTypeCreateRequest = {
+        const rq: IPaymentTypeCreateRequest = trimStrings({
             Name: form.name,
-        };
+        });
 
         API.post<IPaymentTypeCreateResponse, IPaymentTypeCreateRequest>(`paymentType/${id ? `update/${id}` : 'create'}`, rq)
             .then((r) => {

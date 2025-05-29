@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import './reviewCard.scss';
 import DeleteConfirmationModal, { DeleteConfirmationModalRef } from '../../../components/shared/DeleteConfirmationModal/DeleteConfirmationModal';
+import App from '../../../app/App';
 
 type ReviewsCardProps = {
     loading?: boolean;
@@ -66,6 +67,7 @@ export const ReviewsCard: React.FC<ReviewsCardProps> = ({ loading, id }) => {
                         description: comment,
                         rate: rate,
                         user: LocalStorage.getUserName(),
+                        userId: LocalStorage.getUserId(),
                         createdAt: 'Ahora',
                     },
                     ...prevState,
@@ -117,23 +119,20 @@ export const ReviewsCard: React.FC<ReviewsCardProps> = ({ loading, id }) => {
                                                         <p>{review.createdAt}</p>
                                                     </Col>
                                                     <Col xs={12}>
-                                                        <StarRating
-                                                            rate={review.rate}
-                                                            totalReviews={totalCount}
-                                                            readOnly
-                                                            onChange={() => {}}
-                                                        ></StarRating>
+                                                        <StarRating rate={review.rate} totalReviews={totalCount} readOnly onChange={() => {}} />
                                                     </Col>
                                                     <Col xs={12} className="d-flex justify-content-between">
                                                         <p className="mb-0 d-inline" style={{ flex: 1 }}>
                                                             {review.description}
                                                         </p>
-                                                        <FontAwesomeIcon
-                                                            className="trash-icon"
-                                                            color="red"
-                                                            icon={faTrash}
-                                                            onClick={() => handleDeleteReview(review.id)}
-                                                        />
+                                                        {(App.isAdmin() || LocalStorage.getUserId() === review.userId.toString()) && (
+                                                            <FontAwesomeIcon
+                                                                className="trash-icon"
+                                                                color="red"
+                                                                icon={faTrash}
+                                                                onClick={() => handleDeleteReview(review.id)}
+                                                            />
+                                                        )}
                                                     </Col>
                                                 </Row>
                                             </Col>

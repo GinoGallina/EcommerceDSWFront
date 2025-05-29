@@ -60,7 +60,7 @@ const NavBar = () => {
                         </li>
 
                         <li className="mt-3">
-                            <Tooltip text="Todos  productos" placement="right">
+                            <Tooltip text="Todos  los productos" placement="right">
                                 <Link to="/misProductos/list">
                                     <FontAwesomeIcon icon={faClipboardList} />
                                 </Link>

@@ -9,6 +9,20 @@ export const formatComboItems = (items: GetComboItemTypeRq[]) => {
     }));
 };
 
+export const trimStrings = <T extends Record<string, unknown>>(obj: T): T => {
+    const result = {} as T;
+
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            const value = obj[key];
+
+            result[key] = typeof value === 'string' ? (value.trim() as typeof value) : value;
+        }
+    }
+
+    return result;
+};
+
 export const formatCurrency = (value: string | number) => {
     if (Number(value) < 0)
         return `-$${Math.abs(Number(value)).toLocaleString('es-AR', {

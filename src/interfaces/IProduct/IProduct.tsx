@@ -13,11 +13,17 @@ export interface IProductDetailsForm {
         storeName: string;
         storeDescription: string;
     };
+    rating: {
+        rate: number;
+        totalReviews: number;
+    };
 }
 
 // Get All
 export interface IProductList extends IGenericList {
     name: string;
+    categoryName?: string;
+    user: string;
     description: string;
     price: number;
     stock: number;
@@ -26,7 +32,13 @@ export interface IProductList extends IGenericList {
         rate: number;
         totalReviews: number;
     };
+}
+export interface IMyProductList extends IGenericList {
+    name: string;
     categoryName?: string;
+    user: string;
+    price: number;
+    stock: number;
 }
 export interface IProductListGetAllRequest extends IGenericGetAllResquest {
     text: string;

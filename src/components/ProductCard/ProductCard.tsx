@@ -45,7 +45,7 @@ const ProductCard: React.FC<IProductCardProps> = ({
                 <Card.Title className="mb-3 product-card-title">{name}</Card.Title>
                 <Card.Text className="text-muted mb-3 product-card-category">Categoría: {categoryName}</Card.Text>
                 <div className="mb-3">
-                    <StarRating rate={rating.rate} totalReviews={rating.totalReviews} onChange={() => {}} readOnly></StarRating>
+                    <StarRating rate={rating.rate} totalReviews={rating.totalReviews} onChange={() => {}} readOnly />
                 </div>
                 <Card.Text className="fw-bold text-success">{formatCurrency(price)}</Card.Text>
                 <div className="mt-auto d-flex flex-column flex-xxl-row justify-content-between">
