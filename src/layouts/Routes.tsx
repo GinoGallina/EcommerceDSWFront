@@ -27,6 +27,9 @@ const ProductDetails = lazy(() => import('../screens/products/Details/ProductDet
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to="/login" />);
 const AdminRoute = () => (App.isAdmin() ? <Outlet /> : <Navigate to="/notAllowed" />);
 const SellerAdminRoute = () => (App.isSeller() || App.isAdmin() ? <Outlet /> : <Navigate to="/notAllowed" />);
+const PublicOnlyRoute = ({ children }: { children: React.ReactNode }) => {
+    return App.isLoggedIn() ? <Navigate to="/" /> : <>{children}</>;
+};
 
 export const AppRoutes = () => (
     <Suspense
@@ -258,8 +261,22 @@ export const AppRoutes = () => (
 
             <Route path="*" element={<NotFound />} />
             <Route path="/notAllowed" element={<NotAllowed />} />
-            <Route path="/login" element={!App.isLoggedIn() ? <Login /> : <Navigate to="/" />} />
-            <Route path="/register" element={!App.isLoggedIn() ? <Register /> : <Navigate to="/" />} />
+            <Route
+                path="/login"
+                element={
+                    <PublicOnlyRoute>
+                        <Login />
+                    </PublicOnlyRoute>
+                }
+            />
+            <Route
+                path="/register"
+                element={
+                    <PublicOnlyRoute>
+                        <Register />
+                    </PublicOnlyRoute>
+                }
+            />
         </Routes>
     </Suspense>
 );

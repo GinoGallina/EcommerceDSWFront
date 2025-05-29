@@ -16,6 +16,10 @@ const isLoggedIn = () => {
     return true;
 };
 
+const logout = () => {
+    LocalStorage.clearSessionData();
+};
+
 const isAdmin = () => {
     const roles = LocalStorage.getUserRoles();
     return roles && roles.includes(Roles.Admin);
@@ -36,6 +40,7 @@ const App = {
     isAdmin,
     isSeller,
     isUser,
+    logout,
 };
 
 export default App;
