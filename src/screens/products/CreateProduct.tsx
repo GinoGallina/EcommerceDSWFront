@@ -207,7 +207,6 @@ const CreateProduct = ({ isWatching = false }) => {
                             </div>
                         }
                     />
-                    {isWatching && <div className="p-4 border rounded-4 shadow-sm bg-white"></div>}
                 </Col>
             </div>
         </>
