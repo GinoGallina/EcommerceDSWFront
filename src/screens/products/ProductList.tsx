@@ -1,5 +1,5 @@
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, CategoryDropdown, CheckBox, Input, Pagination, RadioButton, TableSort } from '../../components';
+import { BreadCrumb, CategoryDropdown, CheckBox, Input, Pagination, RadioButton, Spinner, TableSort } from '../../components';
 import { useEffect, useState } from 'react';
 import { sortProductListItems } from './Products.data';
 import { buildGenericGetAllRq } from '../../app/Helpers';
@@ -16,6 +16,7 @@ const ProductList = () => {
 
     // States
     const [products, setProducts] = useState<IProductList[]>([]);
+    const [loading, setLoading] = useState(true);
     const { orderItems, addToOrder, removeFromOrder } = useOrder();
 
     // Filters
@@ -65,6 +66,7 @@ const ProductList = () => {
             });
             setProducts(products);
             setTotalCount(r.data.totalCount);
+            setLoading(false);
         });
     }, [currentPage, filters.category, filters.stockAvailable, debouncedText, sort, filters.price, filters.priceOption]);
 
@@ -166,20 +168,27 @@ const ProductList = () => {
                     </Col>
                     <Col xs={12} sm={10}>
                         <Row>
-                            {products.map((product, idx) => (
-                                <Col key={idx} xs={10} sm={6} md={4} lg={3} className="mb-3 mx-auto">
-                                    <ProductCard
-                                        {...product}
-                                        categoryName={product.categoryName || ''}
-                                        isInOrder={orderItems.some((item) => item.productId === product.id)}
-                                        onAddToOrder={handleAddToOrder}
-                                        onRemoveFromOrder={handleRemoveFromOrder}
-                                        onViewDetails={() => {
-                                            navigate('/productos/' + product.id);
-                                        }}
-                                    />
-                                </Col>
-                            ))}
+                            {loading ? (
+                                <Spinner />
+                            ) : products.length === 0 ? (
+                                <p>No se encontraron productos en el sistema.</p>
+                            ) : (
+                                products.map((product, idx) => (
+                                    <Col key={idx} xs={10} sm={6} md={4} lg={3} className="mb-3 mx-auto">
+                                        <ProductCard
+                                            {...product}
+                                            categoryName={product.categoryName || ''}
+                                            isInOrder={orderItems.some((item) => item.productId === product.id)}
+                                            onAddToOrder={handleAddToOrder}
+                                            onRemoveFromOrder={handleRemoveFromOrder}
+                                            onViewDetails={() => {
+                                                navigate('/productos/' + product.id);
+                                            }}
+                                        />
+                                    </Col>
+                                ))
+                            )}
+
                             <Col xs={12} className="d-flex justify-content-end mt-3">
                                 <Pagination currentPage={currentPage} itemsPerPage={20} totalCount={totalCount} setCurrentPage={setCurrentPage} />
                             </Col>
