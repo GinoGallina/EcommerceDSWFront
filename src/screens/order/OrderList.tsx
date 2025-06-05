@@ -106,7 +106,6 @@ const OrderList = () => {
                             <Table
                                 className="mb-5"
                                 columns={ordersColumns}
-                                // rows={orders.filter((x) => x.name.toLowerCase().includes(nameFilter.toLowerCase()))}
                                 rows={orders}
                                 emptyTableMessage="No se encontraron compras"
                                 pagination={true}
@@ -116,13 +115,6 @@ const OrderList = () => {
                             />
                         </>
                     }
-                    // footer={
-                    //     <div className="d-flex justify-content-end">
-                    //         <Button onClick={() => navigate('/categorias/new')} variant="primary">
-                    //             Nueva categoria
-                    //         </Button>
-                    //     </div>
-                    // }
                 />
             </Col>
         </>

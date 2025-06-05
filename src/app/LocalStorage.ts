@@ -4,7 +4,7 @@ import { LocalStorageKeys } from './constants/StorageKey';
 import { IOrderItem } from '../interfaces/IOrder/IOrder';
 
 // Set & remove data from local storage
-const set = (key: LocalStorageKeys, value: string) => {
+const set = (key: LocalStorageKeys, value: string | Date) => {
     return secureLocalStorage.setItem(key, JSON.stringify(value));
 };
 
@@ -32,7 +32,7 @@ export class LocalStorage {
     static setUserAddress = (v: string) => set(Constants.USER_ADDRESS, v);
     static getUserAddress = () => get(Constants.USER_ADDRESS);
 
-    static setSessionExpiration = (v: string) => set(Constants.SESSION_EXPIRATION, v);
+    static setSessionExpiration = (v: Date) => set(Constants.SESSION_EXPIRATION, v);
     static getSessionExpiration = () => get(Constants.SESSION_EXPIRATION);
 
     static setOrderItems = (order: IOrderItem[]) => set(Constants.CART_ITEMS, JSON.stringify(order));

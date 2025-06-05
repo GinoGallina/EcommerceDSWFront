@@ -10,7 +10,7 @@ import Label from '../../components/Label/Label';
 import Input from '../../components/Input/Input';
 import Toast from '../../components/Toast/Toast';
 import Loader from '../../components/Loader/Loader';
-import { IRegisterRequest, ITokenResponse } from '../../interfaces/IToken';
+import { IRegisterRequest, ITokenPayload, ITokenResponse } from '../../interfaces/IToken';
 import Button from '../../components/Button/Button';
 
 import './register.scss';
@@ -19,6 +19,7 @@ import { Roles } from '../../app/constants/Roles';
 import { GetComboItemType } from '../../interfaces/shared/IGetCombo';
 import { useDropdownItems } from '../../hooks/useDropdownItems';
 import { formatRole, trimStrings } from '../../app/Helpers';
+import { jwtDecode } from 'jwt-decode';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -80,13 +81,14 @@ const Register = () => {
     };
 
     const handleLogin = (data: ITokenResponse) => {
+        const decoded = jwtDecode<ITokenPayload>(data.token);
         LocalStorage.setToken(data.token);
-        LocalStorage.setUserId(data.user.id);
-        LocalStorage.setUserRoles(data.user.roles);
-        LocalStorage.setUserName(data.user.username);
-        LocalStorage.setUserEmail(data.user.email);
-        LocalStorage.setSessionExpiration(data.sessionExpiration);
-        LocalStorage.setUserAddress(data.user.address);
+        LocalStorage.setUserId(decoded.id);
+        LocalStorage.setUserRoles(decoded.roles);
+        LocalStorage.setUserName(decoded.username);
+        LocalStorage.setUserEmail(decoded.email);
+        LocalStorage.setUserAddress(decoded.address);
+        LocalStorage.setSessionExpiration(new Date(decoded.exp * 1000));
     };
 
     const isSellerSelected = () => {

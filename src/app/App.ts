@@ -6,7 +6,7 @@ const isLoggedIn = () => {
 
     const sessionExpiration = new Date(LocalStorage.getSessionExpiration());
 
-    if (!sessionExpiration) return false;
+    if (!sessionExpiration || isNaN(sessionExpiration.getTime())) return false;
 
     if (new Date() > sessionExpiration) {
         LocalStorage.clearSessionData();

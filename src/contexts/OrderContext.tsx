@@ -40,31 +40,28 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const updateQuantity = (productId: string, action: ICartAction, value?: string) => {
-        const updatedItems = orderItems
-            .map((item) => {
-                if (item.productId === productId) {
-                    let newQuantity: number;
-                    const finalValue = Number(value) || 0;
+        const updatedItems = orderItems.map((item) => {
+            if (item.productId !== productId) return item;
 
-                    switch (action) {
-                        case ADD:
-                            newQuantity = item.quantity + 1;
-                            break;
-                        case MINUS:
-                            newQuantity = item.quantity - 1 < 0 ? 0 : item.quantity - 1;
-                            break;
-                        case REPLACE:
-                            newQuantity = finalValue < 0 ? 0 : finalValue;
-                            break;
-                        default:
-                            newQuantity = item.quantity;
-                            break;
-                    }
-                    return { ...item, quantity: newQuantity };
-                }
-                return item;
-            })
-            .filter(Boolean) as IOrderItem[];
+            const finalValue = Number(value) || 0;
+            let newQuantity: number;
+
+            switch (action) {
+                case ADD:
+                    newQuantity = item.quantity + 1;
+                    break;
+                case MINUS:
+                    newQuantity = item.quantity - 1 < 0 ? 0 : item.quantity - 1;
+                    break;
+                case REPLACE:
+                    newQuantity = finalValue < 0 ? 0 : finalValue;
+                    break;
+                default:
+                    newQuantity = item.quantity;
+            }
+
+            return { ...item, quantity: newQuantity };
+        });
 
         setOrderItems(updatedItems);
     };

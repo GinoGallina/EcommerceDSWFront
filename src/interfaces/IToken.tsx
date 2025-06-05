@@ -16,12 +16,14 @@ export interface IRegisterRequest {
 
 export interface ITokenResponse {
     token: string;
-    sessionExpiration: string;
-    user: {
-        id: string;
-        roles: string;
-        username: string;
-        email: string;
-        address: string;
-    };
+}
+
+export interface ITokenPayload {
+    id: string;
+    username: string;
+    email: string;
+    roles: string;
+    address: string;
+    // roles: string[];
+    exp: number;
 }

@@ -6,7 +6,7 @@ import {
     faHouse,
     faList,
     faStore,
-    faCashRegister,
+    // faCashRegister,
     faUsers,
     faCartShopping,
 } from '@fortawesome/free-solid-svg-icons';
@@ -97,14 +97,14 @@ const NavBar = () => {
                                 </Link>
                             </Tooltip>
                         </li>
-
+                        {/* 
                         <li className="mt-3">
                             <Tooltip text="Mis Ventas" placement="right">
                                 <Link to="/ventas/list">
                                     <FontAwesomeIcon icon={faCashRegister} />
                                 </Link>
                             </Tooltip>
-                        </li>
+                        </li> */}
                     </>
                 )}
             </ul>
