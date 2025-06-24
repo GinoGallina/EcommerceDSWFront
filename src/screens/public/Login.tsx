@@ -58,7 +58,7 @@ const Login = () => {
     const handleLogin = (data: ITokenResponse) => {
         const decoded = jwtDecode<ITokenPayload>(data.token);
         LocalStorage.setToken(data.token);
-        LocalStorage.setUserId(decoded.id);
+        LocalStorage.setUserId(decoded.id.toString());
         LocalStorage.setUserRoles(decoded.roles);
         LocalStorage.setUserName(decoded.username);
         LocalStorage.setUserEmail(decoded.email);

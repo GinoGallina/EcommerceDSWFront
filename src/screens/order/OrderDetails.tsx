@@ -49,18 +49,20 @@ const OrderDetails = () => {
     }, [id]);
 
     useEffect(() => {
-        if (!App.isAdmin() && form.userId && form.userId !== LocalStorage.getUserId()) navigate('/');
+        if (!App.isAdmin() && form.userId && form.userId !== LocalStorage.getUserId()) {
+            navigate('/');
+        }
     }, [form.userId, navigate]);
 
-    const handleCancelProduct = (productId: string) => {
+    const handleCancelProduct = (orderItemId: string) => {
         if (submiting) return;
 
-        API.post<IOrderCancelOrderResponse, IOrderCancelProductRequest>(`order/cancelProduct/${id}`, { ProductId: productId })
+        API.post<IOrderCancelOrderResponse, IOrderCancelProductRequest>(`order/cancelProduct/${id}`, { OrderItemId: orderItemId })
             .then((r) => {
                 if (r.message) Toast.success(r.message);
                 setForm((prevForm) => {
                     const newItems = prevForm.items.map((x) => {
-                        if (x.productId === productId)
+                        if (x.id === orderItemId)
                             return {
                                 ...x,
                                 status: OrderItemStatuses.Canceled,
@@ -115,6 +117,12 @@ const OrderDetails = () => {
                                 <Spinner />
                             ) : (
                                 <Row className="align-items-center">
+                                    {App.isAdmin() && (
+                                        <Col xs={12} className="mb-3">
+                                            <strong>🧔🏻 Orden de:</strong>
+                                            <span className="ms-2">{form.user}</span>
+                                        </Col>
+                                    )}
                                     <Col md={6} className="mb-2">
                                         <strong>📦 Estado:</strong>
                                         <span className="ms-2 fw-bold" style={{ color: orderStatus.color }}>
@@ -194,7 +202,7 @@ const OrderDetails = () => {
                                                                 variant="danger"
                                                                 size="sm"
                                                                 disabled={orderItem.status !== OrderStatuses.Pending}
-                                                                onClick={() => handleCancelProduct(orderItem.productId)}
+                                                                onClick={() => handleCancelProduct(orderItem.id)}
                                                             >
                                                                 {submiting ? <Loader /> : ' Cancelar producto'}
                                                             </Button>
@@ -218,25 +226,22 @@ const OrderDetails = () => {
                         footer={
                             <Row>
                                 <Col className="text-end">
-                                    <Button
-                                        variant="danger"
-                                        disabled={
-                                            !form.items.every(
-                                                (x) => x.status === OrderItemStatuses.Pending || x.status === OrderItemStatuses.Canceled
-                                            ) || form.items.every((x) => x.status === OrderItemStatuses.Canceled)
-                                        }
-                                        onClick={handleCancelOrder}
-                                    >
-                                        {submiting ? <Loader /> : ' Cancelar orden'}
-                                    </Button>
-                                    <div className="d-inline-flex h-100 ">
-                                        <Tooltip
-                                            placement="top"
-                                            text="Solo podrá cancelar la orden si el estado de todos los productos es PENDIENTE."
-                                        >
-                                            <FontAwesomeIcon className="my-auto ms-2" icon={faInfoCircle} color="black" />
-                                        </Tooltip>
-                                    </div>
+                                    {form.items.every((x) => x.status === OrderItemStatuses.Pending || x.status === OrderItemStatuses.Canceled) &&
+                                        !form.items.every((x) => x.status === OrderItemStatuses.Canceled) && (
+                                            <>
+                                                <Button variant="danger" onClick={handleCancelOrder}>
+                                                    {submiting ? <Loader /> : ' Cancelar orden'}
+                                                </Button>
+                                                <div className="d-inline-flex h-100 ">
+                                                    <Tooltip
+                                                        placement="top"
+                                                        text="Solo podrá cancelar la orden si el estado de todos los productos es PENDIENTE."
+                                                    >
+                                                        <FontAwesomeIcon className="my-auto ms-2" icon={faInfoCircle} color="black" />
+                                                    </Tooltip>
+                                                </div>
+                                            </>
+                                        )}
                                 </Col>
                             </Row>
                         }

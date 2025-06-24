@@ -1,6 +1,7 @@
 import { IGenericGetAllResponse, IGenericList } from '../shared/IGenericRequest';
 
 export interface IOrderItem {
+    id?: string;
     productId: string;
     name: string;
     price: number;
@@ -14,7 +15,7 @@ export interface IOrderDetailsForm {
     shippingAddress: string;
     status: string;
     total: number;
-    items: { product: string; productId: string; quantity: number; status: string; price: number; imagen?: string }[];
+    items: { id: string; product: string; productId: string; quantity: number; status: string; price: number; imagen?: string }[];
 }
 
 // Confirm Order
@@ -44,7 +45,7 @@ export interface IOrderList extends IGenericList {
 
 // Cancel
 export interface IOrderCancelProductRequest {
-    ProductId: string;
+    OrderItemId: string;
 }
 export interface IOrderCancelOrderResponse {
     id: string;

@@ -9,6 +9,7 @@ import {
     // faCashRegister,
     faUsers,
     faCartShopping,
+    faCashRegister,
 } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../Tooltip/Tooltip';
 import { Link } from 'react-router-dom';
@@ -39,7 +40,7 @@ const NavBar = () => {
                 </li>
 
                 <li className="mt-3">
-                    <Tooltip text="Mis Compras" placement="right">
+                    <Tooltip text={App.isAdmin() ? 'Compras' : 'Mis Compras'} placement="right">
                         <Link to="/ordenes/misCompras">
                             <FontAwesomeIcon icon={faClipboard} />
                         </Link>
@@ -60,7 +61,7 @@ const NavBar = () => {
                         </li>
 
                         <li className="mt-3">
-                            <Tooltip text="Todos  los productos" placement="right">
+                            <Tooltip text="Todos los productos" placement="right">
                                 <Link to="/misProductos/list">
                                     <FontAwesomeIcon icon={faClipboardList} />
                                 </Link>
@@ -97,14 +98,13 @@ const NavBar = () => {
                                 </Link>
                             </Tooltip>
                         </li>
-                        {/* 
                         <li className="mt-3">
                             <Tooltip text="Mis Ventas" placement="right">
                                 <Link to="/ventas/list">
                                     <FontAwesomeIcon icon={faCashRegister} />
                                 </Link>
                             </Tooltip>
-                        </li> */}
+                        </li>
                     </>
                 )}
             </ul>

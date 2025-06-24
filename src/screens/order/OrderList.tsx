@@ -10,6 +10,7 @@ import { ColumnComponentType, IColumn } from '../../interfaces/shared/ITable';
 import { ISortRequest } from '../../interfaces';
 import App from '../../app/App';
 import { getStatus } from './Order.helpers';
+import { OrderStatuses } from '../../app/constants/Statuses';
 
 const OrderList = () => {
     const ordersColumns: IColumn<IOrderList>[] = [
@@ -33,7 +34,13 @@ const OrderList = () => {
             name: '',
             text: 'Acciones',
             component: (props: ColumnComponentType<IOrderList>) => (
-                <ActionButtons {...props} showEdit={false} canDelete={false} female entity="order" />
+                <ActionButtons
+                    {...props}
+                    showEdit={false}
+                    canDelete={props.row.status === OrderStatuses.Canceled && (App.isAdmin() || false)}
+                    female
+                    entity="order"
+                />
             ),
             className: 'text-center',
         },
@@ -87,6 +94,10 @@ const OrderList = () => {
         setSort({ column, direction });
     };
 
+    const updateDeletedRow = (id: string) => {
+        setOrder((prevRow) => prevRow.filter((row) => row.id !== id));
+    };
+
     return (
         <>
             <BreadCrumb items={ordersBreadCrums} title={App.isUser() ? 'Mis compras' : 'Compras'} />
@@ -103,7 +114,7 @@ const OrderList = () => {
                                     <Input showIcon borderless placeholder="Buscar" value={nameFilter} onChange={handleFilterorders} />
                                 </Col>
                             </Row>
-                            <Table
+                            <Table<IOrderList>
                                 className="mb-5"
                                 columns={ordersColumns}
                                 rows={orders}
@@ -112,6 +123,7 @@ const OrderList = () => {
                                 currentPage={currentPage}
                                 totalCount={totalCount}
                                 onPageChange={handlePageChange}
+                                onUpdate={updateDeletedRow}
                             />
                         </>
                     }

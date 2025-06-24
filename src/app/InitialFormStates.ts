@@ -25,6 +25,7 @@ export class InitialFormStates {
         total: 0,
         items: [
             {
+                id: '',
                 product: '',
                 productId: '',
                 quantity: 0,

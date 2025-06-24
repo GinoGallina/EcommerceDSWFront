@@ -35,7 +35,9 @@ const CreateProduct = ({ isWatching = false }) => {
     }, [id]);
 
     useEffect(() => {
-        if (!App.isAdmin() && form.userId && form.userId !== LocalStorage.getUserId()) navigate('/');
+        if (!App.isAdmin() && form.userId && form.userId !== LocalStorage.getUserId()) {
+            navigate('/');
+        }
     }, [form.userId, navigate]);
 
     // Handlers

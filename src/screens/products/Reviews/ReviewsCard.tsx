@@ -13,7 +13,7 @@ import { buildGenericGetAllRq } from '../../../app/Helpers';
 import API from '../../../app/API';
 import { LocalStorage } from '../../../app/LocalStorage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './reviewCard.scss';
 import DeleteConfirmationModal, { DeleteConfirmationModalRef } from '../../../components/shared/DeleteConfirmationModal/DeleteConfirmationModal';
 import App from '../../../app/App';
@@ -30,6 +30,10 @@ export const ReviewsCard: React.FC<ReviewsCardProps> = ({ loading, id }) => {
     const [comment, setComment] = useState('');
     const [rate, setRate] = useState(0);
     const [submiting, setSubmiting] = useState(false);
+
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editComment, setEditComment] = useState('');
+    const [editingRate, setEditingRate] = useState<number>(0);
 
     const paginationAmount = 10;
     const deleteModalRef = useRef<DeleteConfirmationModalRef | null>(null);
@@ -48,32 +52,55 @@ export const ReviewsCard: React.FC<ReviewsCardProps> = ({ loading, id }) => {
         });
     }, [currentPage, id]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (reviewId: string | null = null) => {
         if (submiting) return;
 
-        if (!comment) {
+        if (!reviewId && !comment) {
+            Toast.warning('No puede ingresar un comentario vacío en la reseña.');
+            return;
+        }
+        if (reviewId && !editComment) {
             Toast.warning('No puede ingresar un comentario vacío en la reseña.');
             return;
         }
 
         setSubmiting(true);
 
-        API.post<ICreateReviewResponse, ICreateReviewRequest>(`review/create`, { ProductId: id!, Rate: rate, Description: comment })
+        API.post<ICreateReviewResponse, ICreateReviewRequest>(`review/${reviewId ? 'update/' + reviewId : 'create'}`, {
+            ProductId: id!,
+            Rate: reviewId ? editingRate : rate,
+            Description: reviewId ? editComment : comment,
+        })
             .then((r) => {
                 if (r.message) Toast.success(r.message);
-                setReviews((prevState) => [
-                    {
-                        id: r.data.id,
-                        description: comment,
-                        rate: rate,
-                        user: LocalStorage.getUserName(),
-                        userId: LocalStorage.getUserId(),
-                        createdAt: 'Ahora',
-                    },
-                    ...prevState,
-                ]);
+                if (!reviewId)
+                    setReviews((prevState) => [
+                        {
+                            id: r.data.id,
+                            description: comment,
+                            rate: rate,
+                            user: LocalStorage.getUserName(),
+                            userId: LocalStorage.getUserId(),
+                            createdAt: 'Ahora',
+                        },
+                        ...prevState,
+                    ]);
+                else
+                    setReviews((prevState) =>
+                        prevState.map((x) => {
+                            if (x.id.toString() !== reviewId.toString()) return x;
+                            return {
+                                ...x,
+                                rate: editingRate,
+                                description: editComment,
+                            };
+                        })
+                    );
+                setEditingId(null);
                 setComment('');
                 setRate(0);
+                setEditComment('');
+                setEditingRate(0);
             })
             .finally(() => {
                 setSubmiting(false);
@@ -83,7 +110,6 @@ export const ReviewsCard: React.FC<ReviewsCardProps> = ({ loading, id }) => {
     const handleDeleteReview = (id: string) => {
         if (deleteModalRef.current) {
             deleteModalRef.current.open(id, 'review');
-            setReviews((prevState) => prevState.filter((x) => x.id !== id));
         }
     };
 
@@ -92,7 +118,9 @@ export const ReviewsCard: React.FC<ReviewsCardProps> = ({ loading, id }) => {
             <DeleteConfirmationModal
                 item={`esta reseña`}
                 message={`Esta acción no se puede deshacer. Una vez eliminada la reseña no se podrá recuperar.`}
-                onConfirm={() => {}}
+                onConfirm={(revId) => {
+                    setReviews((prevState) => prevState.filter((x) => x.id.toString() !== revId));
+                }}
                 ref={deleteModalRef}
             />
             <Card
@@ -119,21 +147,64 @@ export const ReviewsCard: React.FC<ReviewsCardProps> = ({ loading, id }) => {
                                                         <p>{review.createdAt}</p>
                                                     </Col>
                                                     <Col xs={12}>
-                                                        <StarRating rate={review.rate} totalReviews={totalCount} readOnly onChange={() => {}} />
+                                                        <StarRating
+                                                            rate={editingId?.toString() !== review.id.toString() ? review.rate : editingRate}
+                                                            totalReviews={totalCount}
+                                                            readOnly={editingId?.toString() !== review.id.toString()}
+                                                            onChange={(value) => setEditingRate(value)}
+                                                        />
                                                     </Col>
-                                                    <Col xs={12} className="d-flex justify-content-between">
-                                                        <p className="mb-0 d-inline" style={{ flex: 1 }}>
-                                                            {review.description}
-                                                        </p>
-                                                        {(App.isAdmin() || LocalStorage.getUserId() === review.userId.toString()) && (
-                                                            <FontAwesomeIcon
-                                                                className="trash-icon"
-                                                                color="red"
-                                                                icon={faTrash}
-                                                                onClick={() => handleDeleteReview(review.id)}
+                                                    {editingId?.toString() === review.id.toString() ? (
+                                                        <>
+                                                            <Input
+                                                                value={editComment}
+                                                                className="mt-2"
+                                                                maxLength={350}
+                                                                tag="textarea"
+                                                                placeholder="Deja tu comentario..."
+                                                                onChange={(v) => setEditComment(v)}
                                                             />
-                                                        )}
-                                                    </Col>
+                                                            <Button className="my-3" onClick={() => handleSubmit(review.id)} disabled={submiting}>
+                                                                {submiting ? <Loader /> : 'Enviar'}
+                                                            </Button>
+                                                            <Button
+                                                                onClick={() => {
+                                                                    setEditingId(null);
+                                                                    setEditingRate(0);
+                                                                    setEditComment('');
+                                                                }}
+                                                                variant="danger"
+                                                                disabled={submiting}
+                                                            >
+                                                                {submiting ? <Loader /> : 'Cancelar'}
+                                                            </Button>
+                                                        </>
+                                                    ) : (
+                                                        <Col xs={12} className="d-flex justify-content-between">
+                                                            <p className="mb-0 d-inline" style={{ flex: 1 }}>
+                                                                {review.description}
+                                                            </p>
+                                                            {LocalStorage.getUserId() === review.userId.toString() && (
+                                                                <FontAwesomeIcon
+                                                                    className="pencil-icon me-3"
+                                                                    icon={faPencil}
+                                                                    onClick={() => {
+                                                                        setEditComment(review.description);
+                                                                        setEditingRate(review.rate);
+                                                                        setEditingId(review.id);
+                                                                    }}
+                                                                />
+                                                            )}
+                                                            {(App.isAdmin() || LocalStorage.getUserId() === review.userId.toString()) && (
+                                                                <FontAwesomeIcon
+                                                                    className="trash-icon"
+                                                                    color="red"
+                                                                    icon={faTrash}
+                                                                    onClick={() => handleDeleteReview(review.id)}
+                                                                />
+                                                            )}
+                                                        </Col>
+                                                    )}
                                                 </Row>
                                             </Col>
                                         );
@@ -167,7 +238,7 @@ export const ReviewsCard: React.FC<ReviewsCardProps> = ({ loading, id }) => {
                             </>
                         </Col>
                         <Col className="d-flex justify-content-end align-items-end mt-3 mt-md-0" md={2}>
-                            <Button onClick={handleSubmit} disabled={submiting}>
+                            <Button onClick={() => handleSubmit()} disabled={submiting}>
                                 {submiting ? <Loader /> : 'Enviar'}
                             </Button>
                         </Col>

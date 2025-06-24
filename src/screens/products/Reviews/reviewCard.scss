@@ -8,4 +8,14 @@
     .trash-icon:hover {
         color: #800000;
     }
+
+    .pencil-icon {
+        color: #007bff;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .pencil-icon:hover {
+        color: #0056b3;
+    }
 }
