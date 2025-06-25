@@ -14,9 +14,9 @@ import API from '../../../app/API';
 import { LocalStorage } from '../../../app/LocalStorage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
-import './reviewCard.scss';
 import DeleteConfirmationModal, { DeleteConfirmationModalRef } from '../../../components/shared/DeleteConfirmationModal/DeleteConfirmationModal';
 import App from '../../../app/App';
+import './reviewCard.scss';
 
 type ReviewsCardProps = {
     loading?: boolean;

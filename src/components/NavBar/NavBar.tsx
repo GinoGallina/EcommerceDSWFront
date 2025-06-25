@@ -1,15 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faClipboard,
-    faClipboardList,
-    faCreditCard,
-    faHouse,
-    faList,
-    faStore,
-    faUsers,
-    faCartShopping,
-    faCashRegister,
-} from '@fortawesome/free-solid-svg-icons';
+import { faClipboard, faClipboardList, faCreditCard, faHouse, faList, faStore, faUsers, faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../Tooltip/Tooltip';
 import { Link } from 'react-router-dom';
 import App from '../../app/App';
@@ -94,13 +84,6 @@ const NavBar = () => {
                             <Tooltip text="Mis Productos" placement="right">
                                 <Link to="/misProductos/list">
                                     <FontAwesomeIcon icon={faStore} />
-                                </Link>
-                            </Tooltip>
-                        </li>
-                        <li className="mt-3">
-                            <Tooltip text="Mis Ventas" placement="right">
-                                <Link to="/ventas/list">
-                                    <FontAwesomeIcon icon={faCashRegister} />
                                 </Link>
                             </Tooltip>
                         </li>
