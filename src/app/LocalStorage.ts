@@ -18,7 +18,7 @@ export class LocalStorage {
     static getToken = () => get(Constants.TOKEN);
 
     static setUserId = (v: string) => set(Constants.USER_ID, v);
-    static getUserId = () => get(Constants.USER_ID);
+    static getUserId = () => get(Constants.USER_ID)?.toString();
 
     static setUserRoles = (v: string) => set(Constants.USER_ROLES, v);
     static getUserRoles = () => get(Constants.USER_ROLES);
