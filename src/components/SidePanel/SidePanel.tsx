@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faClipboardList, faCreditCard, faHouse, faUser, faShoppingBag, faTags, faTruck } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faClipboardList, faCreditCard, faHouse, faUser, faShoppingBag, faTags } from '@fortawesome/free-solid-svg-icons';
 import App from '../../app/App';
 import './SidePanel.scss';
 
@@ -50,10 +50,6 @@ const SidePanel = ({ isOpen = false, onClose = () => {} }) => {
                     <>
                         <span className="item-container" onClick={() => handleItemClick('/misProductos/list')}>
                             <FontAwesomeIcon icon={faClipboardList} /> Mis productos
-                        </span>
-
-                        <span className="item-container" onClick={() => handleItemClick('/ventas/list')}>
-                            <FontAwesomeIcon icon={faTruck} /> Mis ventas
                         </span>
                     </>
                 )}
