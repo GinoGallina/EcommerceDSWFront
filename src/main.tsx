@@ -1,8 +1,8 @@
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './layouts/Routes';
-import './scss/app.scss';
 import { OrderProvider } from './contexts/OrderContext';
+import './scss/app.scss';
 
 const container = document.getElementById('root');
 

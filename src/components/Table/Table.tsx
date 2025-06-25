@@ -16,7 +16,6 @@ interface TableProps<T> {
     striped?: boolean;
     hover?: boolean;
     loading?: boolean;
-    //TODO: TIENEN QUE ESTAR SI PAGINATION ES TRUE
     totalCount?: number;
     currentPage?: number;
     onRowClick?: (e: React.MouseEvent, href: string | null) => void;

@@ -6,7 +6,6 @@ import {
     faHouse,
     faList,
     faStore,
-    // faCashRegister,
     faUsers,
     faCartShopping,
     faCashRegister,

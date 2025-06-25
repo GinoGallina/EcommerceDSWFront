@@ -47,7 +47,7 @@ export const AppRoutes = () => (
         }
     >
         <Routes>
-            {/* Home */}
+            {/* Private */}
             <Route path="/" element={<PrivateRoute />}>
                 <Route path="/" element={<Home />} />
 
@@ -108,6 +108,7 @@ export const AppRoutes = () => (
                 <Route path="/notAllowed" element={<NotAllowed />} />
             </Route>
 
+            {/* Public */}
             <Route
                 path="/login"
                 element={

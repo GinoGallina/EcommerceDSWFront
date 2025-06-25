@@ -14,9 +14,7 @@ const NotFound = (): JSX.Element => {
             </div>
             <div className="footer">
                 <footer>
-                    <span className="mx-auto">
-                        Sodería la Nueva &copy; - {new Date().getFullYear()}
-                    </span>
+                    <span className="mx-auto">Ecommerce &copy; - {new Date().getFullYear()}</span>
                 </footer>
             </div>
         </div>

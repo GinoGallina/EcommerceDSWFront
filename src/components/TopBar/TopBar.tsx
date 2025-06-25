@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCartShopping, faUser } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
-import LogoMini from '../../assets/logo-mini.png';
 import Logo from '../../assets/ecommerce-logo-topbar.webp';
 import UserDetails from './UserDetails';
 import OrderMenu from './Order/OrderMenu';
@@ -81,7 +80,7 @@ const TopBar = () => {
                 <div className="image-container">
                     <a href="/" onClick={handleGoHome}>
                         <Image src={Logo} className="logo" alt="Inicio" />
-                        <Image src={LogoMini} className="logo-mini" alt="Inicio" />
+                        <Image src={Logo} className="logo-mini" alt="Inicio" />
                     </a>
                     <div className="bars-container">
                         <FontAwesomeIcon icon={faBars} size="lg" className="menu-icon" onClick={toggleSidePanel} />
